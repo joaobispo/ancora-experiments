@@ -15,8 +15,9 @@
  *  under the License.
  */
 
-package org.ancora.MbTraceAnalyser;
+package org.ancora.MbTraceAnalyser.TraceAlgorithm;
 
+import org.ancora.MbTraceAnalyser.*;
 import java.io.File;
 import org.ancora.SharedLibrary.IoUtils;
 
@@ -25,10 +26,17 @@ import org.ancora.SharedLibrary.IoUtils;
  *
  * @author Joao Bispo
  */
-public class TraceflowAlgorithm {
+public class TraceflowAlgorithmStatic {
 
    private static void reset() {
       totalInstructions = 0;
+      outputFile = null;
+
+      recurringTrace = null;
+      currentTrace = null;
+
+      currentInst = null;
+      nextInst = null;
    }
 
    private static boolean exit(boolean result) {
@@ -36,8 +44,17 @@ public class TraceflowAlgorithm {
       return result;
    }
 
+   private static void saveRecurringFlow() {
+      boolean result = saveOutput(currentTrace);
+      recurringTrace = null;
+   }
 
-   private static boolean saveOutput(InstructionFlow instructionFlow, File outputFile) {
+   private static void saveCurrentFlow() {
+      boolean result = saveOutput(currentTrace);
+      currentTrace = null;
+   }
+
+   private static boolean saveOutput(InstructionFlow instructionFlow) {
       totalInstructions += instructionFlow.getTotalInstructions();
       return IoUtils.append(outputFile, instructionFlow.toString());
    }
@@ -82,9 +99,7 @@ public static boolean doTraceFlow(File traceFile, File outputFile) {
                   int index = currentTrace.getSize() - 1;
                   if(!recurringTrace.isSameAddress(nextInstAddress, index)) {
                      // Save recurring trace to file
-                     if(!saveOutput(recurringTrace, outputFile)) {
-                        return exit(false);
-                     }
+                     saveOutput(recurringTrace);
                      // Reset recurring trace
                      recurringTrace = null;
                   }
@@ -104,15 +119,13 @@ public static boolean doTraceFlow(File traceFile, File outputFile) {
                else {
                   if(recurringTrace != null) {
                      // Save recurring trace to file
-                     if(!saveOutput(recurringTrace, outputFile)) {
-                        return exit(false);
-                     }
+                     totalInstructions += recurringTrace.getTotalInstructions();
+                     IoUtils.append(outputFile, recurringTrace.toString());
                      recurringTrace = null;
                   }
                   // Save current trace to file
-                     if(!saveOutput(currentTrace, outputFile)) {
-                        return exit(false);
-                     }
+                  totalInstructions += currentTrace.getTotalInstructions();
+                  IoUtils.append(outputFile, currentTrace.toString());
                   currentTrace = null;
                }
 
@@ -129,29 +142,30 @@ public static boolean doTraceFlow(File traceFile, File outputFile) {
       }
 
       if(recurringTrace != null) {
-         // Save recurring trace to file
-         if (!saveOutput(recurringTrace, outputFile)) {
-            return exit(false);
-         }
-         recurringTrace = null;
+         totalInstructions += recurringTrace.getTotalInstructions();
+         IoUtils.append(outputFile, recurringTrace.toString());
       }
 
-      if (currentTrace != null) {
-         // Save current trace to file
-         if (!saveOutput(currentTrace, outputFile)) {
-            return exit(false);
-         }
-         currentTrace = null;
+      if(currentTrace != null) {
+         totalInstructions += currentTrace.getTotalInstructions();
+         IoUtils.append(outputFile, currentTrace.toString());
       }
 
 
 
-      return true;
-   }
+   return false;
+}
 
    ///
    // INSTANCE VARIABLE
    ///
    private static int totalInstructions = 0;
+
+   private static InstructionFlow recurringTrace = null;
+   private static InstructionFlow currentTrace = null;
+   private static MicroblazeTraceInstruction currentInst = null;
+   private static MicroblazeTraceInstruction nextInst = null;
+
+   private static File outputFile = null;
 
 }

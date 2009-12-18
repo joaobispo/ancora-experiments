@@ -17,7 +17,9 @@
 
 package org.ancora.MbTraceAnalyser;
 
+import org.ancora.MbTraceAnalyser.TraceAlgorithm.TraceflowAlgorithm;
 import java.io.File;
+import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils2;
@@ -41,7 +43,10 @@ public class Tester {
         //testReferencingPassingAndNull();
         //testReferencingPassingAndNull2();
 
-        testFlowAlgortihm();
+        //testFlowAlgortihm();
+        //testHashFunction();
+
+        testHashes();
     }
 
    private static void init() {
@@ -202,10 +207,110 @@ public class Tester {
          return;
       }
 
-      TraceflowAlgorithm.doTraceFlow(traceFile, outputFile);
+      TraceflowAlgorithm.doTraceFlowV1(traceFile, outputFile);
       
    }
 
+   private static void testHashFunction() {
+      
+      long data = 13;
+      int dataLength = 64;
+      int hashedValue = dataLength;
+
+
+      hashedValue = superFastHash(data, dataLength, hashedValue);
+
+      System.out.println("Hashed Value:"+hashedValue);
+   }
+
+   private static void testGet16BitsAligned() {
+      long data;
+
+      long MASK_16_BITS = 0xFFFFL;
+
+      data = MASK_16_BITS << 16*3;
+
+      int i = BitUtils.get16BitsAligned(data, 3);
+      System.out.println(Integer.toHexString(i));
+   }
+
+   /**
+    *
+    * @param data data to hash
+    * @param dataLength length of the data, in bytes
+    * @param hashedValue previous value of the hash. If it is the start of the
+    * method, used the length of the data (ex.: 8 bytes).
+    * @return
+    */
+   
+   private static int superFastHash(long data, int len, int hash) {
+      int tmp;
+      //int rem;
+
+      if (len <= 0) return 0;
+
+      //rem = len & 3;
+      len >>= 2;
+
+      //Main Loop
+      for(int i=0; i<4; i+=2) {
+         // Get lower 16 bits
+         hash += BitUtils.get16BitsAligned(data, i);
+         // Calculate some random value with second-lower 16 bits
+         tmp = (BitUtils.get16BitsAligned(data, i+1) << 11 ) ^ hash;
+         hash = (hash << 16) ^ tmp;
+         // At this point, it would advance the data, but since it is restricted
+         // to longs (64-bit values), it is unnecessary).
+         hash += hash >> 11;
+      }
+
+      // Handle end cases //
+      // There are no end cases, main loop is done in chuncks of 32 bits.
+
+    // Force "avalanching" of final 127 bits //
+    hash ^= hash << 3;
+    hash += hash >> 5;
+    hash ^= hash << 4;
+    hash += hash >> 17;
+    hash ^= hash << 25;
+    hash += hash >> 6;
+
+      return hash;
+   }
+
+
    private static Integer b = new Integer(5);
+
+   private static void testHashes() {
+      //int[] addresses1 = {284};
+      //int[] addresses2 = {348};
+      int[] addresses1 = {432, 488, 556, 592, 664, 736, 792, 820, 864, 888, 944, 972, 1004, 1044, 1084};
+      int[] addresses2 = {472, 488, 556, 592, 664, 736, 792, 820, 864, 888, 944, 972, 1004, 1044, 1084};
+
+
+      int hash1 = 4;
+      int hash2 = 4;
+
+
+
+
+      // Calculate hash 1
+      for(int i=0; i<addresses1.length; i++) {
+         hash1 = BitUtils.superFastHash(addresses1[i], hash1);
+      }
+
+      // Calculate hash 2
+      for(int i=0; i<addresses2.length; i++) {
+         hash2 = BitUtils.superFastHash(addresses2[i], hash2);
+      }
+
+      System.out.println("Hash1:"+hash1);
+      System.out.println("Hash2:"+hash2);
+      System.out.println("Are equal?:"+(hash1 ==hash2));
+   }
+
+
+
+
 
 }

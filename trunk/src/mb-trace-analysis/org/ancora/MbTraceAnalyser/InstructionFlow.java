@@ -33,6 +33,7 @@ public class InstructionFlow {
       addresses = new ArrayList<Long>();
       instructionCount = new ArrayList<Integer>();
       recurrence = 1;
+      mergedFlow = false;
    }
 
 
@@ -44,6 +45,21 @@ public class InstructionFlow {
    public void addAddress(long address) {
       addresses.add(address);
       instructionCount.add(0);
+   }
+
+   /**
+    * Appends the elements of the given instruction flow to the end of this
+    * instruction flow.
+    *
+    * @param instructionFlow
+    */
+   public void addInstructionFlow(InstructionFlow instructionFlow) {
+      for(int i=0; i<instructionFlow.addresses.size(); i++) {
+         addresses.add(instructionFlow.addresses.get(i));
+         instructionCount.add(instructionFlow.instructionCount.get(i));
+      }
+
+      mergedFlow = true;
    }
 
    /**
@@ -75,6 +91,10 @@ public class InstructionFlow {
 
    }
 
+   /**
+    * Returns the number of basic blocks of this flow
+    * @return
+    */
    public int getSize() {
       return addresses.size();
    }
@@ -82,6 +102,17 @@ public class InstructionFlow {
    public long getAddress(int index) {
       return addresses.get(index);
    }
+
+   public boolean isMergedFlow() {
+      return mergedFlow;
+   }
+
+   public int getRecurrence() {
+      return recurrence;
+   }
+
+   
+
 
    public void incrementRecurrence() {
       recurrence++;
@@ -112,14 +143,56 @@ public class InstructionFlow {
          flowInstructions += instructionCount.get(i);
       }
 
-      String prefix = "(TotalInst:"+(flowInstructions*recurrence) +
-                        ";Recurrence:"+ recurrence +
-                        ";Inst:" + flowInstructions + ")";
+      String prefix1 = "";
+      if(mergedFlow) {
+         prefix1 = "Merged;";
+      }
 
-      return prefix + builder.toString() + "\n";
+      String prefix2 = "TotalInst:"+(flowInstructions*recurrence) +
+                        ";Recurrence:"+ recurrence +
+                        ";Inst:" + flowInstructions;
+
+      return "(" + prefix1 + prefix2 + ")" + builder.toString() + "\n";
    }
 
+   /**
+    * Returns a String representing Java code which implements an array with
+    * the values of the addresses.
+    * 
+    * @return
+    */
+   public String getAddressesArray() {
+      StringBuilder builder = new StringBuilder();
 
+      String prefix = "int[] a = {";
+      String sufix = "};";
+
+      builder.append(prefix);
+      // Append first value
+      if(addresses.size() > 0) {
+         builder.append(addresses.get(0));
+      }
+
+      for(int i=1; i<addresses.size(); i++) {
+         builder.append(", ");
+         builder.append(addresses.get(i));
+      }
+
+      builder.append(sufix);
+
+      return builder.toString();
+   }
+
+   /**
+    * Returns true if the two instruction flows have the same sequence of
+    * addresses.
+    *
+    * @param instructionFlow
+    * @return
+    */
+   public boolean compare(InstructionFlow instructionFlow) {
+      return instructionFlow.addresses.equals(this.addresses);
+   }
 
    ///
    // INSTANCE VARIABLES
@@ -127,4 +200,5 @@ public class InstructionFlow {
    final private List<Long> addresses;
    final private List<Integer> instructionCount;
    private int recurrence;
+   private boolean mergedFlow;
 }

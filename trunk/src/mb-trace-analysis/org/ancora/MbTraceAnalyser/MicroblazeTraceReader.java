@@ -144,7 +144,9 @@ public class MicroblazeTraceReader {
       InstructionBuilder instBuilder = InstructionBuilder.valueOf(opName);
       boolean isBranch = instBuilder.isBranch();
 
-      return new MicroblazeTraceInstruction(isBranch, address);
+      boolean hasDelaySlot = instBuilder.hasDelaySlot();
+
+      return new MicroblazeTraceInstruction(isBranch, address, hasDelaySlot);
    }
 
     

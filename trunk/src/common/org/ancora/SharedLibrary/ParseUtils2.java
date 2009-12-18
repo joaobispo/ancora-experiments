@@ -43,5 +43,20 @@ public class ParseUtils2 {
       return text.substring(0, index);
    }
 
+   /**
+    * Transforms the given long in an hexadecimal string with the specified
+    * size.
+    *
+    * @param decimalLong
+    * @param stringSize
+    * @return
+    */
+   public static String toHexString(long decimalLong, int stringSize) {
+      String longString = Long.toHexString(decimalLong);
+      longString = BitUtils.padHexString(longString, stringSize);
+
+      return longString;
+   }
+
 
 }
