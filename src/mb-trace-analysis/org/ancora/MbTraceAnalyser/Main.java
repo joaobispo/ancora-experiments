@@ -17,12 +17,14 @@
 
 package org.ancora.MbTraceAnalyser;
 
+import org.ancora.MbTraceAnalyser.TraceAlgorithm.TraceflowAlgorithm;
 import java.io.File;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ancora.MbTraceAnalyser.TraceAlgorithm.SingleSuperBlock;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils2;
@@ -40,6 +42,8 @@ public class Main {
     public static void main(String[] args) {
        // Setup logging to console
        LoggingUtils.setupConsoleOnly();
+       //Logger.getLogger("").setLevel(Level.WARNING);
+       
 
        //parseArguments(args);
        // Load preferences
@@ -76,7 +80,11 @@ public class Main {
                     info("Could not access output file.");
 
          } else {
-            TraceflowAlgorithm.doTraceFlow(traceFile, outputFile);
+            Logger.getLogger(Main.class.getName()).
+                    info("Processing file '"+traceFile.getName()+"'");
+            //TraceflowAlgorithm.doTraceFlowV1(traceFile, outputFile);
+            //TraceflowAlgorithm.doTraceFlowV1_2(traceFile, outputFile);
+            SingleSuperBlock.doTraceFlow(traceFile, outputFile);
          }
       }
 
