@@ -19,7 +19,10 @@ package org.ancora.MbTraceAnalyser;
 
 import org.ancora.MbTraceAnalyser.TraceAlgorithm.TraceflowAlgorithm;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import org.ancora.SharedLibrary.BitUtils;
+import org.ancora.SharedLibrary.DataStructures.RotatingQueue;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.SharedLibrary.ParseUtils2;
@@ -46,7 +49,10 @@ public class Tester {
         //testFlowAlgortihm();
         //testHashFunction();
 
-        testHashes();
+        //testHashes();
+
+        //testRotatingQueue();
+        testFindPatterns();
     }
 
    private static void init() {
@@ -307,6 +313,39 @@ public class Tester {
       System.out.println("Hash1:"+hash1);
       System.out.println("Hash2:"+hash2);
       System.out.println("Are equal?:"+(hash1 ==hash2));
+   }
+
+   private static void testRotatingQueue() {
+      RotatingQueue<Integer> queue = new RotatingQueue<Integer>(4);
+
+      // Insert elements
+      queue.insertElement(1);
+      queue.insertElement(2);
+      queue.insertElement(3);
+      queue.insertElement(4);
+
+      // Check order by which they are returned. It should be 4,3,2,1
+      for(int i=0; i<queue.size(); i++) {
+         System.out.println(queue.getElement(i));
+      }
+   }
+
+   private static void testFindPatterns() {
+      List<Integer> numbers = new ArrayList<Integer>();
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+      numbers.add(1);
+
+
+      PatternFinder.findPatterns(numbers);
    }
 
 

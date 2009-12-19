@@ -84,7 +84,9 @@ public class Main {
                     info("Processing file '"+traceFile.getName()+"'");
             //TraceflowAlgorithm.doTraceFlowV1(traceFile, outputFile);
             //TraceflowAlgorithm.doTraceFlowV1_2(traceFile, outputFile);
-            SingleSuperBlock.doTraceFlow(traceFile, outputFile);
+            TraceFlow traceFlow = SingleSuperBlock.doTraceFlow(traceFile, outputFile);
+            //PatternFinder.findPatterns(traceFlow.getFlow());
+            PatternFinder.patternFinder(traceFlow, outputFile, 7);
          }
       }
 
