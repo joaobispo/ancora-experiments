@@ -148,11 +148,12 @@ public class InstructionFlow {
          prefix1 = "Merged;";
       }
 
-      String prefix2 = "TotalInst:"+(flowInstructions*recurrence) +
-                        ";Recurrence:"+ recurrence +
-                        ";Inst:" + flowInstructions;
+//      String prefix2 = "TotalInst:"+(flowInstructions*recurrence) +
+//                        ";Recurrence:"+ recurrence +
+//                        ";Inst:" + flowInstructions;
+      String prefix2 = "TotalInst:"+(flowInstructions);
 
-      return "(" + prefix1 + prefix2 + ")" + builder.toString() + "\n";
+      return "(" + prefix1 + prefix2 + ") " + builder.toString();
    }
 
    /**

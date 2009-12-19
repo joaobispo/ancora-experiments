@@ -19,7 +19,9 @@ package org.ancora.MbTraceAnalyser.TraceAlgorithm;
 
 import org.ancora.MbTraceAnalyser.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.BitUtils;
@@ -41,7 +43,7 @@ public class SingleSuperBlock {
       numberOfLoops = 0;
    }
 
-   private static boolean exit(boolean result) {
+   private static TraceFlow exit(TraceFlow result) {
       reset();
       return  result;
    }
@@ -74,14 +76,13 @@ public class SingleSuperBlock {
    }
 
    /**
-    * Builds the trace-flow from the trace in traceFile, writes the results to
-    * outputFile.
+    * Builds a TraceFlow from the trace in traceFile.
     *
     * @param traceFile the trace file
     * @param outputFile the output file
-    * @return true if operation is successful, false otherwise.
+    * @return a TraceFlow if operation is successful, null otherwise.
     */
-   public static boolean doTraceFlow(File traceFile, File outputFile) {
+   public static TraceFlow doTraceFlow(File traceFile, File outputFile) {
       // Open trace file
       MicroblazeTraceReader reader = MicroblazeTraceReader.createTraceReader(traceFile);
 
@@ -98,6 +99,7 @@ public class SingleSuperBlock {
       currentTrace.addAddress(firstInstructionAddress);
       int hash = BitUtils.superFastHash(firstInstructionAddress, HASH_INITIAL_VALUE); // Number of bytes of instructions (32 bits)
 
+      List<Integer> superblockFlow = new ArrayList<Integer>();
 
       while(nextInst != null) {
          currentTrace.incrementInstruction();
@@ -129,8 +131,11 @@ public class SingleSuperBlock {
                updateTable(currentTrace, hash, sequenceTable);
 
                // Save superblock to file
-               saveOutput(currentTrace, outputFile);
-               
+               //saveOutput(currentTrace, outputFile);
+
+               // Save superblock in superblock list
+               superblockFlow.add(hash);
+
                currentTrace = new InstructionFlow();
                currentTrace.addAddress(nextInstAddress);
                // Reset hash
@@ -145,17 +150,18 @@ public class SingleSuperBlock {
          nextInst = reader.nextInstruction();
       }
 
+      // Last Instruction
+      currentTrace.incrementInstruction();
 
       if (currentTrace != null) {
          // Save current trace to file
-         if (!saveOutput(currentTrace, outputFile)) {
-            return exit(false);
-         }
-         currentTrace = null;
+         updateTable(currentTrace, hash, sequenceTable);
+         // Save superblock in superblock list
+         superblockFlow.add(hash);
       }
 
-
-      return exit(true);
+      // Build TraceFlow
+      return exit(new TraceFlow(sequenceTable, superblockFlow));
    }
 
    /**

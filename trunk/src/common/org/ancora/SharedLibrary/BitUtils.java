@@ -38,6 +38,39 @@ public class BitUtils {
    }
 
    /**
+    * Pads the string with zeros on the left until it has the requested size.
+    *
+    * @param binaryNumber
+    * @param size
+    * @return
+    */
+   public static String padBinaryString(String binaryNumber, int size) {
+       int stringSize = binaryNumber.length();
+       if(stringSize >= size) {
+           return binaryNumber;
+       }
+
+       int numZeros = size - stringSize;
+       StringBuilder builder = new StringBuilder(numZeros);
+       for(int i=0; i<numZeros; i++) {
+           builder.append(ZERO);
+       }
+
+       return builder.toString() + binaryNumber;
+   }
+
+   /**
+    * Gets the a single bit of the target.
+    *
+    * @param position
+    * @param target
+    * @return
+    */
+   public static int getBit(int position, int target) {
+      return (target >>> position) & MASK_BIT_1;
+   }
+
+   /**
     * Returns 16 bits from the long number.
     * 
     * @param data
@@ -106,6 +139,20 @@ public class BitUtils {
       return hash;
    }
 
+   /**
+    * Sets a specific bit of an int.
+    *
+    * @param bit the bit to set. The least significant bit is bit 0
+    * @param target the integer where the bit will be set
+    * @return the updated value of the target
+    */
+   public static int setBit(int bit, int target) {
+      // Create mask
+      int mask = 1 << bit;
+      // Set bit
+      return target | mask;
+   }
+
 
    ///
    // CONSTANTS
@@ -113,4 +160,5 @@ public class BitUtils {
    private static final String ZERO = "0";
    private static final String HEX_PREFIX = "0x";
    private static final long MASK_16_BITS = 0xFFFFL;
+   private static final int MASK_BIT_1 = 0x1;
 }
