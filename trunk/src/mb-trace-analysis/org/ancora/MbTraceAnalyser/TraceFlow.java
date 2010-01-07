@@ -17,8 +17,10 @@
 
 package org.ancora.MbTraceAnalyser;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,6 +31,32 @@ public class TraceFlow {
    public TraceFlow(Map<Integer, InstructionFlow> sequenceTable, List<Integer> superblockFlow) {
       this.sequenceTable = sequenceTable;
       this.superblockFlow = superblockFlow;
+      
+      // Maps the hash values to numbers, for easier identification
+      this.hashToIndex = new HashMap<Integer, Integer>();
+      int index = 1;
+      for(Integer hashValue : sequenceTable.keySet()) {
+         hashToIndex.put(hashValue, index);
+         index++;
+      }
+   }
+
+   /**
+    * Returns a unique, human-readable value for each hash value
+    * 
+    * @param hashValue
+    * @return
+    */
+   public Integer getHashIndex(Integer hashValue) {
+      Integer index = hashToIndex.get(hashValue);
+      if(index == null) {
+         Logger.getLogger(TraceFlow.class.getName()).
+                 warning("Hash value '"+hashValue+"' has no index associated." +
+                 " Returning 0.");
+         return 0;
+      }
+
+      return index;
    }
 
    @Override
@@ -57,4 +85,5 @@ public class TraceFlow {
    ///
    private final Map<Integer, InstructionFlow> sequenceTable;
    private final List<Integer> superblockFlow;
+   private final Map<Integer, Integer> hashToIndex;
 }

@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.DataStructures.RotatingQueue;
 import org.ancora.SharedLibrary.IoUtils2;
@@ -51,6 +52,8 @@ public class PatternFinder {
 
          if(foundLoop) {
             instructionsInLoops += (matchSize)*table.get(hash).getTotalInstructions();
+            totalLoops += 1;
+            totalIterations += matchSize;
          }
       }
 
@@ -67,14 +70,50 @@ public class PatternFinder {
       totalInstructions += flow.getTotalInstructions();
    }
 
-   private static void showStats() {
-
+   private static String buildStats() {
       float rationInstLoopsTotalInsts = (float) instructionsInLoops / (float) totalInstructions;
-      System.out.println("Total Instructions:"+totalInstructions);
-      System.out.println("Ratio Inst in Loop / Total Inst:"+rationInstLoopsTotalInsts);
+      float instPerLoop = (float) instructionsInLoops / (float) totalLoops;
+      float loopSize = instPerLoop / (float) totalIterations;
+      float iterationsPerLoop = (float) totalIterations / (float) totalLoops;
+      
+      StringBuilder builder = new StringBuilder();
+      
+      builder.append("Total Instructions:"+totalInstructions+"\n");
+      builder.append("Ratio Inst in Loop / Total Inst:"+rationInstLoopsTotalInsts+"\n");
+      builder.append("Instructions per loop:"+instPerLoop+"\n");
+      builder.append("Average Loop Size:"+loopSize+"\n");
+      builder.append("Iterations per loop:"+iterationsPerLoop+"\n");
+      builder.append("Number of loop:"+totalLoops);
+
+      return builder.toString();
+//      float rationInstLoopsTotalInsts = (float) instructionsInLoops / (float) totalInstructions;
+//      System.out.println("Total Instructions:"+totalInstructions);
+//      System.out.println("Ratio Inst in Loop / Total Inst:"+rationInstLoopsTotalInsts);
+   }
+
+   private static void saveStats(File outputFile) {
+      /*
+      float rationInstLoopsTotalInsts = (float) instructionsInLoops / (float) totalInstructions;
+      float instPerLoop = (float) totalInstructions / (float) totalLoops;
+      float interationsPerLoop = (float) totalIterations / (float) totalLoops;
+
+      StringBuilder builder = new StringBuilder();
+
+      builder.append("Total Instructions:"+totalInstructions);
+      builder.append("Ratio Inst in Loop / Total Inst:"+rationInstLoopsTotalInsts);
+      */
+      IoUtils2.append(outputFile, "\n"+buildStats());
    }
 
    public PatternFinder(int patternSize) {
+     // Check Pattern Size
+      if(patternSize > 32) {
+         Logger.getLogger(PatternFinder.class.getName()).
+                 warning("Maximum window size is 32 at this momment. Setting size" +
+                 " to 32.");
+         patternSize = 32;
+      }
+
       windowSize = patternSize + 1;
       matchQueues = new int[windowSize - 1];
       queue = new RotatingQueue<Integer>(windowSize);
@@ -171,7 +210,8 @@ public class PatternFinder {
       }
 
       // Show Stats
-      showStats();
+      System.out.println(buildStats());
+      saveStats(outputFile);
       //System.out.println("Total Instructions (checker):"+insts);
    }
 
@@ -205,7 +245,10 @@ public class PatternFinder {
       // Look if bit position is set, only first encountered matters
       int bitIndex = windowSize - 1 - 1;
       for (int i = 0; i < matchQueues.length; i++) {
-         if (BitUtils.getBit(bitIndex, matchQueues[i]) > 0) {
+         //if (BitUtils.getBit(bitIndex, matchQueues[i]) > 0) {
+         // Instead of using the same bitIndex for every queue, look at the bit
+         // the same size as the pattern
+         if (BitUtils.getBit(i, matchQueues[i]) > 0) {
             // There was a match!
             return i + 1;
          }
@@ -318,6 +361,8 @@ public class PatternFinder {
    private static void resetStats() {
       totalInstructions = 0;
       instructionsInLoops = 0;
+      totalLoops = 0;
+      totalIterations = 0;
    }
 
    enum PatternFinderState {
@@ -334,4 +379,6 @@ public class PatternFinder {
    // Stats
    private static int totalInstructions;
    private static int instructionsInLoops;
+   private static int totalLoops;
+   private static int totalIterations;
 }
