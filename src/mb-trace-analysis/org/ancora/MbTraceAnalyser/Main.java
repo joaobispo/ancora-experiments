@@ -17,12 +17,10 @@
 
 package org.ancora.MbTraceAnalyser;
 
-import org.ancora.MbTraceAnalyser.TraceAlgorithm.TraceflowAlgorithm;
 import java.io.File;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ancora.MbTraceAnalyser.TraceAlgorithm.SingleSuperBlock;
 import org.ancora.SharedLibrary.IoUtils;
@@ -86,7 +84,7 @@ public class Main {
             //TraceflowAlgorithm.doTraceFlowV1_2(traceFile, outputFile);
             TraceFlow traceFlow = SingleSuperBlock.doTraceFlow(traceFile, outputFile);
             //PatternFinder.findPatterns(traceFlow.getFlow());
-            PatternFinder.patternFinder(traceFlow, outputFile, 7);
+            PatternFinder.patternFinder(traceFlow, outputFile, 8);
          }
       }
 
