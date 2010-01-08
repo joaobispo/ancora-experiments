@@ -15,8 +15,11 @@
  *  under the License.
  */
 
-package org.ancora.MbTraceAnalyser;
+package org.ancora.MbTraceAnalyser.PatternFinder;
 
+import org.ancora.MbTraceAnalyser.DataObjects.TraceFlow;
+import org.ancora.MbTraceAnalyser.DataObjects.InstructionFlow;
+import org.ancora.MbTraceAnalyser.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ import org.ancora.SharedLibrary.IoUtils2;
  *
  * @author Joao Bispo
  */
-public class PatternFinder {
+public class PatternFinderWithCicle {
 
    private static void saveOutput(List<Integer> hashPattern, int matchSize, File outputFile, Map<Integer, InstructionFlow> table) {
       // Found loop?
@@ -105,10 +108,10 @@ public class PatternFinder {
       IoUtils2.append(outputFile, "\n"+buildStats());
    }
 
-   public PatternFinder(int patternSize) {
+   public PatternFinderWithCicle(int patternSize) {
      // Check Pattern Size
       if(patternSize > 32) {
-         Logger.getLogger(PatternFinder.class.getName()).
+         Logger.getLogger(PatternFinderWithCicle.class.getName()).
                  warning("Maximum window size is 32 at this momment. Setting size" +
                  " to 32.");
          patternSize = 32;
@@ -128,7 +131,7 @@ public class PatternFinder {
 
       List<Integer> hashes = traceFlow.getFlow();
       Map<Integer, InstructionFlow> table = traceFlow.getSequenceTable();
-      PatternFinder patternFinder = new PatternFinder(windowSize);
+      PatternFinderWithCicle patternFinder = new PatternFinderWithCicle(windowSize);
       resetStats();
 
       PatternFinderState state = PatternFinderState.LOOKING_FOR_PATTERN;
@@ -142,6 +145,7 @@ public class PatternFinder {
 
       for(Integer hash : hashes) {
          int patternSize = patternFinder.findPattern(hash);
+         System.out.println("pattern size: "+patternSize+" for hash "+hash);
          //System.out.println("Value of matchsize before switch:"+repetitions);
          switch(state) {
             

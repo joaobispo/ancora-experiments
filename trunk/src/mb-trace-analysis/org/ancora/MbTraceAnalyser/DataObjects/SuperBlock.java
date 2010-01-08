@@ -15,36 +15,34 @@
  *  under the License.
  */
 
-package org.ancora.MbTraceAnalyser;
+package org.ancora.MbTraceAnalyser.DataObjects;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.SharedLibrary.BitUtils;
 
 /**
- * Records the flow of forward branches, how many instructions each branch had
- * and how many times in a row the same flow was executed.
+ * Entity which represents a set of BasicBlocks which only have forward
+ * branches to the next BasicBlock.
+ *
+ * Each SuperBlock is represented by a sequence of BasicBlocks.
  *
  * @author Joao Bispo
  */
-public class InstructionFlow {
+public class SuperBlock {
 
-   public InstructionFlow() {
-      addresses = new ArrayList<Long>();
-      instructionCount = new ArrayList<Integer>();
-      recurrence = 1;
-      mergedFlow = false;
+   public SuperBlock() {
+      basicBlocks = new ArrayList<BasicBlock>();
    }
 
 
    /**
-    * Add a new address to the flow of instructions
+    * Add a new BasicBlock to the SuperBlock
     * 
-    * @param address
+    * @param basicBlock
     */
-   public void addAddress(long address) {
-      addresses.add(address);
-      instructionCount.add(0);
+   public void addBasicBlock(BasicBlock basicBlock) {
+      basicBlocks.add(basicBlock);
    }
 
    /**
@@ -53,7 +51,8 @@ public class InstructionFlow {
     *
     * @param instructionFlow
     */
-   public void addInstructionFlow(InstructionFlow instructionFlow) {
+   /*
+   public void addInstructionFlow(SuperBlock instructionFlow) {
       for(int i=0; i<instructionFlow.addresses.size(); i++) {
          addresses.add(instructionFlow.addresses.get(i));
          instructionCount.add(instructionFlow.instructionCount.get(i));
@@ -61,15 +60,18 @@ public class InstructionFlow {
 
       mergedFlow = true;
    }
+    */
 
    /**
     * Increments the instruction counter of the current address block.
     */
+   /*
    public void incrementInstruction() {
       int index = instructionCount.size()-1;
       int value = instructionCount.get(index) + 1;
       instructionCount.set(index, value);
    }
+    */
 
    /**
     * 
@@ -77,6 +79,7 @@ public class InstructionFlow {
     * @param position
     * @return
     */
+   /*
    public boolean isSameAddress(long address, int position) {
       // Check if position is not out of bounds
       if(position >= addresses.size() ) {
@@ -90,63 +93,57 @@ public class InstructionFlow {
       }
 
    }
+    */
 
    /**
-    * Returns the number of basic blocks of this flow
-    * @return
+    * @return the number of basic blocks of this SuperBlock.
     */
-   public int getSize() {
-      return addresses.size();
+   public int getBasicBlockCount() {
+      return basicBlocks.size();
    }
 
-   public long getAddress(int index) {
-      return addresses.get(index);
+   /**
+    *
+    * @param position
+    * @return the address of the first instruction of the specified BasicBlock.
+    */
+   public int getBasicBlockAddress(int position) {
+      return basicBlocks.get(position).getStartAddress();
    }
 
-   public boolean isMergedFlow() {
-      return mergedFlow;
-   }
 
-   public int getRecurrence() {
-      return recurrence;
-   }
-
-   
-
-
-   public void incrementRecurrence() {
-      recurrence++;
-   }
-
+   /**
+    *
+    * @return the total number of instructions inside this SuperBlock.
+    */
    public int getTotalInstructions() {
-      int flowInstructions = 0;
-      for(int i=0; i<addresses.size(); i++) {
-         flowInstructions += instructionCount.get(i);
+      int totalInstructions = 0;
+      for(BasicBlock basicBlock : basicBlocks) {
+         totalInstructions += basicBlock.getInstructionCount();
       }
 
-      return recurrence*flowInstructions;
+     return totalInstructions;
    }
 
    @Override
+
    public String toString() {
       StringBuilder builder = new StringBuilder();
 
       int flowInstructions = 0;
-      for(int i=0; i<addresses.size(); i++) {
-         String hexString = Long.toHexString(addresses.get(i));
-         hexString = BitUtils.padHexString(hexString, 8);
-         builder.append(hexString);
-         builder.append("(");
-         builder.append(instructionCount.get(i));
-         builder.append(") -> ");
+      for(int i=0; i<basicBlocks.size(); i++) {
+         builder.append(basicBlocks.get(i).toString());
+         builder.append(" -> ");
 
-         flowInstructions += instructionCount.get(i);
+         flowInstructions += basicBlocks.get(i).getInstructionCount();
       }
 
       String prefix1 = "";
+      /*
       if(mergedFlow) {
          prefix1 = "Merged;";
       }
+       */
 
 //      String prefix2 = "TotalInst:"+(flowInstructions*recurrence) +
 //                        ";Recurrence:"+ recurrence +
@@ -162,6 +159,7 @@ public class InstructionFlow {
     * 
     * @return
     */
+   /*
    public String getAddressesArray() {
       StringBuilder builder = new StringBuilder();
 
@@ -183,6 +181,7 @@ public class InstructionFlow {
 
       return builder.toString();
    }
+    */
 
    /**
     * Returns true if the two instruction flows have the same sequence of
@@ -191,15 +190,30 @@ public class InstructionFlow {
     * @param instructionFlow
     * @return
     */
-   public boolean compare(InstructionFlow instructionFlow) {
-      return instructionFlow.addresses.equals(this.addresses);
+   public boolean compare(SuperBlock superBlock) {
+      // Check sizes first
+      List<BasicBlock> secondList = superBlock.basicBlocks;
+      if(secondList.size() != basicBlocks.size()) {
+         return false;
+      }
+
+      for(int i=0; i<basicBlocks.size(); i++) {
+         boolean basicBlocksAreEqual = basicBlocks.get(i).compare(secondList.get(i));
+         if(!basicBlocksAreEqual) {
+            return false;
+         }
+      }
+
+      return true;
    }
+
+
+
+
 
    ///
    // INSTANCE VARIABLES
    ///
-   final private List<Long> addresses;
-   final private List<Integer> instructionCount;
-   private int recurrence;
-   private boolean mergedFlow;
+   final private List<BasicBlock> basicBlocks;
+
 }

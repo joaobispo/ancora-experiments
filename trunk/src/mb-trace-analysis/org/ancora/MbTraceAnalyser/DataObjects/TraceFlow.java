@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MbTraceAnalyser;
+package org.ancora.MbTraceAnalyser.DataObjects;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- *
+ * Stores a list of hashes, which represent SuperBlocks, and a table which maps
+ * the hashes to InstructionFlow objects.
  * @author Joao Bispo
  */
 public class TraceFlow {
