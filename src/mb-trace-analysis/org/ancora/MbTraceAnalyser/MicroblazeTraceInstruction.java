@@ -27,10 +27,11 @@ import org.ancora.SharedLibrary.BitUtils;
  */
 public class MicroblazeTraceInstruction {
 
-   public MicroblazeTraceInstruction(boolean isBranch, long instructionAddress, boolean hasDelaySlot) {
+   public MicroblazeTraceInstruction(boolean isBranch, int instructionAddress, boolean hasDelaySlot, String instruction) {
       this.isBranch = isBranch;
       this.instructionAddress = instructionAddress;
       this.hasDelaySlot = hasDelaySlot;
+      this.instruction = instruction;
    }
 
    /**
@@ -40,8 +41,19 @@ public class MicroblazeTraceInstruction {
       return isBranch;
    }
 
+   /**
+    * @return true if instruction has a delay slot.
+    */
    public boolean hasDelaySlot() {
       return hasDelaySlot;
+   }
+
+   /**
+    *
+    * @return the String representation of this instruction.
+    */
+   public String getInstruction() {
+      return instruction;
    }
 
 
@@ -50,7 +62,7 @@ public class MicroblazeTraceInstruction {
     *
     * @return the instruction address of this instruction.
     */
-   public long getInstructionAddress() {
+   public int getInstructionAddress() {
       return instructionAddress;
    }
 
@@ -72,7 +84,8 @@ public class MicroblazeTraceInstruction {
    ///
    private final boolean isBranch;
    private final boolean hasDelaySlot;
-   private final long instructionAddress;
+   private final int instructionAddress;
+   private final String instruction;
 
    // Constants
    private final int HEX_STRING_SIZE = 8;

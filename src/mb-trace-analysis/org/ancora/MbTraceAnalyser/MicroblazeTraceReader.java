@@ -129,12 +129,14 @@ public class MicroblazeTraceReader {
    private MicroblazeTraceInstruction parseInstruction(String instruction) {
       // Get Instruction Address
       String addressString = MicroblazeUtils.getTraceInstructionAddress(instruction);
-      long address = Long.valueOf(addressString, 16);
+      int address = Integer.valueOf(addressString, 16);
 
-      // Get Operation name
 
       // Cut the memory address
       String tempInstruction = instruction.substring(12);
+
+      // Get Instruction without address
+      String instructionProper = tempInstruction.trim();
 
       // Find first space. This will cut the operation name
       int endIndex = tempInstruction.indexOf(' ');
@@ -146,7 +148,7 @@ public class MicroblazeTraceReader {
 
       boolean hasDelaySlot = instBuilder.hasDelaySlot();
 
-      return new MicroblazeTraceInstruction(isBranch, address, hasDelaySlot);
+      return new MicroblazeTraceInstruction(isBranch, address, hasDelaySlot, instructionProper);
    }
 
     

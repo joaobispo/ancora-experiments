@@ -17,6 +17,7 @@
 
 package org.ancora.MbTraceAnalyser.TraceAlgorithm;
 
+import org.ancora.MbTraceAnalyser.DataObjects.InstructionFlow;
 import org.ancora.MbTraceAnalyser.*;
 import java.io.File;
 import java.util.logging.Logger;

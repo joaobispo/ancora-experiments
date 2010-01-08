@@ -17,6 +17,8 @@
 
 package org.ancora.MbTraceAnalyser;
 
+import org.ancora.MbTraceAnalyser.DataObjects.InstructionFlow;
+import org.ancora.MbTraceAnalyser.PatternFinder.PatternFinderWithCicle;
 import org.ancora.MbTraceAnalyser.TraceAlgorithm.TraceflowAlgorithm;
 import java.io.File;
 import java.util.ArrayList;
@@ -345,7 +347,7 @@ public class Tester {
       numbers.add(1);
 
 
-      PatternFinder.findPatterns(numbers);
+      PatternFinderWithCicle.findPatterns(numbers);
    }
 
 
