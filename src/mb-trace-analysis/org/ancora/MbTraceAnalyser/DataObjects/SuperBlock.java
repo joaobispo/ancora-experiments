@@ -33,6 +33,7 @@ public class SuperBlock {
 
    public SuperBlock() {
       basicBlocks = new ArrayList<BasicBlock>();
+      hash = HASH_INITIAL_VALUE;
    }
 
 
@@ -43,7 +44,10 @@ public class SuperBlock {
     */
    public void addBasicBlock(BasicBlock basicBlock) {
       basicBlocks.add(basicBlock);
+      hash = BitUtils.superFastHash(basicBlock.getStartAddress(), hash);
    }
+
+
 
    /**
     * Appends the elements of the given instruction flow to the end of this
@@ -111,6 +115,9 @@ public class SuperBlock {
       return basicBlocks.get(position).getStartAddress();
    }
 
+   public int getHash() {
+      return hash;
+   }
 
    /**
     *
@@ -190,7 +197,8 @@ public class SuperBlock {
     * @param instructionFlow
     * @return
     */
-   public boolean compare(SuperBlock superBlock) {
+   public boolean compareDeep(SuperBlock superBlock) {
+      
       // Check sizes first
       List<BasicBlock> secondList = superBlock.basicBlocks;
       if(secondList.size() != basicBlocks.size()) {
@@ -207,6 +215,20 @@ public class SuperBlock {
       return true;
    }
 
+   /**
+    * Returns true if the two Superblocks have the same hash value.
+    *
+    * @param instructionFlow
+    * @return
+    */
+   public boolean compareHash(SuperBlock superBlock) {
+      if(superBlock.hash == this.hash) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
 
 
 
@@ -215,5 +237,10 @@ public class SuperBlock {
    // INSTANCE VARIABLES
    ///
    final private List<BasicBlock> basicBlocks;
+   private int hash;
+
+   // Constants
+   // Number of bytes instructions have (32 bits = 4 bytes)
+   private static final int HASH_INITIAL_VALUE = 4;
 
 }

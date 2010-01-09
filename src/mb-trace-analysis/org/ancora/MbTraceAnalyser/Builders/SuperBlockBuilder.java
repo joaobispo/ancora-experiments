@@ -34,6 +34,7 @@ public class SuperBlockBuilder implements BasicBlockConsumer {
    public SuperBlockBuilder() {
       superBlockConsumers = new ArrayList<SuperBlockConsumer>();
       currentSuperBlock = null;
+      lastBasicBlockAddress = 0;
    }
 
 
@@ -46,26 +47,26 @@ public class SuperBlockBuilder implements BasicBlockConsumer {
       // Check if it is the start of a new SuperBlock
       if(currentSuperBlock == null) {
          currentSuperBlock = new SuperBlock();
-         currentSuperBlock.addBasicBlock(basicBlock);
+         updateCurrentSuperBlock(basicBlock);
+         //currentSuperBlock.addBasicBlock(basicBlock);
+         //lastBasicBlockAddress = basicBlock.getStartAddress();
          return;
       }
 
       // Check if the current basicBlock is a forward jump or a backward jump
-      int lastBasicBlockPosition = currentSuperBlock.getBasicBlockCount() - 1;
-      int addressOfLastBasicBlock = currentSuperBlock.getBasicBlockAddress(lastBasicBlockPosition);
+      //int lastBasicBlockPosition = currentSuperBlock.getBasicBlockCount() - 1;
+      //int addressOfLastBasicBlock = currentSuperBlock.getBasicBlockAddress(lastBasicBlockPosition);
       int addressOfCurrentBasicBlock = basicBlock.getStartAddress();
+      boolean forwardJump = addressOfCurrentBasicBlock > lastBasicBlockAddress;
 
-      boolean forwardJump = addressOfCurrentBasicBlock > addressOfLastBasicBlock;
-
-      if(forwardJump) {
-         currentSuperBlock.addBasicBlock(basicBlock);
-      } else {
-         // Finish current SuperBlock
+      if(!forwardJump) {
          completeSuperBlock();
-         // Add current BasicBlock to a new SuperBlock
          currentSuperBlock  = new SuperBlock();
-         currentSuperBlock.addBasicBlock(basicBlock);
       }
+
+      updateCurrentSuperBlock(basicBlock);
+      //currentSuperBlock.addBasicBlock(basicBlock);
+      //lastBasicBlockAddress = basicBlock.getStartAddress();
 
    }
 
@@ -78,6 +79,12 @@ public class SuperBlockBuilder implements BasicBlockConsumer {
 
       // Erase current basic block
       currentSuperBlock = null;
+      lastBasicBlockAddress = 0;
+   }
+
+   private void updateCurrentSuperBlock(BasicBlock basicBlock) {
+         currentSuperBlock.addBasicBlock(basicBlock);
+         lastBasicBlockAddress = basicBlock.getStartAddress();
    }
 
    public void flush() {
@@ -89,6 +96,10 @@ public class SuperBlockBuilder implements BasicBlockConsumer {
     */
    private final List<SuperBlockConsumer> superBlockConsumers;
    private SuperBlock currentSuperBlock;
+
+   // State
+   private int lastBasicBlockAddress;
+
 
 
 

@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import org.ancora.MbTraceAnalyser.Builders.BasicBlockBuilder;
 import org.ancora.MbTraceAnalyser.Builders.SuperBlockBuilder;
 import org.ancora.MbTraceAnalyser.Sinks.BasicBlockMonitor;
+import org.ancora.MbTraceAnalyser.Sinks.HashMonitor;
 import org.ancora.MbTraceAnalyser.Sinks.SuperBlockMonitor;
 import org.ancora.MbTraceAnalyser.TraceAlgorithm.SingleSuperBlock;
 import org.ancora.SharedLibrary.IoUtils;
@@ -178,6 +179,7 @@ public class Main {
       SuperBlockBuilder superBlockBuilder = new SuperBlockBuilder();
       basicBlockBuilder.addBasicBlockConsumer(superBlockBuilder);
       
+
       // Create BasicBlockMonitor and attach it to BasicBlockBuilder
       BasicBlockMonitor basicBlockMonitor = new BasicBlockMonitor();
       basicBlockBuilder.addBasicBlockConsumer(basicBlockMonitor);
@@ -186,6 +188,9 @@ public class Main {
       SuperBlockMonitor superBlockMonitor = new SuperBlockMonitor();
       superBlockBuilder.addSuperBlockConsumer(superBlockMonitor);
 
+      // Create HashMonitor and attach it to SuperBlockBuilder
+      HashMonitor hashMonitor = new HashMonitor();
+      superBlockBuilder.addSuperBlockConsumer(hashMonitor);
 
       //
       /// Setup modules

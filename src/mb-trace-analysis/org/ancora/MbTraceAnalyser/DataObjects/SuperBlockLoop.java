@@ -48,7 +48,7 @@ public class SuperBlockLoop {
     * given position.
     */
    public boolean compareSuperBlock(SuperBlock superBlock, int position) {
-      return superBlocks.get(position).compare(superBlock);
+      return superBlocks.get(position).compareDeep(superBlock);
    }
 
    public void incrementIterations() {
