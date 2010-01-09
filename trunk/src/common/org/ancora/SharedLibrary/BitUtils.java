@@ -138,6 +138,51 @@ public class BitUtils {
 
       return hash;
    }
+   /**
+    * Paul Hsieh's Hash Function.
+    *
+    * @param data data to hash
+    * @param dataLength length of the data, in bytes
+    * @param hashedValue previous value of the hash. If it is the start of the
+    * method, used the length of the data (ex.: 8 bytes).
+    * @return
+    */
+   public static int superFastHash(int data, int hash) {
+      int tmp;
+      //int rem;
+
+      //if (len <= 0) {
+      //   return 0;
+      //}
+
+      //rem = len & 3;
+      //len >>= 2;
+
+      //Main Loop
+      for (int i = 0; i < 2; i += 2) {
+         // Get lower 16 bits
+         hash += BitUtils.get16BitsAligned(data, i);
+         // Calculate some random value with second-lower 16 bits
+         tmp = (BitUtils.get16BitsAligned(data, i + 1) << 11) ^ hash;
+         hash = (hash << 16) ^ tmp;
+         // At this point, it would advance the data, but since it is restricted
+         // to longs (64-bit values), it is unnecessary).
+         hash += hash >> 11;
+      }
+
+      // Handle end cases //
+      // There are no end cases, main loop is done in chuncks of 32 bits.
+
+      // Force "avalanching" of final 127 bits //
+      hash ^= hash << 3;
+      hash += hash >> 5;
+      hash ^= hash << 4;
+      hash += hash >> 17;
+      hash ^= hash << 25;
+      hash += hash >> 6;
+
+      return hash;
+   }
 
    /**
     * Sets a specific bit of an int.

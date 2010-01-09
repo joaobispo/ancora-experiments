@@ -36,7 +36,7 @@ public class SuperBlockMonitor implements SuperBlockConsumer {
 
 
    public void consumeSuperBlock(SuperBlock superBlock) {
-      logger.info(superBlock.toString());
+      //logger.info(superBlock.toString());
       totalInstructions += superBlock.getTotalInstructions();
    }
 
