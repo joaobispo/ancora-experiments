@@ -89,10 +89,67 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
    public void showStats() {
       float loopInstructionsRatio = (float) instructionsInLoops / (float) totalInstructions;
 
+      float[] sblRatios = new float[sblList.size()];
+      boolean[] isLoop = new boolean[sblList.size()];
+
+      for(int i=0; i<sblRatios.length; i++) {
+         SuperBlockLoop sbl = sblList.get(i);
+         sblRatios[i] = (float) sbl.getTotalInstructions() / (float) totalInstructions;
+         isLoop[i] = sbl.getIterations() > 1;
+      }
+      printBar(sblRatios, isLoop);
+
       System.out.println("Total Instructions:"+totalInstructions);
       System.out.println("Loop Instructions Ratio:"+loopInstructionsRatio);
    }
-   
+
+
+   private void printBar(float[] sblRatios, boolean[] loop) {
+      boolean printing = loop[0];
+      float acc = sblRatios[0];
+
+      float checker = 0;
+      for(int i=1; i<sblRatios.length; i++) {
+
+         // When there is a difference, print last one
+         if(printing != loop[i]) {
+            printBar(acc, printing);
+            checker += acc;
+            
+            printing = loop[i];
+            acc = sblRatios[i];
+         } else {
+            // Accumulate
+            acc += sblRatios[i];
+         }
+      }
+
+      // Check if last was printed
+      if(printing == loop[loop.length-1]) {
+         printBar(acc, printing);
+         checker += acc;
+      }
+
+      System.out.println("Sum:"+checker);
+   }
+
+   private void printBar(float acc, boolean isLoop) {
+      String type;
+      if(isLoop) {
+         type = "Loop";
+      } else {
+         type = "Normal";
+      }
+
+    double x = 27.5, y = 33.75;
+
+    //System.out.printf("x = %f y = %g", x, y);
+    //System.out.printf(" %s = %.3f%%", type, (acc*100));
+
+
+      System.out.println(type+"(%):"+(acc*100));
+   }
+
 
    /**
     * INSTANCE VARIABLES
@@ -100,5 +157,10 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
    private int totalInstructions;
    private int instructionsInLoops;
    private List<SuperBlockLoop> sblList;
+
+
+
+
+
 
 }
