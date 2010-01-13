@@ -234,5 +234,6 @@ public class Main {
       //basicBlockMonitor.showStats();
       //superBlockMonitor.showStats();
       System.out.println("Total Instructions:" + sblMonitor.getTotalInstructions());
+      sblMonitor.printSuperBlockLoops();
    }
 }

@@ -19,6 +19,7 @@ package org.ancora.MbTraceAnalyser.Sinks;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.ancora.MbTraceAnalyser.DataObjects.PatternFinderInfo;
 import org.ancora.MbTraceAnalyser.DataObjects.SuperBlock;
 import org.ancora.MbTraceAnalyser.Interfaces.PatternFinderConsumer;
 import org.ancora.MbTraceAnalyser.Interfaces.SuperBlockConsumer;
@@ -30,14 +31,47 @@ import org.ancora.MbTraceAnalyser.Interfaces.SuperBlockConsumer;
 public class PatternFinderMonitor implements PatternFinderConsumer, SuperBlockConsumer{
 
    public PatternFinderMonitor() {
-      updatedPatternSize = 0;
-      previousPatternSize = 0;
+      //updatedPatternSize = 0;
+      //previousPatternSize = 0;
       superBlocks = new ArrayList<SuperBlock>();
    }
 
 
    public void consumeSuperBlock(SuperBlock superBlock) {
       // Check if there was change
+      switch(patternInfo.getPatternState()) {
+         case PATTERN_STARTED:
+            superBlocks.add(superBlock);
+            break;
+
+         case PATTERN_STOPED:
+            // You know that the last superblock added is not part of the pattern
+            SuperBlock outsiderSuperBlock = superBlocks.remove(superBlocks.size()-1);
+            // Print found pattern
+            showSuperBlocks();
+            superBlocks = new ArrayList<SuperBlock>();
+            showRegularSuperBlock(outsiderSuperBlock);
+            showRegularSuperBlock(superBlock);
+            break;
+
+         case PATTERN_CHANGED_SIZES:
+            //System.out.println("PATTERN CHANGED SIZE, "+previousPatternSize
+            //        +" -> "+updatedPatternSize);
+            showSuperBlocks();
+            superBlocks = new ArrayList<SuperBlock>();
+            superBlocks.add(superBlock);
+            break;
+
+         case PATTERN_UNCHANGED:
+            if (patternInfo.getPaternSize() > 0) {
+               superBlocks.add(superBlock);
+            } else {
+               showRegularSuperBlock(superBlock);
+            }
+            break;
+
+      }
+      /*
       if(previousPatternSize != updatedPatternSize) {
          // There was a pattern before, and now there is none.
          if(updatedPatternSize == 0) {
@@ -72,7 +106,7 @@ public class PatternFinderMonitor implements PatternFinderConsumer, SuperBlockCo
             showRegularSuperBlock(superBlock);
          }
       }
-
+*/
       /*
       if(patternSize != 0) {
          System.out.println("Pattern of size "+patternSize+" with superblock:");
@@ -80,6 +114,7 @@ public class PatternFinderMonitor implements PatternFinderConsumer, SuperBlockCo
          patternSize = 0;
       }
        */
+      previousPatternSize = patternInfo.getPaternSize();
    }
 
 
@@ -117,9 +152,10 @@ public class PatternFinderMonitor implements PatternFinderConsumer, SuperBlockCo
    }
 
 
-   public void consumePatternSize(int patternSize) {
-      this.updatedPatternSize = patternSize;
+   public void consumePatternSize(PatternFinderInfo info) {
+      this.patternInfo = info;
    }
+
 
    public void flush() {
       // Do nothing.
@@ -128,10 +164,12 @@ public class PatternFinderMonitor implements PatternFinderConsumer, SuperBlockCo
    /**
     * INSTANCE VARIABLES
     */
-   private int updatedPatternSize;
+   //private int updatedPatternSize;
    private int previousPatternSize;
 
+   private PatternFinderInfo patternInfo;
    private List<SuperBlock> superBlocks;
+
 
 
 
