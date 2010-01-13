@@ -171,7 +171,7 @@ public class Main {
    }
 
    private static void executeAssemblyLineV1(File traceFile) {
-      int maxPatternSize = 7;
+      int maxPatternSize = 8;
 
       //
       ///Build Assembly Line
@@ -233,7 +233,8 @@ public class Main {
       // Show stats
       //basicBlockMonitor.showStats();
       //superBlockMonitor.showStats();
-      System.out.println("Total Instructions:" + sblMonitor.getTotalInstructions());
-      sblMonitor.printSuperBlockLoops();
+      //System.out.println("Total Instructions:" + sblMonitor.getTotalInstructions());
+      //sblMonitor.printSuperBlockLoops();
+      sblMonitor.showStats();
    }
 }

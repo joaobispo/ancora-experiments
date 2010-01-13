@@ -41,10 +41,9 @@ public class SuperBlockLoopBuilder implements SuperBlockConsumer, PatternFinderC
       patternSuperBlockLoop = null;
       currentSuperBlockLoop = new SuperBlockLoop();
       currentPatternSize = 0;
-      patternInfo = new PatternFinderInfo(0, PatternFinderInfo.PatternState.PATTERN_NOT_FOUND);
+      state = SblBuilderState.LOOKING_FOR_PATTERN;
 
-      superBlockDelayZero = null;
-      superBlockDelayOne = null;
+      patternInfo = new PatternFinderInfo(0, PatternFinderInfo.PatternState.PATTERN_NOT_FOUND);
 
       consumers = new ArrayList<SuperBlockLoopConsumer>();
    }
@@ -107,46 +106,110 @@ public class SuperBlockLoopBuilder implements SuperBlockConsumer, PatternFinderC
    }
 
    public void consumeSuperBlock(SuperBlock superBlock) {
+      switch(state) {
+         case LOOKING_FOR_PATTERN:
+            // Check if there is a pattern
+            if(patternInfo.getPaternSize() > 0) {
+               // Flush current superblocks
+               flushCurrentSuperBlockLoop();
 
-      superBlockDelayOne = superBlockDelayZero;
-      superBlockDelayZero = superBlock;
+               // Prepare Data
+               state = SblBuilderState.BUILDING_PATTERN;
+               currentPatternSize = patternInfo.getPaternSize();
 
-      if(superBlockDelayOne == null) {
-         return;
+               // Start processing pattern
+               consumeSuperBlock(superBlock);
+               return;
+            }
+
+            currentSuperBlockLoop.addSuperBlock(superBlock);           
+            break;
+            
+         case BUILDING_PATTERN:
+            // Check pattern size. If it has changed, we can interrupt the building
+            // of the pattern.
+            if(currentPatternSize != patternInfo.getPaternSize()) {
+               flushCurrentSuperBlockLoop();
+
+               state = SblBuilderState.LOOKING_FOR_PATTERN;
+               currentPatternSize = 0;
+
+               consumeSuperBlock(superBlock);
+
+               return;
+            }
+
+            // Just add SuperBlocks to current until it has size equal to the pattern.
+            currentSuperBlockLoop.addSuperBlock(superBlock);
+
+            if(currentSuperBlockLoop.getSuperBlockCount() ==  currentPatternSize) {
+                  patternSuperBlockLoop = currentSuperBlockLoop;
+                  currentSuperBlockLoop = new SuperBlockLoop();
+
+                  state = SblBuilderState.CHECKING_PATTERN;
+            }
+            break;
+
+         case CHECKING_PATTERN:
+            // First, check if incoming superblock is part of the found pattern
+            int index = currentSuperBlockLoop.getSuperBlockCount();
+            int patternHash = patternSuperBlockLoop.getSuperBlocks().get(index).getHash();
+
+            // If there is a mismatch, flush pattern and go looking for new patterns.
+            if(patternHash != superBlock.getHash()) {
+               flushPatternSuperBlockLoop();
+
+               state = SblBuilderState.LOOKING_FOR_PATTERN;
+               currentPatternSize = 0;
+
+               consumeSuperBlock(superBlock);
+               return;
+            }
+
+            // There is no mismatch, add superblock to current.
+            currentSuperBlockLoop.addSuperBlock(superBlock);
+
+            // If currentLoop is the same size as pattern, increment pattern.
+            if(currentSuperBlockLoop.getSuperBlockCount() == currentPatternSize) {
+               patternSuperBlockLoop.incrementIterations(1);
+               currentSuperBlockLoop = new SuperBlockLoop();
+            }
       }
 
+/*
       switch(patternInfo.getPatternState()) {
          case PATTERN_NOT_FOUND:
-            currentSuperBlockLoop.addSuperBlock(superBlockDelayOne);
+            currentSuperBlockLoop.addSuperBlock(superBlock);
             break;
 
          case PATTERN_UNCHANGED:
-            currentSuperBlockLoop.addSuperBlock(superBlockDelayOne);
+            currentSuperBlockLoop.addSuperBlock(superBlock);
             updatePatternBlock();
             break;
 
          case PATTERN_STARTED:
             flushCurrentSuperBlockLoop();
             currentPatternSize = patternInfo.getPaternSize();
-            currentSuperBlockLoop.addSuperBlock(superBlockDelayOne);
+            currentSuperBlockLoop.addSuperBlock(superBlock);
             updatePatternBlock();
             break;
 
          case PATTERN_STOPED:
             flushPatternSuperBlockLoop();
             flushCurrentSuperBlockLoop();
-            currentSuperBlockLoop.addSuperBlock(superBlockDelayOne);
+            currentSuperBlockLoop.addSuperBlock(superBlock);
             break;
 
          case PATTERN_CHANGED_SIZES:
             flushPatternSuperBlockLoop();
             flushCurrentSuperBlockLoop();
             currentPatternSize = patternInfo.getPaternSize();
-            currentSuperBlockLoop.addSuperBlock(superBlockDelayOne);
+            currentSuperBlockLoop.addSuperBlock(superBlock);
             updatePatternBlock();
             break;
             
       }
+ */
       /*
 // Check if there was change
       if(previousPatternSize != updatedPatternSize) {
@@ -279,8 +342,6 @@ public class SuperBlockLoopBuilder implements SuperBlockConsumer, PatternFinderC
 
    //private List<SuperBlock> superBlocks;
    //private SuperBlockLoop singleBlocksLoop;
-   private SuperBlock superBlockDelayZero;
-   private SuperBlock superBlockDelayOne;
 
    private SuperBlockLoop patternSuperBlockLoop;
    private SuperBlockLoop currentSuperBlockLoop;
@@ -288,10 +349,15 @@ public class SuperBlockLoopBuilder implements SuperBlockConsumer, PatternFinderC
    private PatternFinderInfo patternInfo;
 
    private int currentPatternSize;
+   private SblBuilderState state;
 
    private List<SuperBlockLoopConsumer> consumers;
 
-
+   enum SblBuilderState {
+      LOOKING_FOR_PATTERN,
+      BUILDING_PATTERN,
+      CHECKING_PATTERN;
+   }
 
 
 

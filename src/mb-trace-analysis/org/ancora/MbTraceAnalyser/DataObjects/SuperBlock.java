@@ -47,6 +47,9 @@ public class SuperBlock {
       hash = BitUtils.superFastHash(basicBlock.getStartAddress(), hash);
    }
 
+   public BasicBlock getBasicBlock(int position) {
+      return basicBlocks.get(position);
+   }
 
 
    /**
