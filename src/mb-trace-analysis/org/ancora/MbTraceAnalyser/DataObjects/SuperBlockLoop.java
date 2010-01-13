@@ -72,8 +72,8 @@ public class SuperBlockLoop {
       return true;
    }
 
-   public void incrementIterations() {
-      iterations++;
+   public void incrementIterations(int i) {
+      iterations+= i;
    }
 
    /**

@@ -20,6 +20,7 @@ package org.ancora.MbTraceAnalyser.Builders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.ancora.MbTraceAnalyser.DataObjects.PatternFinderInfo;
 import org.ancora.MbTraceAnalyser.DataObjects.SuperBlock;
 import org.ancora.MbTraceAnalyser.Interfaces.PatternFinderConsumer;
 import org.ancora.MbTraceAnalyser.Interfaces.SuperBlockConsumer;
@@ -43,6 +44,7 @@ public class PatternFinder implements SuperBlockConsumer {
     */
    public PatternFinder(int maxPatternSize) {
       consumers = new ArrayList<PatternFinderConsumer>();
+      previousPatternSize = 0;
 
       // Check Pattern Size
       if(maxPatternSize > 32) {
@@ -107,9 +109,42 @@ public class PatternFinder implements SuperBlockConsumer {
 
 
    private void updateConsumers(int patternSize) {
+      PatternFinderInfo.PatternState patternState;
+      // Check if pattern state has changed
+      if(previousPatternSize != patternSize) {
+         // If previous pattern size was 0, a new pattern started
+         if(previousPatternSize == 0) {
+            patternState = PatternFinderInfo.PatternState.PATTERN_STARTED;
+         }
+         // If current pattern size is 0, the previous pattern has stopped.
+         else if(patternSize == 0) {
+            patternState = PatternFinderInfo.PatternState.PATTERN_STOPED;
+         }
+         // The case that is left is that the previous pattern stopped, but
+         // there is a new pattern with a different size.
+         else {
+            patternState = PatternFinderInfo.PatternState.PATTERN_CHANGED_SIZES;
+         }
+
+         // Because the pattern has a different size, the value needs to be
+         // updated
+         previousPatternSize = patternSize;
+      }
+      // The size of the pattern hasn't changed
+      else {
+         if(patternSize > 0) {
+            patternState = PatternFinderInfo.PatternState.PATTERN_UNCHANGED;
+         } else {
+            patternState = PatternFinderInfo.PatternState.PATTERN_NOT_FOUND;
+         }
+      }
+
+      // Create object
+      PatternFinderInfo info = new PatternFinderInfo(patternSize, patternState);
+
       // Send current pattern size to all listeners
       for(PatternFinderConsumer consumer : consumers) {
-         consumer.consumePatternSize(patternSize);
+         consumer.consumePatternSize(info);
       }
    }
 
@@ -128,6 +163,8 @@ public class PatternFinder implements SuperBlockConsumer {
    private RotatingQueue<Integer> queue;
 
    private List<PatternFinderConsumer> consumers;
+
+   private int previousPatternSize;
 
 
 }

@@ -17,6 +17,8 @@
 
 package org.ancora.MbTraceAnalyser.Sinks;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.ancora.MbTraceAnalyser.DataObjects.SuperBlockLoop;
 import org.ancora.MbTraceAnalyser.Interfaces.SuperBlockLoopConsumer;
 
@@ -29,6 +31,7 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
 
    public SuperBlockLoopMonitor() {
       totalInstructions = 0;
+      sblList = new ArrayList<SuperBlockLoop>();
    }
 
 
@@ -45,6 +48,7 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
       }
 
       totalInstructions += superBlockLoop.getTotalInstructions();
+      sblList.add(superBlockLoop);
    }
 
    public void flush() {
@@ -55,11 +59,30 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
       return totalInstructions;
    }
 
+   public List<SuperBlockLoop> getSuperBlockLoops() {
+      return sblList;
+   }
+
+   public void printSuperBlockLoops() {
+      for (int i = 0; i < sblList.size(); i++) {
+         SuperBlockLoop superBlockLoop = sblList.get(i);
+         // Iterations == 1, just show the blocks
+         if (superBlockLoop.getIterations() == 1) {
+            System.out.println(superBlockLoop);
+         } else {
+            System.out.println("---- Loop with " + superBlockLoop.getIterations() + " iterations ----");
+            System.out.println(superBlockLoop);
+            System.out.println("---- End Loop ----");
+         }
+      }
+   }
+
    
 
    /**
     * INSTANCE VARIABLES
     */
    private int totalInstructions;
+   private List<SuperBlockLoop> sblList;
 
 }

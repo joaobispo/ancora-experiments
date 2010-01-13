@@ -15,18 +15,38 @@
  *  under the License.
  */
 
-package org.ancora.MbTraceAnalyser.Interfaces;
-
-import org.ancora.MbTraceAnalyser.DataObjects.PatternFinderInfo;
+package org.ancora.MbTraceAnalyser.DataObjects;
 
 /**
- * Object which is a consumer of the data produced by a PatternFinder object.
+ * Encapsulates the information extracted by PatternFinder
  *
  * @author Joao Bispo
  */
-public interface PatternFinderConsumer extends StreamConsumer {
+public class PatternFinderInfo {
 
-   // TODO: Change name to consumePatternInfo, and info to patternInfo
-   public void consumePatternSize(PatternFinderInfo info);
+   public PatternFinderInfo(int paternSize, PatternState patternState) {
+      this.paternSize = paternSize;
+      this.patternState = patternState;
+   }
 
+   public int getPaternSize() {
+      return paternSize;
+   }
+
+   public PatternState getPatternState() {
+      return patternState;
+   }
+
+   
+
+   private final int paternSize;
+   private final PatternState patternState;
+
+   public enum PatternState {
+      PATTERN_STOPED,
+      PATTERN_STARTED,
+      PATTERN_CHANGED_SIZES,
+      PATTERN_UNCHANGED,
+      PATTERN_NOT_FOUND
+   }
 }
