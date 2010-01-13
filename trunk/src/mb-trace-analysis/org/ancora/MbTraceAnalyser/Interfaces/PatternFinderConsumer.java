@@ -17,14 +17,13 @@
 
 package org.ancora.MbTraceAnalyser.Interfaces;
 
-import org.ancora.MbTraceAnalyser.DataObjects.BasicBlock;
-
 /**
- * Object which is a consumer of BasicBlock objects.
+ * Object which is a consumer of the data produced by a PatternFinder object.
  *
  * @author Joao Bispo
  */
-public interface BasicBlockConsumer extends StreamConsumer {
-   public void consumeBasicBlock(BasicBlock basicBlock);
+public interface PatternFinderConsumer extends StreamConsumer {
+
+   public void consumePatternSize(int patternSize);
 
 }

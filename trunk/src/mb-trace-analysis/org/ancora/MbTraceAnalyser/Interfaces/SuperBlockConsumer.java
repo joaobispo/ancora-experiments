@@ -24,12 +24,8 @@ import org.ancora.MbTraceAnalyser.DataObjects.SuperBlock;
  *
  * @author Joao Bispo
  */
-public interface SuperBlockConsumer {
+public interface SuperBlockConsumer extends StreamConsumer {
 
    public void consumeSuperBlock(SuperBlock superBlock);
 
-   /**
-    * Signals the end of a stream of data, finishes any pending processing.
-    */
-   public void flush();
 }

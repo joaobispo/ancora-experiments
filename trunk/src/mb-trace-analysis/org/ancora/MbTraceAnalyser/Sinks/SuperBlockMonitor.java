@@ -22,7 +22,7 @@ import org.ancora.MbTraceAnalyser.DataObjects.SuperBlock;
 import org.ancora.MbTraceAnalyser.Interfaces.SuperBlockConsumer;
 
 /**
- * Collects stats about the basic blocks feed to it.
+ * Collects stats about the super blocks feed to it.
  *
  * @author Joao Bispo
  */

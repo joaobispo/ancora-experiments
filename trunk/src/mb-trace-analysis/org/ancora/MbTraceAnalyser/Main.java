@@ -25,9 +25,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 import org.ancora.MbTraceAnalyser.Builders.BasicBlockBuilder;
+import org.ancora.MbTraceAnalyser.Builders.PatternFinder;
 import org.ancora.MbTraceAnalyser.Builders.SuperBlockBuilder;
+import org.ancora.MbTraceAnalyser.Builders.SuperBlockLoopBuilder;
 import org.ancora.MbTraceAnalyser.Sinks.BasicBlockMonitor;
 import org.ancora.MbTraceAnalyser.Sinks.HashMonitor;
+import org.ancora.MbTraceAnalyser.Sinks.PatternFinderMonitor;
+import org.ancora.MbTraceAnalyser.Sinks.SuperBlockLoopMonitor;
 import org.ancora.MbTraceAnalyser.Sinks.SuperBlockMonitor;
 import org.ancora.MbTraceAnalyser.TraceAlgorithm.SingleSuperBlock;
 import org.ancora.SharedLibrary.IoUtils;
@@ -167,35 +171,50 @@ public class Main {
    }
 
    private static void executeAssemblyLineV1(File traceFile) {
+      int maxPatternSize = 7;
+
       //
       ///Build Assembly Line
       //
 
-      // Create TraceReader
+      /// Main Modules
       MicroblazeTraceReader traceReader = MicroblazeTraceReader.createTraceReader(traceFile);
-      // Create BasicBlockBuilder
       BasicBlockBuilder basicBlockBuilder = new BasicBlockBuilder();
-      // Create a SuperBlockBuilder and attach it to BasicBlockBuilder
       SuperBlockBuilder superBlockBuilder = new SuperBlockBuilder();
-      basicBlockBuilder.addBasicBlockConsumer(superBlockBuilder);
+      SuperBlockLoopBuilder superBlockLoopBuilder = new SuperBlockLoopBuilder();
+      PatternFinder patternFinder = new PatternFinder(maxPatternSize);
       
-
-      // Create BasicBlockMonitor and attach it to BasicBlockBuilder
+      /// Monitors
       BasicBlockMonitor basicBlockMonitor = new BasicBlockMonitor();
+      SuperBlockMonitor superBlockMonitor = new SuperBlockMonitor();
+      HashMonitor hashMonitor = new HashMonitor();
+      PatternFinderMonitor pfMonitor = new PatternFinderMonitor();
+      SuperBlockLoopMonitor sblMonitor = new SuperBlockLoopMonitor();
+
+      //
+      /// Make Connections
+      //
+      basicBlockBuilder.addBasicBlockConsumer(superBlockBuilder);
       basicBlockBuilder.addBasicBlockConsumer(basicBlockMonitor);
 
-      // Create SuperBlockMonitor and attach it to SuperBlockBuilder
-      SuperBlockMonitor superBlockMonitor = new SuperBlockMonitor();
-      superBlockBuilder.addSuperBlockConsumer(superBlockMonitor);
 
-      // Create HashMonitor and attach it to SuperBlockBuilder
-      HashMonitor hashMonitor = new HashMonitor();
+      superBlockBuilder.addSuperBlockConsumer(superBlockLoopBuilder);
+      superBlockBuilder.addSuperBlockConsumer(superBlockMonitor);
       superBlockBuilder.addSuperBlockConsumer(hashMonitor);
+      //superBlockBuilder.addSuperBlockConsumer(pfMonitor);
+      superBlockBuilder.addSuperBlockConsumer(patternFinder);
+
+      patternFinder.addPatternFinderConsumer(superBlockLoopBuilder);
+      //patternFinder.addPatternFinderConsumer(pfMonitor);
+
+      superBlockLoopBuilder.addSuperBlockLoopConsumer(sblMonitor);
+
+
 
       //
       /// Setup modules
       //
-      basicBlockBuilder.setCountDummyInstructions(true);
+      //basicBlockBuilder.setCountDummyInstructions(true);
 
 
       // Simulate MicroBlaze execution
@@ -214,5 +233,6 @@ public class Main {
       // Show stats
       //basicBlockMonitor.showStats();
       //superBlockMonitor.showStats();
+      System.out.println("Total Instructions:" + sblMonitor.getTotalInstructions());
    }
 }
