@@ -31,6 +31,7 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
 
    public SuperBlockLoopMonitor() {
       totalInstructions = 0;
+      instructionsInLoops = 0;
       sblList = new ArrayList<SuperBlockLoop>();
    }
 
@@ -47,6 +48,10 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
          //System.out.println("---- End Loop ----");
       }
 
+      if(superBlockLoop.getIterations() > 1) {
+         instructionsInLoops += superBlockLoop.getTotalInstructions();
+      }
+
       totalInstructions += superBlockLoop.getTotalInstructions();
       sblList.add(superBlockLoop);
    }
@@ -57,6 +62,10 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
 
    public int getTotalInstructions() {
       return totalInstructions;
+   }
+
+   public float getLoopInstructions() {
+      return instructionsInLoops;
    }
 
    public List<SuperBlockLoop> getSuperBlockLoops() {
@@ -77,12 +86,19 @@ public class SuperBlockLoopMonitor implements SuperBlockLoopConsumer {
       }
    }
 
+   public void showStats() {
+      float loopInstructionsRatio = (float) instructionsInLoops / (float) totalInstructions;
+
+      System.out.println("Total Instructions:"+totalInstructions);
+      System.out.println("Loop Instructions Ratio:"+loopInstructionsRatio);
+   }
    
 
    /**
     * INSTANCE VARIABLES
     */
    private int totalInstructions;
+   private int instructionsInLoops;
    private List<SuperBlockLoop> sblList;
 
 }

@@ -38,12 +38,31 @@ public class SuperBlockMonitor implements SuperBlockConsumer {
    public void consumeSuperBlock(SuperBlock superBlock) {
       //logger.info(superBlock.toString());
       totalInstructions += superBlock.getTotalInstructions();
+
+      checkBasicBlockAddresses(superBlock);
    }
 
    public void showStats() {
       logger.info("Total Instructions (SB): "+totalInstructions);
    }
 
+   /**
+    * Checks if the last address of a superblock is less than the first address
+    * of the next superblock
+    * @param superBlock
+    */
+   private void checkBasicBlockAddresses(SuperBlock superBlock) {
+      for(int i=0; i<superBlock.getBasicBlockCount()-1; i++) {
+         int bb1LastAddress = superBlock.getBasicBlock(i).getLastAddress();
+         int bb2FirstAddress = superBlock.getBasicBlock(i+1).getStartAddress();
+
+         if(bb1LastAddress >= bb2FirstAddress) {
+            System.out.println("SuperBlockChecker: Overlapping BasicBlocks");
+            System.out.println(superBlock.getBasicBlock(i));
+            System.out.println(superBlock.getBasicBlock(i+1));
+         }
+      }
+   }
 
    public void flush() {
       // Do nothing.
@@ -54,6 +73,7 @@ public class SuperBlockMonitor implements SuperBlockConsumer {
     */
    private final Logger logger;
    private int totalInstructions;
+
 
 
 

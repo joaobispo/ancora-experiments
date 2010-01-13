@@ -47,6 +47,14 @@ public class BasicBlock {
       return instructionCount;
    }
 
+   /**
+    * This address is calculated using the StartAddress and the number of instructions.
+    * @return
+    */
+   public int getLastAddress() {
+      return startAddress + ((instructionCount-1) * 4);
+   }
+
    public boolean compare(BasicBlock basicBlock) {
       boolean firstTest = basicBlock.startAddress == startAddress;
       boolean secondTest = basicBlock.instructionCount == instructionCount;

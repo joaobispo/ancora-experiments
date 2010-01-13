@@ -56,6 +56,9 @@ public class SuperBlockBuilder implements BasicBlockConsumer {
       // Check if the current basicBlock is a forward jump or a backward jump
       //int lastBasicBlockPosition = currentSuperBlock.getBasicBlockCount() - 1;
       //int addressOfLastBasicBlock = currentSuperBlock.getBasicBlockAddress(lastBasicBlockPosition);
+ 
+
+      //int addressOfCurrentBasicBlock = basicBlock.getStartAddress();
       int addressOfCurrentBasicBlock = basicBlock.getStartAddress();
       boolean forwardJump = addressOfCurrentBasicBlock > lastBasicBlockAddress;
 
@@ -85,7 +88,9 @@ public class SuperBlockBuilder implements BasicBlockConsumer {
 
    private void updateCurrentSuperBlock(BasicBlock basicBlock) {
          currentSuperBlock.addBasicBlock(basicBlock);
-         lastBasicBlockAddress = basicBlock.getStartAddress();
+
+         //lastBasicBlockAddress = basicBlock.getStartAddress();
+         lastBasicBlockAddress = basicBlock.getLastAddress();
    }
 
    public void flush() {
