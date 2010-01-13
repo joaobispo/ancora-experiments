@@ -73,9 +73,10 @@ public class SuperBlockBuilder implements BasicBlockConsumer {
 
    private void completeSuperBlock() {
       // Send current super block to all listeners
-      for(SuperBlockConsumer consumer : superBlockConsumers) {
+      for (SuperBlockConsumer consumer : superBlockConsumers) {
          consumer.consumeSuperBlock(currentSuperBlock);
       }
+
 
       // Erase current basic block
       currentSuperBlock = null;
@@ -88,7 +89,14 @@ public class SuperBlockBuilder implements BasicBlockConsumer {
    }
 
    public void flush() {
-      completeSuperBlock();
+      if (currentSuperBlock != null) {
+         completeSuperBlock();
+      }
+
+      // Call flush to all listeners
+      for(SuperBlockConsumer consumer : superBlockConsumers) {
+         consumer.flush();
+      }
    }
 
    /**

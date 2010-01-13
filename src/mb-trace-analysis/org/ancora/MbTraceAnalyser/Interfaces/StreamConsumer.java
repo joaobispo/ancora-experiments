@@ -17,14 +17,15 @@
 
 package org.ancora.MbTraceAnalyser.Interfaces;
 
-import org.ancora.MbTraceAnalyser.DataObjects.BasicBlock;
-
 /**
- * Object which is a consumer of BasicBlock objects.
+ * Methods for an object which consumes other objects in a stream-like manner.
  *
  * @author Joao Bispo
  */
-public interface BasicBlockConsumer extends StreamConsumer {
-   public void consumeBasicBlock(BasicBlock basicBlock);
+public interface StreamConsumer {
 
+   /**
+    * Signals the end of a stream of data, finishes any pending processing.
+    */
+   public void flush();
 }
