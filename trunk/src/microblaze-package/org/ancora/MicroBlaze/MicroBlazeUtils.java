@@ -17,8 +17,11 @@
 
 package org.ancora.MicroBlaze;
 
+import org.ancora.MicroBlaze.Instructions.BranchInstruction;
 import org.ancora.MicroBlaze.Instructions.Instruction;
+import org.ancora.MicroBlaze.Instructions.InstructionWithDelaySlot;
 import org.ancora.ShareLibrary.ParseUtils2;
+import org.ancora.SharedLibrary.ParseUtils;
 
 /**
  * Methods for operations related to MicroBlaze.
@@ -43,7 +46,26 @@ public class MicroBlazeUtils {
     * @return the number of arguments found
     */
     public static Integer[] parseRegisters(String registerString) {
-      Integer[] registers = new Integer[Instruction.Register.values().length];
+      // Split String
+      String[] unparsedRegisters = registerString.split(",");
+
+      int registerCounter = 0;
+      Integer[] basicRegisters = new Integer[3];
+      Integer immediate = null;
+
+      for(int i=0; i<unparsedRegisters.length; i++) {
+         String regString = unparsedRegisters[i].trim();
+         if(regString.startsWith("r")) {
+            String registerNumber = regString.substring(1);
+            basicRegisters[registerCounter] = ParseUtils.parseInt(registerNumber);
+            registerCounter++;
+         } else {
+            immediate = ParseUtils.parseInt(regString);
+         }
+      }
+
+      Integer[] registers = Instruction.buildRegisterArray(basicRegisters[0],
+              basicRegisters[1], basicRegisters[2], immediate);
 
       return registers;
     }
@@ -55,7 +77,7 @@ public class MicroBlazeUtils {
     * @return
     */
    public static Instruction parseTraceInstruction(String traceInstruction) {
-      // Split the trace instruction in parts
+      /// Split the trace instruction in parts
       int whiteSpaceIndex = ParseUtils2.indexOfFirstWhiteSpace(traceInstruction);
       String addressString = traceInstruction.substring(0, whiteSpaceIndex);
 
@@ -66,11 +88,20 @@ public class MicroBlazeUtils {
       String registersString = traceInstruction.substring(whiteSpaceIndex).trim();
 
 
-      // Extract prefix
+      /// Parse Instruction Address
+      // Remove prefix
       addressString = addressString.substring("0x".length());
-      // Get Address
-      int address = Integer.valueOf(addressString, 16);
-      System.out.println("address:"+address);
+      // Get Instruction Address
+      int instructionAddress = Integer.valueOf(addressString, 16);
+
+      /// Parse Registers
+      Integer[] registers = parseRegisters(registersString);
+
+      // Build Instruction
+      Instruction instruction = new Instruction(instructionAddress, operationString,
+              registers);
+
+      return instruction;
 /*
       // Get Instruction Address
       String addressString = MicroblazeUtils.getTraceInstructionAddress(instruction);
@@ -94,9 +125,41 @@ public class MicroBlazeUtils {
       boolean hasDelaySlot = instBuilder.hasDelaySlot();
 */
 
-      return new Instruction(0, "", null, null, null, null);
    }
 
+   /**
+    * Returns true if the given MicroBlaze operation is a branch.
+    *
+    * @param operand
+    * @return
+    */
+   public static boolean isBranch(String operation) {
+      boolean isBranch = true;
+      try{
+         BranchInstruction.valueOf(operation);
+      } catch (IllegalArgumentException ex) {
+         isBranch = false;
+      }
+
+      return isBranch;
+   }
+
+   /**
+    * Returns true if the given MicroBlaze operation has a delay slot.
+    *
+    * @param operand
+    * @return
+    */
+   public static boolean hasDelaySlot(String operation) {
+      boolean hasDelaySlot = true;
+      try{
+         InstructionWithDelaySlot.valueOf(operation);
+      } catch (IllegalArgumentException ex) {
+         hasDelaySlot = false;
+      }
+
+      return hasDelaySlot;
+   }
 
     /**
     * Extracts the register from an instruction string and stores them in the

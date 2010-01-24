@@ -18,6 +18,7 @@
 package org.ancora.MicroBlaze;
 
 import java.io.File;
+import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlaze.Trace.TraceReader;
 
 /**
@@ -41,8 +42,17 @@ public class Tester {
       File file = new File(folder, filename);
 
       TraceReader reader = TraceReader.createTraceReader(file);
-      reader.nextInstruction();
-      reader.nextInstruction();
+      Instruction instruction = reader.nextInstruction();
+      while(instruction != null) {
+         //boolean isBranch = MicroBlazeUtils.isBranch(instruction.getOperation());
+         //System.out.println(instruction+"; Is branch:"+isBranch);
+
+         boolean hasDelaySlot = MicroBlazeUtils.hasDelaySlot(instruction.getOperation());
+         System.out.println(instruction+"; Has Delay Slot:"+hasDelaySlot);
+         instruction = reader.nextInstruction();
+      }
+      
+      //System.out.println(reader.nextInstruction().toString());
 
    }
 
