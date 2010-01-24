@@ -55,11 +55,12 @@ public class Instruction {
     * 
     * <p>Null values can be used for registers which does not have a value.
     * 
-    * @param reg1
-    * @param reg2
-    * @param reg3
-    * @param immediate
-    * @return
+    * @param reg1 value of register 1
+    * @param reg2 value of register 2
+    * @param reg3 value of register 3
+    * @param immediate value the immediate
+    * @return an array of Integers, with the values of the registers correctly
+    * ordered, as in the enum Intruction.Register.
     */
    public static Integer[] buildRegisterArray(Integer reg1, Integer reg2, Integer reg3, Integer immediate) {
       Integer[] registers = new Integer[Register.values().length];

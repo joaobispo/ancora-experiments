@@ -41,9 +41,10 @@ public class MicroBlazeUtils {
     * <br>Input: r6, r6, 4
     * <br>Output: [6,6,null,4]
     *
-    * @param instruction instruction to parse
-    * @param results String array to hold the parsed arguments
-    * @return the number of arguments found
+    * @param registerString String containing the register portion of the trace
+    * instruction.
+    * @return an array of Integers compatible with the constructor of
+    * Instruction.
     */
     public static Integer[] parseRegisters(String registerString) {
       // Split String
@@ -73,8 +74,9 @@ public class MicroBlazeUtils {
    /**
     * Parses the given String with a Trace Instruction into a Instruction object.
     * 
-    * @param microblazeTraceInstruction
-    * @return
+    * @param traceInstruction String representing a MicroBlaze
+    * Trace instruction.
+    * @return a MicroBlaze Instruction.
     */
    public static Instruction parseTraceInstruction(String traceInstruction) {
       /// Split the trace instruction in parts
@@ -128,10 +130,8 @@ public class MicroBlazeUtils {
    }
 
    /**
-    * Returns true if the given MicroBlaze operation is a branch.
-    *
-    * @param operand
-    * @return
+    * @param operation the operation name (add, lw...)
+    * @return true if the given MicroBlaze operation is a branch. False otherwise.
     */
    public static boolean isBranch(String operation) {
       boolean isBranch = true;
@@ -145,10 +145,8 @@ public class MicroBlazeUtils {
    }
 
    /**
-    * Returns true if the given MicroBlaze operation has a delay slot.
-    *
-    * @param operand
-    * @return
+    * @param operation the operation name (add, lw...)
+    * @return true if the given MicroBlaze operation has a delay slot.
     */
    public static boolean hasDelaySlot(String operation) {
       boolean hasDelaySlot = true;
