@@ -32,6 +32,7 @@ import org.ancora.MbTraceAnalyser.Sinks.BasicBlockMonitor;
 import org.ancora.MbTraceAnalyser.Sinks.HashMonitor;
 import org.ancora.MbTraceAnalyser.Sinks.PatternFinderMonitor;
 import org.ancora.MbTraceAnalyser.Sinks.SuperBlockLoopMonitor;
+import org.ancora.MbTraceAnalyser.Sinks.SuperBlockLoopSpeedUp;
 import org.ancora.MbTraceAnalyser.Sinks.SuperBlockMonitor;
 import org.ancora.MbTraceAnalyser.TraceAlgorithm.SingleSuperBlock;
 import org.ancora.SharedLibrary.IoUtils;
@@ -59,6 +60,7 @@ public class Main {
        EnumPreferences preferences = TraceflowPreferences.getPreferences();
        String input = preferences.getPreference(TraceflowPreferences.Input);
        String outputFoldername = preferences.getPreference(TraceflowPreferences.OutputFolder);
+       String propertiesFoldername = preferences.getPreference(TraceflowPreferences.TracePropertiesFolder);
 
        // Check if input is defined
        if(input == null) {
@@ -74,14 +76,22 @@ public class Main {
           return;
        }
 
+       File propertiesFolder = IoUtils.safeFolder(propertiesFoldername);
+
       // Find the files to analyse
       File[] traceFiles = extractFiles(input);
 
       // Process each one of the trace files
       for (File traceFile : traceFiles) {
+         String baseFilename = ParseUtils2.removeSuffix(traceFile.getName(), ".");
+         
          // Get output file
-         String outputFilename = ParseUtils2.removeSuffix(traceFile.getName(), ".") + ".trace-flow";
+         String outputFilename = baseFilename + ".trace-flow";
          File outputFile = new File(outputFolder, outputFilename);
+
+         // Get trace properties
+         String propertiesFilename = baseFilename + ".properties";
+         File propertiesFile = new File(propertiesFolder, propertiesFilename);
 
          // Verification
          if (outputFile == null) {
@@ -99,7 +109,7 @@ public class Main {
             //PatternFinderWithCicle.findPatterns(traceFlow.getFlow());
             PatternFinderWithCicle.patternFinder(traceFlow, outputFile, 8);
             */
-            executeAssemblyLineV1(traceFile);
+            executeAssemblyLineV1(traceFile, propertiesFile);
          }
       }
 
@@ -170,8 +180,8 @@ public class Main {
 
    }
 
-   private static void executeAssemblyLineV1(File traceFile) {
-      int maxPatternSize = 8;
+   private static void executeAssemblyLineV1(File traceFile, File propertiesFile) {
+      int maxPatternSize = 31;
 
       //
       ///Build Assembly Line
@@ -190,6 +200,7 @@ public class Main {
       HashMonitor hashMonitor = new HashMonitor();
       PatternFinderMonitor pfMonitor = new PatternFinderMonitor();
       SuperBlockLoopMonitor sblMonitor = new SuperBlockLoopMonitor();
+      SuperBlockLoopSpeedUp sblSpeedUp = new SuperBlockLoopSpeedUp();
 
       //
       /// Make Connections
@@ -207,7 +218,8 @@ public class Main {
       patternFinder.addPatternFinderConsumer(superBlockLoopBuilder);
       //patternFinder.addPatternFinderConsumer(pfMonitor);
 
-      superBlockLoopBuilder.addSuperBlockLoopConsumer(sblMonitor);
+      //superBlockLoopBuilder.addSuperBlockLoopConsumer(sblMonitor);
+      superBlockLoopBuilder.addSuperBlockLoopConsumer(sblSpeedUp);
 
 
 
@@ -230,11 +242,35 @@ public class Main {
       // Signal end of execution
       basicBlockBuilder.flush();
 
+      // Get Trace Properties
+      TraceProperties traceProperties = new TraceProperties(propertiesFile);
+      int totalInstructions = traceProperties.getInstructions();
+
+      // Compare total instructions
+      if(sblSpeedUp.getTotalInstructions() != totalInstructions) {
+         System.out.println("Total Instructions does not match:");
+         System.out.println("Original = "+totalInstructions);
+         System.out.println("Current = "+sblSpeedUp.getTotalInstructions());
+      }
+
+      // Print max iterations
+      System.out.println("Maximum iterations in one of the loops: "+sblSpeedUp.getMaxIterations());
+
+
+      float cpi = traceProperties.getCpi();
+      int[] communication = {0, 10, 100, 1000};
+      // Print speed-up
+      for(int i=0; i<communication.length; i++) {
+         int commCost = communication[i];
+         System.out.println("Speed-Up with communication cost of '"+commCost+
+                 "' instructions:"+sblSpeedUp.idealSpeedUp(cpi, commCost));
+      }
+
       // Show stats
       //basicBlockMonitor.showStats();
       //superBlockMonitor.showStats();
       //System.out.println("Total Instructions:" + sblMonitor.getTotalInstructions());
       //sblMonitor.printSuperBlockLoops();
-      sblMonitor.showStats();
+      //sblMonitor.showStats();
    }
 }

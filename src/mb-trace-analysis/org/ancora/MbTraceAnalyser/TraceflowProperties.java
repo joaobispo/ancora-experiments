@@ -48,6 +48,8 @@ public class TraceflowProperties extends PropertiesFile {
       addSection(" Input", TraceflowPreferences.Input);
       addSection("");
       addSection(" Output Folder", TraceflowPreferences.OutputFolder);
+      addSection("");
+      addSection(" TraceProperties Folder", TraceflowPreferences.TracePropertiesFolder);
    }
 
 

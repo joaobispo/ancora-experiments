@@ -32,7 +32,8 @@ import org.ancora.SharedLibrary.Preferences.PropertiesFile;
 public enum TraceflowPreferences implements EnumKey {
 
    Input(null),
-   OutputFolder("./");
+   OutputFolder("./"),
+   TracePropertiesFolder(null);
 
    /**
     * Enum Constructor
