@@ -154,7 +154,7 @@ public class MicroblazeTraceReader {
     
     ///
     // INSTANCE VARIABLES
-    ///    
+    ///
     private final BufferedReader reader;
 
     // Definitions
