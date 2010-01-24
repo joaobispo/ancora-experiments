@@ -17,6 +17,8 @@
 
 package org.ancora.MicroBlaze.Instructions;
 
+import org.ancora.ShareLibrary.BitUtils;
+
 /**
  * Represents a parsed MicroBlaze Instruction.
  *
@@ -24,22 +26,50 @@ package org.ancora.MicroBlaze.Instructions;
  */
 public class Instruction {
 
-   public Instruction(int address, String operation, Integer reg1, Integer reg2, Integer reg3, Integer immediate) {
+   public Instruction(int address, String operation, Integer[] registers) {
       this.address = address;
       this.operation = operation;
+      this.registers = registers;
+      /*
       this.registers = new Integer[Register.values().length];
 
       this.registers[Register.register1.ordinal()] = reg1;
       this.registers[Register.register2.ordinal()] = reg2;
       this.registers[Register.register3.ordinal()] = reg3;
       this.registers[Register.immediate.ordinal()] = immediate;
-
+      */
       /*
       this.reg1 = reg1;
       this.reg2 = reg2;
       this.reg3 = reg3;
       this.immediate = immediate;
        */
+   }
+
+   /**
+    * Builds the Register Array, by giving the values of Register 1, Register 2,
+    * Register 3 and Immediate, respectively.
+    * 
+    * <p>Example:
+    * <br>Integer[] registers = buildRegisterArray(1,null,null,100);
+    * 
+    * <p>Null values can be used for registers which does not have a value.
+    * 
+    * @param reg1
+    * @param reg2
+    * @param reg3
+    * @param immediate
+    * @return
+    */
+   public static Integer[] buildRegisterArray(Integer reg1, Integer reg2, Integer reg3, Integer immediate) {
+      Integer[] registers = new Integer[Register.values().length];
+
+      registers[Register.register1.ordinal()] = reg1;
+      registers[Register.register2.ordinal()] = reg2;
+      registers[Register.register3.ordinal()] = reg3;
+      registers[Register.immediate.ordinal()] = immediate;
+
+      return registers;
    }
 
    public int getAddress() {
@@ -53,6 +83,44 @@ public class Instruction {
    public Integer getRegister(Register register) {
       return registers[register.ordinal()];
    }
+
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append(BitUtils.padHexString(Integer.toHexString(address), 8));
+      builder.append(" ");
+      builder.append(operation);
+      builder.append(" ");
+
+      int counter = 0;
+      boolean firstNonNull = false;
+      while(!firstNonNull) {
+         if(registers[counter] != null) {
+            if(Register.immediate.ordinal() != counter) {
+               builder.append("r");
+            }
+            builder.append(registers[counter]);
+            firstNonNull = true;
+         }
+         counter++;
+      }
+
+      while (counter < registers.length) {
+         if (registers[counter] != null) {
+            builder.append(", ");
+            if (Register.immediate.ordinal() != counter) {
+               builder.append("r");
+            }
+            builder.append(registers[counter]);
+         }
+         counter++;
+      }
+
+      return builder.toString();
+   }
+
+
 
    /*
    public Integer getReg1() {
