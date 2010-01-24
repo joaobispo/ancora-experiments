@@ -48,15 +48,16 @@ public class TraceReader {
     }
 
    /**
-    * Builds a MicroblazeTraceReader from the given file. If the object could
+    * Builds a TraceReader from the given file. If the object could
     * not be created, returns null.
     *
     * <p>Creating a TraceReader involves File operations which can lead
     * to failure in creation of the object. That is why we use a public
     * static method instead of a constructor.
     *
-    * @param traceFile
-    * @return
+    * @param traceFile a file representing a MicroBlaze Trace, as in the format
+    * of the tool of the Ancora Group (not avaliable yet).
+    * @return a TraceReader If the object could not be created, returns null.
     */
    public static TraceReader createTraceReader(File traceFile) {
       // Check if input File is null
