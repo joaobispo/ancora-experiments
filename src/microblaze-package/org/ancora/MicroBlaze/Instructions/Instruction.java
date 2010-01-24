@@ -30,20 +30,7 @@ public class Instruction {
       this.address = address;
       this.operation = operation;
       this.registers = registers;
-      /*
-      this.registers = new Integer[Register.values().length];
-
-      this.registers[Register.register1.ordinal()] = reg1;
-      this.registers[Register.register2.ordinal()] = reg2;
-      this.registers[Register.register3.ordinal()] = reg3;
-      this.registers[Register.immediate.ordinal()] = immediate;
-      */
-      /*
-      this.reg1 = reg1;
-      this.reg2 = reg2;
-      this.reg3 = reg3;
-      this.immediate = immediate;
-       */
+      
    }
 
    /**
@@ -123,24 +110,6 @@ public class Instruction {
 
 
 
-   /*
-   public Integer getReg1() {
-      return reg1;
-   }
-
-   public Integer getReg2() {
-      return reg2;
-   }
-
-   public Integer getReg3() {
-      return reg3;
-   }
-
-   public Integer getImmediate() {
-      return immediate;
-   }
-*/
-
    public enum Register {
       register1,
       register2,
@@ -154,10 +123,4 @@ public class Instruction {
    private final int address;
    private final String operation;
    private final Integer[] registers;
-   /*
-   private final Integer reg1;
-   private final Integer reg2;
-   private final Integer reg3;
-   private final Integer immediate;
-    */
 }

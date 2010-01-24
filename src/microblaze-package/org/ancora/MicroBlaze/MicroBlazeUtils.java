@@ -104,28 +104,6 @@ public class MicroBlazeUtils {
               registers);
 
       return instruction;
-/*
-      // Get Instruction Address
-      String addressString = MicroblazeUtils.getTraceInstructionAddress(instruction);
-      int address = Integer.valueOf(addressString, 16);
-
-
-      // Cut the memory address
-      String tempInstruction = instruction.substring(12);
-
-      // Get Instruction without address
-      String instructionProper = tempInstruction.trim();
-
-      // Find first space. This will cut the operation name
-      int endIndex = tempInstruction.indexOf(' ');
-      String opName = tempInstruction.substring(0, endIndex);
-
-      // Is Branch?
-      InstructionBuilder instBuilder = InstructionBuilder.valueOf(opName);
-      boolean isBranch = instBuilder.isBranch();
-
-      boolean hasDelaySlot = instBuilder.hasDelaySlot();
-*/
 
    }
 
@@ -159,47 +137,7 @@ public class MicroBlazeUtils {
       return hasDelaySlot;
    }
 
-    /**
-    * Extracts the register from an instruction string and stores them in the
-    * given String array. Returns the number of arguments found.
-    *
-    * <p>Assumes that the arguments are separated by commas and start with r.
-    * @param instruction instruction to parse
-    * @param results String array to hold the parsed arguments
-    * @return the number of arguments found
-    */
-   /*
-   public static int parseRegisters(String instruction, String[] results) {
-      int numArgs = 0;
-
-      // Check the first comma
-      int beginIndex = 0;
-      int indexOfComma = instruction.indexOf(COMMA);
-
-      boolean hasCommas = indexOfComma != -1;
-      while (hasCommas) {
-         // Extract Argument
-         String otherArg = instruction.substring(beginIndex, indexOfComma);
-         results[numArgs] = otherArg.trim();
-         numArgs++;
-
-         // Update Indexes
-         beginIndex = indexOfComma + 1;
-         indexOfComma = instruction.indexOf(COMMA, beginIndex);
-
-         hasCommas = indexOfComma != -1;
-      }
-
-      // Extract last argument
-      String otherArg = instruction.substring(beginIndex);
-      results[numArgs] = otherArg.trim();
-      numArgs++;
-
-
-      return numArgs;
-   }
-    */
-
+  
    /**
     * DEFINITIONS
     */

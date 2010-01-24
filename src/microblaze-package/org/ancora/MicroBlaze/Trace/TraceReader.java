@@ -60,14 +60,6 @@ public class TraceReader {
     * @return a TraceReader If the object could not be created, returns null.
     */
    public static TraceReader createTraceReader(File traceFile) {
-      // Check if input File is null
-      /*
-      if(traceFile == null) {
-         Logger.getLogger(TraceReader.class.getName()).
-                    warning("Input 'traceFile' is null.");
-         return null;
-      }
-       */
 
       FileInputStream stream = null;
       InputStreamReader streamReader = null;
