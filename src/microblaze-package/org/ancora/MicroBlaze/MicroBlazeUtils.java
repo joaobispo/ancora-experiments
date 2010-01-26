@@ -17,6 +17,7 @@
 
 package org.ancora.MicroBlaze;
 
+import java.util.Arrays;
 import org.ancora.MicroBlaze.Instructions.BranchInstruction;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlaze.Instructions.InstructionWithDelaySlot;
@@ -32,7 +33,8 @@ public class MicroBlazeUtils {
 
    /**
     * Parses the registers and immediate value from a String, and stores them
-    * in an array. thegiven String array. Returns the number of arguments found.
+    * in an array, in the format [r1, r2, r3, imm]. If any of the elements is
+    * not present, its corresponding value will be null.
     *
     * <p>Assumes that the arguments are separated by commas; Registers start
     * with an 'r'.
@@ -43,10 +45,10 @@ public class MicroBlazeUtils {
     *
     * @param registerString String containing the register portion of the trace
     * instruction.
-    * @return an array of Integers compatible with the constructor of
-    * Instruction.
+    * @return an array of Integers of size 4. The first three elements always
+    * refer to register numbers, and the last element to an immediate value.
     */
-    public static Integer[] parseRegisters(String registerString) {
+   public static Integer[] parseRegisters(String registerString) {
       // Split String
       String[] unparsedRegisters = registerString.split(",");
 
@@ -54,9 +56,9 @@ public class MicroBlazeUtils {
       Integer[] basicRegisters = new Integer[3];
       Integer immediate = null;
 
-      for(int i=0; i<unparsedRegisters.length; i++) {
+      for (int i = 0; i < unparsedRegisters.length; i++) {
          String regString = unparsedRegisters[i].trim();
-         if(regString.startsWith("r")) {
+         if (regString.startsWith("r")) {
             String registerNumber = regString.substring(1);
             basicRegisters[registerCounter] = ParseUtils.parseInt(registerNumber);
             registerCounter++;
@@ -65,11 +67,15 @@ public class MicroBlazeUtils {
          }
       }
 
-      Integer[] registers = Instruction.buildRegisterArray(basicRegisters[0],
-              basicRegisters[1], basicRegisters[2], immediate);
+      Integer[] registers = Arrays.copyOf(basicRegisters, basicRegisters.length + 1);
+      int immIndex = registers.length - 1;
+      registers[immIndex] = immediate;
+
+      //        Instruction.buildRegisterArray(basicRegisters[0],
+      //        basicRegisters[1], basicRegisters[2], immediate);
 
       return registers;
-    }
+   }
 
    /**
     * Parses the given String with a Trace Instruction into a Instruction object.
@@ -98,6 +104,9 @@ public class MicroBlazeUtils {
 
       /// Parse Registers
       Integer[] registers = parseRegisters(registersString);
+
+      // Reorder registers according to write, read and immediate
+      registers = Instruction.buildRegisterArray(operationString, registers);
 
       // Build Instruction
       Instruction instruction = new Instruction(instructionAddress, operationString,

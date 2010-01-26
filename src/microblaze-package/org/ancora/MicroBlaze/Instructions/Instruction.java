@@ -17,6 +17,8 @@
 
 package org.ancora.MicroBlaze.Instructions;
 
+import java.util.logging.Logger;
+import org.ancora.MicroBlaze.Trace.TraceRegisters;
 import org.ancora.ShareLibrary.BitUtils;
 
 /**
@@ -34,14 +36,15 @@ public class Instruction {
    }
 
    /**
-    * Builds the Register Array, by giving the values of Register 1, Register 2,
-    * Register 3 and Immediate, respectively.
-    * 
+    * Builds the Register Array, by assigning values to writeRegister,
+    * readRegisters and Immediate, according to a given instruction name.
+    *
     * <p>Example:
-    * <br>Integer[] registers = buildRegisterArray(1,null,null,100);
-    * 
+    * <br>Integer[] parsedRegisters = {1,null,null,100};
+    * <br>Integer[] registers = buildRegisterArray(parsedRegisters);
+    *
     * <p>Null values can be used for registers which does not have a value.
-    * 
+    *
     * @param reg1 value of register 1
     * @param reg2 value of register 2
     * @param reg3 value of register 3
@@ -49,13 +52,75 @@ public class Instruction {
     * @return an array of Integers, with the values of the registers correctly
     * ordered, as in the enum Intruction.Register.
     */
-   public static Integer[] buildRegisterArray(Integer reg1, Integer reg2, Integer reg3, Integer immediate) {
+   /*
+   public static Integer[] buildRegisterArray(Integer writeReg, Integer readRegA, Integer readRegB, Integer immediate) {
       Integer[] registers = new Integer[Register.values().length];
 
-      registers[Register.register1.ordinal()] = reg1;
-      registers[Register.register2.ordinal()] = reg2;
-      registers[Register.register3.ordinal()] = reg3;
+      registers[Register.writeRegister.ordinal()] = writeReg;
+      registers[Register.readRegister1.ordinal()] = readRegA;
+      registers[Register.readRegister2.ordinal()] = readRegB;
       registers[Register.immediate.ordinal()] = immediate;
+
+      return registers;
+   }
+   */
+
+
+   /**
+    * Builds the Register Array, by assigning values to writeRegister,
+    * readRegisters and Immediate, according to a given instruction name and the
+    * values parsed in a trace instruction.
+    *
+    * <p>Example:
+    * <br>Integer[] parsedRegisters = {1,2,null,null};
+    * <br>Integer[] registers = buildRegisterArray("beq",parsedRegisters);
+    * <br>registers -> {null, 1, 2, null}
+    *
+    * <p>Null values can be used for registers which does not have a value.
+    *
+    * @param operation name of the operation
+    * @param traceIntegers array of integers from the parsed trace
+    * @return an array of Integers, with the values of the registers correctly
+    * ordered, as in the enum Intruction.Register.
+    */
+   public static Integer[] buildRegisterArray(String operation, Integer[] traceIntegers) {
+      Integer[] registers = new Integer[Register.values().length];
+
+      // Get properties of registers
+      TraceRegisters.Property[] properties = TraceRegisters.getProperties(operation);
+      int readCounter = 0;
+      for (int i = 0; i < properties.length; i++) {
+         Register register = null;
+         switch (properties[i]) {
+            case read:
+               if (readCounter == 0) {
+                  register = Register.readRegister1;
+                  readCounter++;
+               } else {
+                  register = Register.readRegister2;
+               }
+               break;
+            case write:
+               register = Register.writeRegister;
+               break;
+            default:
+               Logger.getLogger(Instruction.class.getName()).
+                       warning(TraceRegisters.class.getName()+
+                       " not supported:'"+properties[i].name()+"'.");
+               break;
+         }
+
+         registers[register.ordinal()] = traceIntegers[i];
+      }
+
+      // Immediate is always in the last position of the array
+      int immIndex = traceIntegers.length - 1;
+      registers[Register.immediate.ordinal()] = traceIntegers[immIndex];
+
+      //registers[Register.writeRegister.ordinal()] = writeReg;
+      //registers[Register.readRegister1.ordinal()] = readRegA;
+      //registers[Register.readRegister2.ordinal()] = readRegB;
+      //registers[Register.immediate.ordinal()] = immediate;
 
       return registers;
    }
@@ -72,6 +137,29 @@ public class Instruction {
       return registers[register.ordinal()];
    }
 
+   /**
+    * @return the read registers of this instruction.
+    */
+   public Integer[] getReadRegisters() {
+      Integer reg1 = getRegister(Register.readRegister1);
+      if (reg1 == null) {
+         return new Integer[0];
+      }
+
+      Integer reg2 = getRegister(Register.readRegister2);
+      if (reg2 == null) {
+         Integer[] result = new Integer[1];
+         result[0] = reg1;
+         return result;
+      }
+
+      Integer[] result = new Integer[2];
+      result[0] = reg1;
+      result[1] = reg2;
+      return result;
+
+   }
+
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
@@ -79,8 +167,19 @@ public class Instruction {
       builder.append(BitUtils.padHexString(Integer.toHexString(address), 8));
       builder.append(" ");
       builder.append(operation);
-      builder.append(" ");
+      //builder.append(" ");
 
+      for (Register register : Register.values()) {
+         Integer value = registers[register.ordinal()];
+         if (value != null) {
+            builder.append(" ");
+            builder.append(register.getRegName());
+            builder.append("=");
+            builder.append(value);
+         }
+      }
+
+      /*
       int counter = 0;
       boolean firstNonNull = false;
       while(!firstNonNull) {
@@ -104,6 +203,7 @@ public class Instruction {
          }
          counter++;
       }
+       */
 
       return builder.toString();
    }
@@ -111,10 +211,23 @@ public class Instruction {
 
 
    public enum Register {
-      register1,
-      register2,
-      register3,
-      immediate
+      writeRegister("WriteReg"),
+      readRegister1("ReadReg1"),
+      readRegister2("ReadReg2"),
+      immediate("Imm");
+
+      private Register(String regName) {
+         this.regName = regName;
+      }
+
+      public String getRegName() {
+         return regName;
+      }
+
+      /**
+       * Instance Variables
+       */
+      final private String regName;
    }
 
    /**
