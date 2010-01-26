@@ -31,7 +31,8 @@ public class Tester {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        testTraceReader();
+        //testTraceReader();
+        testTraceReaderMultipleFiles();
     }
 
    private static void testTraceReader() {
@@ -48,12 +49,29 @@ public class Tester {
          //System.out.println(instruction+"; Is branch:"+isBranch);
 
          boolean hasDelaySlot = MicroBlazeUtils.hasDelaySlot(instruction.getOperation());
-         System.out.println(instruction+"; Has Delay Slot:"+hasDelaySlot);
+         //System.out.println(instruction+"; Has Delay Slot:"+hasDelaySlot);
          instruction = reader.nextInstruction();
       }
       
       //System.out.println(reader.nextInstruction().toString());
 
+   }
+
+   private static void testTraceReaderMultipleFiles() {
+      String foldername = "D:\\Programming\\Ancora\\AncoraExperiments\\run\\common\\traces-without-optimization";
+      File folder = new File(foldername);
+
+      File[] files = folder.listFiles();
+
+      for (File file : files) {
+         System.out.println("Processing file '" + file.getName() + "'");
+
+         TraceReader reader = TraceReader.createTraceReader(file);
+         Instruction instruction = reader.nextInstruction();
+         while (instruction != null) {
+            instruction = reader.nextInstruction();
+         }
+      }
    }
 
 
