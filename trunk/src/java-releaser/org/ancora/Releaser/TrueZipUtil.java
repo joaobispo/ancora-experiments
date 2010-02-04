@@ -1,12 +1,26 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2010 Ancora Research Group.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  under the License.
  */
 
 package org.ancora.Releaser;
 
 import de.schlichtherle.io.File;
+import java.awt.EventQueue;
 import java.util.Arrays;
+import javax.swing.JTextField;
 
 /**
  *
@@ -51,7 +65,7 @@ public class TrueZipUtil {
    }
 
    public static boolean zipNetbeansDist(String releaseName, String inputFoldername,
-           String runFoldername, String outputFoldername) {
+           String runFoldername, String outputFoldername, JTextField status) {
 
       // Create names
       String releaseFilename = releaseName + ".zip";
@@ -68,14 +82,17 @@ public class TrueZipUtil {
       File javadocZip = new File(outputFolder, javadocFilename);
 
       // Delete zipfiles
+      writeTextField(status, "Deleting previous zip files.");
       releaseZip.delete();
       javadocZip.delete();
 
       // Create Javadoc Zip
+      writeTextField(status, "Creating javadoc zip.");
       javadocFolder.copyAllTo(javadocZip);
-      System.out.println("Written "+javadocZip.getName()+".");
+      //System.out.println("Written "+javadocZip.getName()+".");
 
       // Copy dist folder to temporary folder
+      writeTextField(status, "Copying files to temporary folder.");
       distFolder.copyAllTo(tempFolder);
 
       // Delete Javadoc
@@ -93,10 +110,12 @@ public class TrueZipUtil {
       }
 
       // Zip contents of tempFolder
+      writeTextField(status, "Creating release zip.");
       File tempZipFolder = new File(tempFolder);
       tempZipFolder.copyAllTo(releaseZip);
 
       // Delete temporary folder
+      writeTextField(status, "Deleting temporary files.");
       tempZipFolder.deleteAll();
       /*
       java.io.File[] files = distFolder.listFiles();
@@ -120,8 +139,19 @@ public class TrueZipUtil {
       //releaseZip.copyAllFrom(distFolder);
       // Exclude Javadoc and Readme.txt
 
-      System.out.println("written file "+Arrays.toString(releaseZip.listFiles()));
+      //javadocZip = null;
+      //releaseZip = null;
+      writeTextField(status, "Finished!");
       return true;
+   }
+
+   private static void writeTextField(final JTextField textField, final String message) {
+      EventQueue.invokeLater(new Runnable() {
+         public void run() {
+            textField.setText(message);
+         }
+
+      });
    }
 
       // Deletes all files and subdirectories under dir.
