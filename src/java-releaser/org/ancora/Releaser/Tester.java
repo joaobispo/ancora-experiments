@@ -5,9 +5,11 @@
 
 package org.ancora.Releaser;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.ancora.Releaser.Gui.ReleaserFrame;
 import org.ancora.SharedLibrary.ZipUtils;
 
 /**
@@ -24,7 +26,9 @@ public class Tester {
        //testZip();
        //testZip2();
        //testRealZip();
-       testApp();
+       //testApp();
+       //testApp2();
+       main();
     }
 
    private static void testZip() {
@@ -78,6 +82,35 @@ public class Tester {
       String inputfolder = "D:\\Programming\\Ancora\\AncoraExperiments\\projects\\microblaze-package-netbeans6.7\\dist\\";
       String outputfolder = "E:\\";
       TrueZipUtil.zipDist(releaseName, inputfolder, outputfolder);
+   }
+
+   private static void testApp2() {
+      String releaseName = "microblaze-package-1.0";
+      String inputfolder = "D:\\Programming\\Ancora\\AncoraExperiments\\projects\\microblaze-package-netbeans6.7\\dist\\";
+      String outputfolder = "E:\\";
+      TrueZipUtil.zipNetbeansDist(releaseName, inputfolder, null, outputfolder);
+   }
+
+   private static void main() {
+      final ReleaserFrame frame = new ReleaserFrame();
+      // Setup Frame
+      EventQueue.invokeLater(new Runnable() {
+         public void run() {
+            frame.setup();
+         }
+      });
+
+
+      // Show frame
+      EventQueue.invokeLater(new Runnable() {
+         public void run() {
+            frame.setVisible(true);
+         }
+      });
+   }
+
+   private static void setupFrame(ReleaserFrame frame) {
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
 }
