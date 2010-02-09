@@ -63,15 +63,30 @@ public class Tester {
 
       File[] files = folder.listFiles();
 
+      int totalCounter = 0;
+      long totalTime = 0;
       for (File file : files) {
          System.out.println("Processing file '" + file.getName() + "'");
 
          TraceReader reader = TraceReader.createTraceReader(file);
+         int counter = 0;
+
+         long init = System.nanoTime();
          Instruction instruction = reader.nextInstruction();
          while (instruction != null) {
+            counter++;
             instruction = reader.nextInstruction();
          }
+         totalTime += System.nanoTime() - init;
+         //System.out.println("Read "+counter+" instructions.");
+         totalCounter += counter;
       }
+
+      double processTime = totalTime/(Math.pow(10, 9));
+
+      System.out.println("Total Instructions:"+totalCounter);
+      System.out.printf("Processing Time (s):%.2f\n",processTime);
+      System.out.printf("Processed %d instructions/s.\n",(int)(totalCounter/processTime));
    }
 
 

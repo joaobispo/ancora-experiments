@@ -133,7 +133,7 @@ public class Instruction {
       return operation;
    }
 
-   public Integer getRegister(Register register) {
+   private Integer getRegister(Register register) {
       return registers[register.ordinal()];
    }
 
@@ -159,6 +159,32 @@ public class Instruction {
       return result;
 
    }
+
+   /**
+    * @return the write register of this instruction.
+    */
+   public Integer getWriteRegister() {
+      Integer reg1 = getRegister(Register.writeRegister);
+      if (reg1 == null) {
+         return null;
+      } else {
+         return reg1;
+      }
+   }
+
+   /**
+    * @return the Immediate value of this instruction.
+    */
+   public Integer getImmediate() {
+      Integer imm = getRegister(Register.immediate);
+      if (imm == null) {
+         return null;
+      } else {
+         return imm;
+      }
+   }
+
+
 
    @Override
    public String toString() {
