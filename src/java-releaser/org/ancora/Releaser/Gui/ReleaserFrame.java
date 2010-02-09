@@ -25,6 +25,9 @@ package org.ancora.Releaser.Gui;
 
 import de.schlichtherle.io.swing.JFileChooser;
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.swing.JTextField;
 import org.ancora.Releaser.ReleaserPreferences;
 import org.ancora.Releaser.TrueZipUtil;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
@@ -67,8 +70,11 @@ public class ReleaserFrame extends javax.swing.JFrame {
       jButton4 = new javax.swing.JButton();
       jButton5 = new javax.swing.JButton();
       jTextField5 = new javax.swing.JTextField();
+      jCheckBox2 = new javax.swing.JCheckBox();
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+      setTitle("Java Releaser 1.0");
+      setResizable(false);
 
       jLabel1.setText("Release Name");
 
@@ -140,6 +146,13 @@ public class ReleaserFrame extends javax.swing.JFrame {
 
       jTextField5.setEditable(false);
 
+      jCheckBox2.setText("Build Javadoc Zip");
+      jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jCheckBox2ActionPerformed(evt);
+         }
+      });
+
       javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
       getContentPane().setLayout(layout);
       layout.setHorizontalGroup(
@@ -164,7 +177,8 @@ public class ReleaserFrame extends javax.swing.JFrame {
                      .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                     .addComponent(jCheckBox2)))
                .addComponent(jTextField5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
                .addGroup(layout.createSequentialGroup()
                   .addComponent(jLabel4)
@@ -201,7 +215,9 @@ public class ReleaserFrame extends javax.swing.JFrame {
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jCheckBox2)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                   .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -275,22 +291,37 @@ public class ReleaserFrame extends javax.swing.JFrame {
        // Deactivate button
        jButton5.setEnabled(false);
 
-       // Collect info
-       String releaseName = jTextField1.getText();
-       String distFoldername = jTextField2.getText();
-       String runFoldername = null;
-       if(jCheckBox1.isSelected()) {
-          runFoldername = jTextField3.getText();
-       }
-       String outputFoldername = jTextField4.getText();
+       saveTrasientData();
 
-       // Run zipping method
-       TrueZipUtil.zipNetbeansDist(releaseName, distFoldername, runFoldername,
-               outputFoldername, jTextField5);
-
-       // Activate button
-       jButton5.setEnabled(true);
+        // Run zipping method in another thread. Method calls returnFromZip.
+       invokeWorker(this);
+      
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
+       // Save state to Preferences
+       String stringState = Boolean.toString(jCheckBox2.isSelected());
+       prefs.putPreference(ReleaserPreferences.BuildJavadocZipEnabled, stringState);
+    }//GEN-LAST:event_jCheckBox2ActionPerformed
+
+
+   private void invokeWorker(final ReleaserFrame mainFrame) {
+
+      Runnable runnable = new Runnable() {
+         public void run() {
+                  TrueZipUtil.zipNetbeansDist(mainFrame);
+         }
+      };
+
+      ExecutorService thread = Executors.newSingleThreadExecutor();
+      thread.submit(runnable);
+      thread.shutdown();
+   }
+
+    public void returnFromZip() {
+        // Activate button
+       jButton5.setEnabled(true);
+    }
 
     public void writeMessage(String message) {
        jTextField5.setText(message);
@@ -307,12 +338,15 @@ public class ReleaserFrame extends javax.swing.JFrame {
         });
     }
 
+
+
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton jButton2;
    private javax.swing.JButton jButton3;
    private javax.swing.JButton jButton4;
    private javax.swing.JButton jButton5;
    private javax.swing.JCheckBox jCheckBox1;
+   private javax.swing.JCheckBox jCheckBox2;
    private javax.swing.JLabel jLabel1;
    private javax.swing.JLabel jLabel2;
    private javax.swing.JLabel jLabel3;
@@ -335,6 +369,33 @@ public class ReleaserFrame extends javax.swing.JFrame {
 
       boolean checkbox = Boolean.parseBoolean(prefs.getPreference(ReleaserPreferences.RunFolderEnabled));
       jCheckBox1.setSelected(checkbox);
+      
+      checkbox = Boolean.parseBoolean(prefs.getPreference(ReleaserPreferences.BuildJavadocZipEnabled));
+      jCheckBox2.setSelected(checkbox);
+   }
+
+      public FrameData buildFrameData() {
+       // Collect info
+       String releaseName = jTextField1.getText();
+       String distFoldername = jTextField2.getText();
+       String runFoldername = null;
+       if(jCheckBox1.isSelected()) {
+          runFoldername = jTextField3.getText();
+       }
+       String outputFoldername = jTextField4.getText();
+
+       boolean buildJavadocZip = jCheckBox2.isSelected();
+
+       return new FrameData(releaseName, distFoldername, runFoldername, outputFoldername, buildJavadocZip);
+   }
+
+   /**
+    * Saves to preferences data which is not automatically saved when the fields
+    * are changed.
+    */
+   private void saveTrasientData() {
+       // Save release name
+       prefs.putPreference(ReleaserPreferences.ReleaseName, jTextField1.getText());
    }
 
    /**
@@ -343,5 +404,9 @@ public class ReleaserFrame extends javax.swing.JFrame {
    //Create a file chooser
    private final JFileChooser fileChooser;
    private final EnumPreferences prefs;
+
+
+
+
 
 }

@@ -19,7 +19,6 @@ package org.ancora.Releaser;
 
 import org.ancora.SharedLibrary.Interfaces.EnumKey;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
-import org.ancora.SharedLibrary.Preferences.PropertiesFile;
 
 
 
@@ -35,6 +34,7 @@ public enum ReleaserPreferences implements EnumKey {
    DistFolder("./"),
    RunFolder("./"),
    RunFolderEnabled("true"),
+   BuildJavadocZipEnabled("true"),
    OutputFolder("./");
 
    /**

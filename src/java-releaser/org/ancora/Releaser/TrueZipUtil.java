@@ -17,10 +17,13 @@
 
 package org.ancora.Releaser;
 
+import de.schlichtherle.io.ArchiveException;
 import de.schlichtherle.io.File;
 import java.awt.EventQueue;
-import java.util.Arrays;
-import javax.swing.JTextField;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.ancora.Releaser.Gui.FrameData;
+import org.ancora.Releaser.Gui.ReleaserFrame;
 
 /**
  *
@@ -64,16 +67,24 @@ public class TrueZipUtil {
 
    }
 
-   public static boolean zipNetbeansDist(String releaseName, String inputFoldername,
-           String runFoldername, String outputFoldername, JTextField status) {
+   public static boolean zipNetbeansDist(ReleaserFrame frame) {
+      FrameData data = frame.buildFrameData();
+
 
       // Create names
-      String releaseFilename = releaseName + ".zip";
-      String javadocFilename = releaseName + "-javadoc.zip";
+      String releaseFilename = data.getReleaseName() + ".zip";
+      String javadocFilename = data.getReleaseName() + "-javadoc.zip";
 
       // Create Folders
-      File outputFolder = new File(outputFoldername);
-      File distFolder = new File(inputFoldername);
+      File outputFolder = new File(data.getOutputFoldername());
+      boolean createdOutputFolder = outputFolder.mkdirs();
+      if(!outputFolder.exists()) {
+         writeTextField(frame, "Could not create output folder.");
+         frame.returnFromZip();
+         return false;
+      }
+      
+      File distFolder = new File(data.getDistFoldername());
       File javadocFolder = new File(distFolder, "javadoc");
       java.io.File tempFolder = new File(outputFolder, TEMP_FOLDER);
 
@@ -82,17 +93,19 @@ public class TrueZipUtil {
       File javadocZip = new File(outputFolder, javadocFilename);
 
       // Delete zipfiles
-      writeTextField(status, "Deleting previous zip files.");
+      writeTextField(frame, "Deleting previous zip files.");
       releaseZip.delete();
       javadocZip.delete();
 
       // Create Javadoc Zip
-      writeTextField(status, "Creating javadoc zip.");
-      javadocFolder.copyAllTo(javadocZip);
+      if(data.isBuildJavadocZip()) {
+         writeTextField(frame, "Creating javadoc zip.");
+         javadocFolder.copyAllTo(javadocZip);
+      }
       //System.out.println("Written "+javadocZip.getName()+".");
 
       // Copy dist folder to temporary folder
-      writeTextField(status, "Copying files to temporary folder.");
+      writeTextField(frame, "Copying files to temporary folder.");
       distFolder.copyAllTo(tempFolder);
 
       // Delete Javadoc
@@ -104,18 +117,18 @@ public class TrueZipUtil {
       readme.delete();
 
       // If RunFolder different than Null, copy it too
-      if(runFoldername != null) {
-         File runFolder = new File(runFoldername);
+      if(data.getRunFoldername() != null) {
+         File runFolder = new File(data.getRunFoldername());
          runFolder.copyAllTo(tempFolder);
       }
 
       // Zip contents of tempFolder
-      writeTextField(status, "Creating release zip.");
+      writeTextField(frame, "Creating release zip.");
       File tempZipFolder = new File(tempFolder);
       tempZipFolder.copyAllTo(releaseZip);
 
       // Delete temporary folder
-      writeTextField(status, "Deleting temporary files.");
+      writeTextField(frame, "Deleting temporary files.");
       tempZipFolder.deleteAll();
       /*
       java.io.File[] files = distFolder.listFiles();
@@ -141,14 +154,28 @@ public class TrueZipUtil {
 
       //javadocZip = null;
       //releaseZip = null;
-      writeTextField(status, "Finished!");
+      
+      // Unmount Zip Files.
+
+
+      try {
+         File.umount(releaseZip);
+         File.umount(javadocZip);
+      } catch (ArchiveException ex) {
+         Logger.getLogger(TrueZipUtil.class.getName()).
+                 warning("ArchiveException while trying to unmount Zip Files:"+
+                 ex.getMessage());
+      }
+
+      writeTextField(frame, "Finished!");
+      frame.returnFromZip();
       return true;
    }
 
-   private static void writeTextField(final JTextField textField, final String message) {
+   private static void writeTextField(final ReleaserFrame frame, final String message) {
       EventQueue.invokeLater(new Runnable() {
          public void run() {
-            textField.setText(message);
+            frame.writeMessage(message);
          }
 
       });
