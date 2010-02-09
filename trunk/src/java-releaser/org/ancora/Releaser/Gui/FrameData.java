@@ -18,7 +18,7 @@
 package org.ancora.Releaser.Gui;
 
 /**
- * Contains the data in the frame.
+ * Container for the data in the frame.
  *
  * @author Joao Bispo
  */

@@ -26,12 +26,18 @@ import org.ancora.Releaser.Gui.ReleaserFrame;
  */
 public class Releaser {
 
+   /**
+    * Creates a new instance of the Java Releaser.
+    */
    public Releaser() {
       mainFrame = new ReleaserFrame();
    }
 
 
 
+   /**
+    * Runs the Java Releaser GUI
+    */
    public void execute() {
       // Setup Frame
       EventQueue.invokeLater(new Runnable() {
