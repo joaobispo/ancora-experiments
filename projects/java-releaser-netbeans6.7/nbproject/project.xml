@@ -6,7 +6,6 @@
             <name>Java Releaser</name>
             <source-roots>
                 <root id="src.dir"/>
-                <root id="java-releaser-common.dir" name="Common"/>
             </source-roots>
             <test-roots/>
         </data>

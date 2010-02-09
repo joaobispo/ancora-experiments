@@ -20,7 +20,6 @@ package org.ancora.Releaser;
 import de.schlichtherle.io.ArchiveException;
 import de.schlichtherle.io.File;
 import java.awt.EventQueue;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ancora.Releaser.Gui.FrameData;
 import org.ancora.Releaser.Gui.ReleaserFrame;
@@ -30,42 +29,6 @@ import org.ancora.Releaser.Gui.ReleaserFrame;
  * @author Joao Bispo
  */
 public class TrueZipUtil {
-
-   public static void zipFolder(String folder, String outputFile) {
-      new File(folder).copyAllTo(new File(outputFile));
-
-      /*
-      String foldername = "E:/temp/car";
-      File folderFile = new File(foldername);
-
-      String filename = "Car.jar";
-      File file = new File(folderFile, filename);
-
-      file.copyTo(new File("E:/result.zip"));
-      System.out.println(file.toString());
-       */
-   }
-
-   public static void zipDist(String releaseName, String inputfolder, String outputfolder) {
-      // First, zip javadoc
-      File javadocFolder = new File(new File(inputfolder), "javadoc");
-
-      // Zip contents
-      String javadocFilename = releaseName+"-javadoc.zip";
-      javadocFolder.copyAllTo(new File(new File(outputfolder), javadocFilename));
-
-      // Delete Javadoc
-      javadocFolder.deleteAll();
-
-      File readme = new File(new File(inputfolder), "README.TXT");
-      readme.delete();
-
-      // Main release
-      File dist = new File(inputfolder);
-      String distFilename = releaseName+".zip";
-      dist.copyAllTo(new File(new File(outputfolder), distFilename));
-
-   }
 
    public static boolean zipNetbeansDist(ReleaserFrame frame) {
       FrameData data = frame.buildFrameData();
@@ -77,7 +40,7 @@ public class TrueZipUtil {
 
       // Create Folders
       File outputFolder = new File(data.getOutputFoldername());
-      boolean createdOutputFolder = outputFolder.mkdirs();
+      outputFolder.mkdirs();
       if(!outputFolder.exists()) {
          writeTextField(frame, "Could not create output folder.");
          frame.returnFromZip();
@@ -130,34 +93,9 @@ public class TrueZipUtil {
       // Delete temporary folder
       writeTextField(frame, "Deleting temporary files.");
       tempZipFolder.deleteAll();
-      /*
-      java.io.File[] files = distFolder.listFiles();
-      
-      for(java.io.File file : files) {
-         System.out.println("processing file:"+file.getName());
-         if(file.getName().equals("README.TXT")) {
-            // Skip file
-            continue;
-         } else if(file.getName().equals("javadoc")) {
-            // Skip file
-            continue;
-         } else {
-            new File(file).copyAllTo(releaseZip);
-            System.out.println("added file.");
-         }
-      }
 
-       */
-      // Copy files in distribution folder to release zip
-      //releaseZip.copyAllFrom(distFolder);
-      // Exclude Javadoc and Readme.txt
-
-      //javadocZip = null;
-      //releaseZip = null;
       
       // Unmount Zip Files.
-
-
       try {
          File.umount(releaseZip);
          File.umount(javadocZip);
@@ -181,7 +119,7 @@ public class TrueZipUtil {
       });
    }
 
-      // Deletes all files and subdirectories under dir.
+    // Deletes all files and subdirectories under dir.
     // Returns true if all deletions were successful.
     // If a deletion fails, the method stops attempting to delete and returns false.
     public static boolean deleteDir(java.io.File dir) {
