@@ -20,7 +20,7 @@ package org.ancora.MicroBlaze.Trace;
 import java.util.logging.Logger;
 
 /**
- * Indicates, for each trace instruction, if the registers are for read or
+ * Indicates, for each trace instruction, which registers are for read or
  * write, by the order they appear in the trace instruction.
  *
  * @author Joao Bispo
