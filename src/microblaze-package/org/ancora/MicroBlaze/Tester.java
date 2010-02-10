@@ -25,7 +25,7 @@ import org.ancora.MicroBlaze.Trace.TraceReader;
  *
  * @author Ancora Group <ancora.codigo@gmail.com>
  */
-public class Tester {
+class Tester {
 
     /**
      * @param args the command line arguments
