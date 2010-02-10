@@ -21,8 +21,7 @@ import java.util.Arrays;
 import org.ancora.MicroBlaze.Instructions.BranchInstruction;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlaze.Instructions.InstructionWithDelaySlot;
-import org.ancora.ShareLibrary.ParseUtils2;
-import org.ancora.SharedLibrary.ParseUtils;
+import org.ancora.SharedLibrary.MicroBlazePackage.ParseUtils;
 
 /**
  * Methods for operations related to MicroBlaze.
@@ -86,11 +85,11 @@ public class MicroBlazeUtils {
     */
    public static Instruction parseTraceInstruction(String traceInstruction) {
       /// Split the trace instruction in parts
-      int whiteSpaceIndex = ParseUtils2.indexOfFirstWhiteSpace(traceInstruction);
+      int whiteSpaceIndex = ParseUtils.indexOfFirstWhiteSpace(traceInstruction);
       String addressString = traceInstruction.substring(0, whiteSpaceIndex);
 
       traceInstruction = traceInstruction.substring(whiteSpaceIndex).trim();
-      whiteSpaceIndex = ParseUtils2.indexOfFirstWhiteSpace(traceInstruction);
+      whiteSpaceIndex = ParseUtils.indexOfFirstWhiteSpace(traceInstruction);
       String operationString = traceInstruction.substring(0, whiteSpaceIndex);
 
       String registersString = traceInstruction.substring(whiteSpaceIndex).trim();

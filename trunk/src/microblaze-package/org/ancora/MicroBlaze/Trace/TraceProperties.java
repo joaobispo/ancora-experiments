@@ -20,7 +20,7 @@ package org.ancora.MicroBlaze.Trace;
 import java.io.File;
 import java.util.Properties;
 import java.util.logging.Logger;
-import org.ancora.SharedLibrary.IoUtils;
+import org.ancora.SharedLibrary.MicroBlazePackage.IoUtils;
 
 /**
  * Represents the properties of a MicroBlaze Trace file.
