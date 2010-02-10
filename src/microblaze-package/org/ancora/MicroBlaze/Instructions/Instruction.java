@@ -19,7 +19,7 @@ package org.ancora.MicroBlaze.Instructions;
 
 import java.util.logging.Logger;
 import org.ancora.MicroBlaze.Trace.TraceRegisters;
-import org.ancora.ShareLibrary.BitUtils;
+import org.ancora.SharedLibrary.MicroBlazePackage.BitUtils;
 
 /**
  * Represents a parsed MicroBlaze Instruction.
