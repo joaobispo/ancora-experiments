@@ -15,45 +15,45 @@
  *  under the License.
  */
 
-package org.ancora.MbDynamicMapping.App;
+package org.ancora.MbDynamicMapping.Options;
 
 import java.util.logging.Logger;
-import org.ancora.MbDynamicMapping.Interface.Mapper;
-import org.ancora.MbDynamicMapping.Mappers.NoCustomHardware;
+import org.ancora.MbDynamicMapping.Interface.Partitioner;
+import org.ancora.MbDynamicMapping.Partitioners.NoPartition;
 
 /**
- * Name of the supported mappers.
+ * Name of the supported partitioners.
  *
  * @author Joao Bispo
  */
-public enum MapperName {
-   nocustomhardware;
+public enum PartitionerName {
+   nopartition;
 
-   public String getHelpMessage() {
-      switch (this) {
-         case nocustomhardware:
-            return "Maps all instruction to the MicroBlaze Processor.";
+  public String getHelpMessage() {
+      switch(this) {
+         case nopartition:
+            return "Outputs blocks with one instruction, not mappable on custom hardware";
          default:
             return "Message Not Defined";
       }
-   }
+  }
 
    public String getName() {
-      switch (this) {
-         case nocustomhardware:
-            return "NoCustomHardware";
-         default:
-            return "Name Not Defined";
-      }
+       switch(this) {
+         case nopartition:
+            return "NoPartition";
+          default:
+             return "Name Not Defined";
+       }
    }
 
-   public Mapper getMapper() {
+   public Partitioner getPartitioner() {
       switch (this) {
-         case nocustomhardware:
-            return new NoCustomHardware();
+         case nopartition:
+            return new NoPartition();
          default:
-             Logger.getLogger(MapperName.class.getName()).
-                 info("Mapper Constructor for '"+this.getName()+"' not defined.'");
+             Logger.getLogger(PartitionerName.class.getName()).
+                 info("Partitioner Constructor for '"+this.getName()+"' not defined.'");
             return null;
       }
    }

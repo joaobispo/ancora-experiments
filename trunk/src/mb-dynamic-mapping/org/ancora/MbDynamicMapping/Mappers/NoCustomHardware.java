@@ -17,7 +17,7 @@
 
 package org.ancora.MbDynamicMapping.Mappers;
 
-import org.ancora.MbDynamicMapping.App.MapperName;
+import org.ancora.MbDynamicMapping.Options.MapperName;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
 import org.ancora.MbDynamicMapping.Interface.Mapper;
 

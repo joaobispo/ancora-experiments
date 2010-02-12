@@ -17,7 +17,7 @@
 
 package org.ancora.MbDynamicMapping.Partitioners;
 
-import org.ancora.MbDynamicMapping.App.PartitionerName;
+import org.ancora.MbDynamicMapping.Options.PartitionerName;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
 import org.ancora.MbDynamicMapping.Interface.Partitioner;
 import org.ancora.MicroBlaze.Instructions.Instruction;

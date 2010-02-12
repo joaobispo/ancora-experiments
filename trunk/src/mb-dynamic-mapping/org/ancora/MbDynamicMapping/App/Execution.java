@@ -17,6 +17,8 @@
 
 package org.ancora.MbDynamicMapping.App;
 
+import org.ancora.MbDynamicMapping.Options.PartitionerName;
+import org.ancora.MbDynamicMapping.Options.MapperName;
 import java.io.File;
 import java.util.logging.Logger;
 import org.ancora.MbDynamicMapping.Interface.Mapper;
