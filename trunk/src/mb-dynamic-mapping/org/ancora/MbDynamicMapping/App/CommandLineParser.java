@@ -17,6 +17,7 @@
 
 package org.ancora.MbDynamicMapping.App;
 
+import org.ancora.MbDynamicMapping.Options.ExecutionOption;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,10 +103,6 @@ public class CommandLineParser {
       logger.info("Use '"+helpOption+"' for more info.");
    }
 
-   private static List<Execution> buildExecutionList(Map<CommandLineOption, String> options) {
-      System.out.println("Building Execution List");
-      return new ArrayList<Execution>();
-   }
 
    private static void showOptionList() {
       Logger logger = Logger.getLogger(CommandLineParser.class.getName());
