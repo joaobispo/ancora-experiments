@@ -27,6 +27,28 @@ import org.ancora.MicroBlaze.Instructions.Instruction;
 public class InstructionBlock {
 
    /**
+    * Builds an instruction block with a single instruction, not mappable do HW.
+    * @param instruction
+    */
+   public InstructionBlock(Instruction instruction) {
+      this.mapToHardware = false;
+      this.instructions = new Instruction[1];
+      this.instructions[0] = instruction;
+      this.penaltyInstructions = new Instruction[0];
+      this.iterations = 1;
+   }
+
+
+   public InstructionBlock(boolean mapToHardware, Instruction[] instructions, Instruction[] penaltyInstructions, int iterations) {
+      this.mapToHardware = mapToHardware;
+      this.instructions = instructions;
+      this.penaltyInstructions = penaltyInstructions;
+      this.iterations = iterations;
+   }
+
+   
+
+   /**
     * @return true if the InstructionBlock was identified as a candidate to be 
     * mapped in the custom hardware
     */
@@ -57,7 +79,13 @@ public class InstructionBlock {
       return penaltyInstructions;
    }
 
-
+   /**
+    * @return the number of instructions in the InstructionBlock, multiplied by
+    * the number of iterations
+    */
+   public int getTotalInstructions() {
+      return instructions.length * iterations;
+   }
 
 
 

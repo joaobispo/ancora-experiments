@@ -17,6 +17,7 @@
 
 package org.ancora.MbDynamicMapping.Interface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,21 @@ import java.util.List;
  */
 public abstract class Partitioner implements InstructionListener {
 
+   public Partitioner() {
+      listeners = new ArrayList<InstructionBlockListener>();
+   }
+
+
+   /**
+    * @return the name of this mapper
+    */
+   public abstract String getName();
+
+   /**
+    * Adds an InstructionBlockListener.
+    * 
+    * @param listener
+    */
    public void addListener(InstructionBlockListener listener) {
       listeners.add(listener);
    }
@@ -36,6 +52,13 @@ public abstract class Partitioner implements InstructionListener {
          listeners.get(i).accept(instructionBlock);
       }
    }
+
+   protected void flushListeners() {
+      for (int i = 0; i < listeners.size(); i++) {
+         listeners.get(i).flush();
+      }
+   }
+
 
 
    /**

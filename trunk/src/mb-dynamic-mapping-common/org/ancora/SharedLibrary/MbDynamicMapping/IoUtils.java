@@ -65,6 +65,7 @@ public class IoUtils {
          String line = bufferedReader.readLine();
          while(line != null) {
             lines.add(line);
+            line = bufferedReader.readLine();
          }
 
          // File read. Close StreamReader
