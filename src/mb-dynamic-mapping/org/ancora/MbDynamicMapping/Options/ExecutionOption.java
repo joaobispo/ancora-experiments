@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MbDynamicMapping.App;
+package org.ancora.MbDynamicMapping.Options;
 
 /**
  *
