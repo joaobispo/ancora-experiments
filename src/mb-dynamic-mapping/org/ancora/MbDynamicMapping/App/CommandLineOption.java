@@ -15,16 +15,29 @@
  *  under the License.
  */
 
-package org.ancora.MbDynamicMapping.Interface;
+package org.ancora.MbDynamicMapping.App;
 
 /**
- * Maps blocks of instructions between the MicroBlaze and custom hardware.
  *
  * @author Joao Bispo
  */
-public interface Mapper extends InstructionBlockListener {
+public enum CommandLineOption {
+   help("help"),
+   executionfile("executionFile");
+
+   private CommandLineOption(String name) {
+      this.name = name;
+   }
+
+   @Override
+   public String toString() {
+      return name;
+   }
+
+
+
    /**
-    * @return the name of this mapper
+    * INSTANCE VARIABLES
     */
-   String getName();
+   final private String name;
 }

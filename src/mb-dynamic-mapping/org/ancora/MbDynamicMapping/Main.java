@@ -22,7 +22,7 @@ import org.ancora.MbDynamicMapping.App.CommandLineParser;
 import org.ancora.MbDynamicMapping.App.Execution;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlaze.Trace.TraceReader;
-import org.ancora.SharedLibrary.MbDynamicMapping.IoUtils;
+import org.ancora.SharedLibrary.LoggingUtils;
 
 /**
  *
@@ -34,7 +34,9 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+       LoggingUtils.setupConsoleOnly();
+
+       // TODO code application logic here
        //System.out.println("hello");
        protoInit(args);
     }
@@ -42,8 +44,14 @@ public class Main {
    private static void protoInit(String[] args) {
       List<Execution> executions = CommandLineParser.parseCommandLine(args);
 
+      // Check if parsing went well
+      if(executions == null) {
+         return;
+      }
+
       // Execute each "Execution"
       for(Execution execution : executions) {
+         System.out.println("Running Execution "+execution);
          run(execution);
       }
    }
@@ -59,7 +67,11 @@ public class Main {
       Instruction instruction = traceReader.nextInstruction();
       while(instruction != null) {
          execution.getPartitioner().accept(instruction);
+         instruction = traceReader.nextInstruction();
       }
+
+      // Finish run
+      execution.getPartitioner().flush();
    }
 
 }
