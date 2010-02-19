@@ -106,6 +106,8 @@ public class Cca {
          }
 
          if(distance > 1) {
+            //System.out.println("DestLine:"+line);
+            //System.out.println("InputLine:"+input.line);
             Coordinate coor = null;
             int numberOfMoves = distance-1;
             int startingLine = input.line+1;

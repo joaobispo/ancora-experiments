@@ -67,7 +67,7 @@ public class InfiniteCca implements Mapper {
       //boolean hasImm = false;
 
       for(Instruction inst : instructionBlock.getInstructions()) {
-
+         clearInstructionState();
 
          //if(inst.getOperation().equals("imm")) {
          //   hasImm = true;
@@ -79,8 +79,10 @@ public class InfiniteCca implements Mapper {
             boolean validReg = parseReadRegs(read);
          }
 
-         // Destination line is known; Add MOVE operations
-        /*
+         // Destination line is known; Increment it;
+         
+         //Add MOVE operations
+      
          for(int i=0; i<inputProducers.size(); i++) {
             Coordinate moveCoor = cca.addMoveOperations(destinationLine, inputProducers.get(i));
             // If MOVE operation where introduced, update currentProducers
@@ -90,7 +92,7 @@ public class InfiniteCca implements Mapper {
             }
              
          }
-        */
+        
 
          // Place operation
          Coordinate coor = cca.mapOperation(destinationLine, inst.getOperation(), inputProducers);
@@ -121,6 +123,7 @@ public class InfiniteCca implements Mapper {
       //if(hasImm) {
       //   System.out.println(cca);
       //}
+      //System.out.println(cca);
       //System.out.println("Live-Ins:"+liveIns);
       //System.out.println("Live-Outs:"+liveOuts);
       updateStats();
@@ -144,6 +147,13 @@ public class InfiniteCca implements Mapper {
    }
 
 
+   private void clearInstructionState() {
+      this.destinationLine = 0;
+      this.inputProducers = new ArrayList<Coordinate>();
+      this.inputRegisters = new ArrayList<Integer>();
+   }
+
+
    private boolean parseReadRegs(Integer read) {
       // When reading, R0 is equivalent to literal 0
       if(read == 0) {
@@ -157,9 +167,10 @@ public class InfiniteCca implements Mapper {
          destinationLine = Math.max(destinationLine, (coor.getLine()+1));
          inputProducers.add(coor);
          inputRegisters.add(read);
-         if(read == null) {
-            System.out.println("READ == null");
-         }
+
+         //System.out.println("Register "+read+" @ line "+coor.getLine());
+         //System.out.println("Destination Line:"+destinationLine);
+
       } else {
          liveIns.add(read);
       }
@@ -211,6 +222,7 @@ public class InfiniteCca implements Mapper {
 
     private Cca cca;
     private Monitor monitor;
+
 
 
 
