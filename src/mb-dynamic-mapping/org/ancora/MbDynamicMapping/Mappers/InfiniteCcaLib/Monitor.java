@@ -70,6 +70,7 @@ public class Monitor {
          builder.append("Special:\n");
          builder.append("MOVE Instructions (Average):"+getMovesPerBlockAverage()+"\n");
          builder.append("Not Move Instructions (Average):"+getInstructionsPerBlockAverage()+"\n");
+         builder.append("Normal Instructions per Move Inst. (Average):"+getNormalInstructionsPerMoveInstructions()+"\n");
       }
 
       return builder.toString();
@@ -116,6 +117,10 @@ public class Monitor {
    public int getMappedNotMoveInstructions() {
       //return totalMappedInstructions-totalMoveInstructions;
       return totalMappedInstructions;
+   }
+
+   public float getNormalInstructionsPerMoveInstructions() {
+      return (float)getMappedNotMoveInstructions()/(float)totalMoveInstructions;
    }
 
    /**
