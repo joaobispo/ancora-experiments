@@ -17,6 +17,7 @@
 
 package org.ancora.MbDynamicMapping.Interface;
 
+import java.util.List;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 
 /**
@@ -36,14 +37,26 @@ public class InstructionBlock {
       this.instructions[0] = instruction;
       this.penaltyInstructions = new Instruction[0];
       this.iterations = 1;
+      this.id = -1;
    }
 
+   /**
+    * Builds an instruction block from a list of instructions, which iterates only
+    * one time.
+    * 
+    * @param mapToHardware
+    * @param instructions
+    */
+   public InstructionBlock(boolean mapToHardware, List<Instruction> instructions) {
+      this(mapToHardware, instructions.toArray(new Instruction[instructions.size()]), new Instruction[0], 1);
+   }
 
    public InstructionBlock(boolean mapToHardware, Instruction[] instructions, Instruction[] penaltyInstructions, int iterations) {
       this.mapToHardware = mapToHardware;
       this.instructions = instructions;
       this.penaltyInstructions = penaltyInstructions;
       this.iterations = iterations;
+      this.id = -1;
    }
 
    
@@ -87,6 +100,24 @@ public class InstructionBlock {
       return instructions.length * iterations;
    }
 
+   /**
+    * @return a number with uniquely identifies this block of instructions.
+    */
+   public long getId() {
+      return id;
+   }
+
+   /**
+    * Sets the ID of this InstructionBlock.
+    * 
+    * @param id
+    */
+   public void setId(long id) {
+      this.id = id;
+   }
+
+
+
 
 
    /**
@@ -96,4 +127,5 @@ public class InstructionBlock {
    private Instruction[] instructions;
    private Instruction[] penaltyInstructions;
    private int iterations;
+   private long id;
 }

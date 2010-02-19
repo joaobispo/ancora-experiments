@@ -46,12 +46,20 @@ public class NoCustomHardware implements Mapper {
 
    @Override
    public void flush() {
-      System.out.println("Total Instructions: "+totalInstructions);
+      //System.out.println("Total Instructions: "+totalInstructions);
    }
+
+   @Override
+   public int getTotalMappedInstructions() {
+      return totalInstructions;
+   }
+
 
    /**
     * INSTANCE VARIABLES
     */
    private int totalInstructions;
+
+
 
 }

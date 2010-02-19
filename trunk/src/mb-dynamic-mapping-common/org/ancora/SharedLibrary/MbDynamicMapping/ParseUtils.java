@@ -15,22 +15,26 @@
  *  under the License.
  */
 
-package org.ancora.MbDynamicMapping.Interface;
+package org.ancora.SharedLibrary.MbDynamicMapping;
 
 /**
- * Maps blocks of instructions between the MicroBlaze and custom hardware.
  *
  * @author Joao Bispo
  */
-public interface Mapper extends InstructionBlockListener {
-   /**
-    * @return the name of this mapper
-    */
-   String getName();
+public class ParseUtils {
 
    /**
-    * @return the total number of instructions mapped in hardware plus the
-    * instructions given to the MicroBlaze.
+    * Adds spaces to the end of the given string until it has the desired size.
+    * @param string
+    * @param length
+    * @return
     */
-   int getTotalMappedInstructions();
+   public static String padRight(String s, int n) {
+      return String.format("%1$-" + n + "s", s);
+   }
+
+   public static String padLeft(String s, int n) {
+      return String.format("%1$#" + n + "s", s);
+   }
+
 }

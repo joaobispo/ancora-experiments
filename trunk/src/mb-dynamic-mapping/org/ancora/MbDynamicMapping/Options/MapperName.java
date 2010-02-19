@@ -19,6 +19,7 @@ package org.ancora.MbDynamicMapping.Options;
 
 import java.util.logging.Logger;
 import org.ancora.MbDynamicMapping.Interface.Mapper;
+import org.ancora.MbDynamicMapping.Mappers.InfiniteCca;
 import org.ancora.MbDynamicMapping.Mappers.NoCustomHardware;
 
 /**
@@ -27,12 +28,15 @@ import org.ancora.MbDynamicMapping.Mappers.NoCustomHardware;
  * @author Joao Bispo
  */
 public enum MapperName {
-   nocustomhardware;
+   nocustomhardware,
+   infinitecca;
 
    public String getHelpMessage() {
       switch (this) {
          case nocustomhardware:
             return "Maps all instruction to the MicroBlaze Processor.";
+         case infinitecca:
+            return "Maps hardware instruction to an infinite CCA.";
          default:
             return "Message Not Defined";
       }
@@ -42,6 +46,8 @@ public enum MapperName {
       switch (this) {
          case nocustomhardware:
             return "NoCustomHardware";
+         case infinitecca:
+            return "InfiniteCCA";
          default:
             return "Name Not Defined";
       }
@@ -51,6 +57,8 @@ public enum MapperName {
       switch (this) {
          case nocustomhardware:
             return new NoCustomHardware();
+         case infinitecca:
+            return new InfiniteCca();
          default:
              Logger.getLogger(MapperName.class.getName()).
                  info("Mapper Constructor for '"+this.getName()+"' not defined.'");
