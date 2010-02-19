@@ -22,13 +22,10 @@ import org.ancora.MbDynamicMapping.Options.MapperName;
 import org.ancora.MbDynamicMapping.Options.ExecutionOption;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.ancora.MbDynamicMapping.Interface.Mapper;
-import org.ancora.MbDynamicMapping.Interface.Partitioner;
 
 /**
  * Parses lines of executions.
@@ -53,6 +50,11 @@ public class ExecutionParser {
     * @return
     */
    public Execution[] parseExecutionLine(String executionLine, int line) {
+      // Check if line is a comment
+      if(executionLine.startsWith("//")) {
+         return null;
+      }
+
       // Split execution line
       String[] options = executionLine.split(" ");
 

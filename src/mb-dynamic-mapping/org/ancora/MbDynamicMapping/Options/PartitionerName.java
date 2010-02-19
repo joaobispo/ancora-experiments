@@ -19,6 +19,7 @@ package org.ancora.MbDynamicMapping.Options;
 
 import java.util.logging.Logger;
 import org.ancora.MbDynamicMapping.Interface.Partitioner;
+import org.ancora.MbDynamicMapping.Partitioners.BasicBlock;
 import org.ancora.MbDynamicMapping.Partitioners.NoPartition;
 
 /**
@@ -27,30 +28,38 @@ import org.ancora.MbDynamicMapping.Partitioners.NoPartition;
  * @author Joao Bispo
  */
 public enum PartitionerName {
-   nopartition;
+   nopartition,
+   basicblock;
 
   public String getHelpMessage() {
       switch(this) {
          case nopartition:
             return "Outputs blocks with one instruction, not mappable on custom hardware";
+         case basicblock:
+            return "Builds BasicBlocks, mappable on custom hardware. Inspects" +
+                    " the content of the instruction to determine the limits of the BasicBlock";
          default:
             return "Message Not Defined";
       }
   }
 
    public String getName() {
-       switch(this) {
+      switch (this) {
          case nopartition:
             return "NoPartition";
-          default:
-             return "Name Not Defined";
-       }
+         case basicblock:
+            return "BasicBlock";
+         default:
+            return "Name Not Defined";
+      }
    }
 
    public Partitioner getPartitioner() {
       switch (this) {
          case nopartition:
             return new NoPartition();
+         case basicblock:
+            return new BasicBlock();
          default:
              Logger.getLogger(PartitionerName.class.getName()).
                  info("Partitioner Constructor for '"+this.getName()+"' not defined.'");

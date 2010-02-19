@@ -15,22 +15,32 @@
  *  under the License.
  */
 
-package org.ancora.MbDynamicMapping.Interface;
+package org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib;
 
 /**
- * Maps blocks of instructions between the MicroBlaze and custom hardware.
  *
  * @author Joao Bispo
  */
-public interface Mapper extends InstructionBlockListener {
-   /**
-    * @return the name of this mapper
-    */
-   String getName();
+public class Coordinate {
+
+   public Coordinate(int line, int column) {
+      this.line = line;
+      this.column = column;
+   }
+
+   public int getLine() {
+      return line;
+   }
+
+   public int getColumn() {
+      return column;
+   }
+
+   
 
    /**
-    * @return the total number of instructions mapped in hardware plus the
-    * instructions given to the MicroBlaze.
+    * INSTANCE VARIABLES
     */
-   int getTotalMappedInstructions();
+   final int line;
+   final int column;
 }
