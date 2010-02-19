@@ -33,6 +33,8 @@ public class Cca {
       fuMatrix = new ArrayList<List<Fu>>();
       // Initialize first line
       fuMatrix.add(new ArrayList<Fu>());
+
+      moveOperations = 0;
    }
 
    public List<Fu> getLine(int line) {
@@ -58,9 +60,15 @@ public class Cca {
       
    }
 
+   /**
+    * @param line
+    * @param opName
+    * @param inputs
+    * @return the coordinate where the operation was mapped
+    */
    public Coordinate mapOperation(int line, String opName, List<Coordinate> inputs) {
       // Add move operations for given inputs, if needed
-      addMoveOperations(line, inputs);
+      //addMoveOperations(line, inputs);
 
       // Get the column
       List<Fu> fuLine = getLineSafe(line);
@@ -75,7 +83,47 @@ public class Cca {
    }
 
 
-   private void addMoveOperations(int line, List<Coordinate> inputs) {
+   /**
+    * Given a line and an input, returns null if no MOVE operations were added,
+    * or returns the coordinate of the last MOVE operation.
+    *
+    * @param line
+    * @param inputs
+    * @return
+    */
+   public Coordinate addMoveOperations(int line, Coordinate input) {
+      // Check distance between them input and line
+         int distance = line - input.line;
+         if(distance <= 0) {
+            Logger.getLogger(Cca.class.getName()).
+                    warning("Input line:"+input.line+"; Consumer line:"+line);
+            return null;
+         }
+
+         // No MOVE operations is needed
+         if(distance == 1) {
+            return null;
+         }
+
+         if(distance > 1) {
+            Coordinate coor = null;
+            int numberOfMoves = distance-1;
+            int startingLine = input.line+1;
+            for(int i=0; i<numberOfMoves; i++) {
+               coor = mapOperation(startingLine+i, MOVE_OPERATION, new ArrayList<Coordinate>());
+               moveOperations++;
+            }
+
+            return coor;
+         }
+
+         
+      Logger.getLogger(Cca.class.getName()).
+              warning("Should not reach this place");
+      return null;
+   }
+    /*
+   public Coordinate addMoveOperations(int line, List<Coordinate> inputs) {
       // For each input, check distance between them
       for(Coordinate input : inputs) {
          int distance = line - input.line;
@@ -93,6 +141,7 @@ public class Cca {
          }
       }
    }
+     */
 
    /**
     * If line does not exist, is created.
@@ -138,7 +187,25 @@ public class Cca {
       return builder.toString();
    }
 
+   public int getMoveOperations() {
+      return moveOperations;
+   }
+
+   public int getNumberMappedLines() {
+      return fuMatrix.size();
+   }
+
+   public int getNumberOfMappedOps() {
+      int totalOps = 0;
+      for(List<Fu> fuLine : fuMatrix) {
+         totalOps += fuLine.size();
+      }
+      return totalOps-moveOperations;
+   }
    
+   public float getIlp() {
+      return (float)getNumberOfMappedOps() / (float)getNumberMappedLines();
+   }
 
    /**
     * INSTANCE VARIABLES
@@ -148,5 +215,5 @@ public class Cca {
    private final String MOVE_OPERATION = "MOVE";
    private final int OPERATION_MAX_STRING_LENGHT = 7;
 
-
+   private int moveOperations;
 }

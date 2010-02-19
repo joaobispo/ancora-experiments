@@ -90,9 +90,11 @@ public class Main {
       if(traceInst != mapperInst) {
          System.out.println("Check Failed: Mapper total instructions '"+mapperInst+"';" +
                  " Should be '"+traceInst+"'");
-      } else {
-         System.out.println("Check Passed: Mapper Total Instructions.");
       }
+
+      //else {
+      //   System.out.println("Check Passed: Mapper Total Instructions.");
+      //}
 
    }
 

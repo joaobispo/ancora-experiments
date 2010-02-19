@@ -18,8 +18,8 @@
 package org.ancora.MbDynamicMapping.Mappers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +27,7 @@ import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
 import org.ancora.MbDynamicMapping.Interface.Mapper;
 import org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib.Cca;
 import org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib.Coordinate;
+import org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib.Monitor;
 import org.ancora.MbDynamicMapping.Options.MapperName;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 
@@ -37,7 +38,7 @@ import org.ancora.MicroBlaze.Instructions.Instruction;
 public class InfiniteCca implements Mapper {
 
    public InfiniteCca() {
-
+      this.monitor = new Monitor();
    }
 
 
@@ -49,21 +50,47 @@ public class InfiniteCca implements Mapper {
 
    @Override
    public int getTotalMappedInstructions() {
-      return 0;
+      return monitor.totalInstructions;
    }
 
    @Override
    public void accept(InstructionBlock instructionBlock) {
       clearState();
+      
+      monitor.totalInstructions += instructionBlock.getTotalInstructions();
+      if(instructionBlock.mapToHardware()) {
+         // If I put limitations in what can be mapped, this is not right.
+         monitor.totalMappedInstructions += instructionBlock.getTotalInstructions();
+         monitor.totalMappedBlocks += 1;
+      }
 
+      //boolean hasImm = false;
 
       for(Instruction inst : instructionBlock.getInstructions()) {
+
+
+         //if(inst.getOperation().equals("imm")) {
+         //   hasImm = true;
+         //}
 
          // Parse Read Registers
          for(Integer read : inst.getReadRegisters()) {
             
             boolean validReg = parseReadRegs(read);
          }
+
+         // Destination line is known; Add MOVE operations
+        /*
+         for(int i=0; i<inputProducers.size(); i++) {
+            Coordinate moveCoor = cca.addMoveOperations(destinationLine, inputProducers.get(i));
+            // If MOVE operation where introduced, update currentProducers
+            
+            if(moveCoor != null) {
+               currentProducers.put(inputRegisters.get(i), moveCoor);
+            }
+             
+         }
+        */
 
          // Place operation
          Coordinate coor = cca.mapOperation(destinationLine, inst.getOperation(), inputProducers);
@@ -89,23 +116,30 @@ public class InfiniteCca implements Mapper {
          }
           */
       }
-      System.out.println(cca);
+
+      //System.out.println("Number of Moves:"+cca.getMoveOperations());
+      //if(hasImm) {
+      //   System.out.println(cca);
+      //}
       //System.out.println("Live-Ins:"+liveIns);
       //System.out.println("Live-Outs:"+liveOuts);
+      updateStats();
    }
 
    @Override
    public void flush() {
       // Do Nothing
+      System.out.println(monitor.getStats());
    }
 
 
    private void clearState() {
       this.liveIns = new HashSet<Integer>();
       this.liveOuts = new HashSet<Integer>();
-      this.currentProducers = new HashMap<Integer, Coordinate>();
+      this.currentProducers = new Hashtable<Integer, Coordinate>();
       this.destinationLine = 0;
       this.inputProducers = new ArrayList<Coordinate>();
+      this.inputRegisters = new ArrayList<Integer>();
       this.cca = new Cca();
    }
 
@@ -122,6 +156,10 @@ public class InfiniteCca implements Mapper {
          // Calculate new candidate destination line
          destinationLine = Math.max(destinationLine, (coor.getLine()+1));
          inputProducers.add(coor);
+         inputRegisters.add(read);
+         if(read == null) {
+            System.out.println("READ == null");
+         }
       } else {
          liveIns.add(read);
       }
@@ -147,6 +185,20 @@ public class InfiniteCca implements Mapper {
       return true;
    }
 
+
+   private void updateStats() {
+      monitor.totalMoveInstructions += cca.getMoveOperations();
+      monitor.totalLiveIn += liveIns.size();
+      monitor.totalLiveOut += liveOuts.size();
+      //monitor.totalIlp += cca.getIlp();
+      monitor.totalCcaLines += cca.getNumberMappedLines();
+
+      monitor.maxIlp = Math.max(monitor.maxIlp, cca.getIlp());
+      monitor.maxMappedLines = Math.max(monitor.maxMappedLines, cca.getNumberMappedLines());
+      monitor.maxLiveIn = Math.max(monitor.maxLiveIn, liveIns.size());
+      monitor.maxLiveOut = Math.max(monitor.maxLiveOut, liveOuts.size());
+   }
+
    /**
     * INSTANCE VARIABLES
     */
@@ -155,8 +207,11 @@ public class InfiniteCca implements Mapper {
     private Set<Integer> liveOuts;
     private int destinationLine;
     private List<Coordinate> inputProducers;
+    private List<Integer> inputRegisters;
 
     private Cca cca;
+    private Monitor monitor;
+
 
 
 
