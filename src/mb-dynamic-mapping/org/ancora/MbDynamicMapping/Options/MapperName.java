@@ -19,7 +19,8 @@ package org.ancora.MbDynamicMapping.Options;
 
 import java.util.logging.Logger;
 import org.ancora.MbDynamicMapping.Interface.Mapper;
-import org.ancora.MbDynamicMapping.Mappers.InfiniteCca;
+import org.ancora.MbDynamicMapping.Mappers.CcaMapper;
+import org.ancora.MbDynamicMapping.Mappers.CcaMapperOld;
 import org.ancora.MbDynamicMapping.Mappers.NoCustomHardware;
 
 /**
@@ -58,7 +59,8 @@ public enum MapperName {
          case nocustomhardware:
             return new NoCustomHardware();
          case infinitecca:
-            return new InfiniteCca();
+            //return new CcaMapperOld();
+            return new CcaMapper();
          default:
              Logger.getLogger(MapperName.class.getName()).
                  info("Mapper Constructor for '"+this.getName()+"' not defined.'");

@@ -35,9 +35,9 @@ import org.ancora.MicroBlaze.Instructions.Instruction;
  *
  * @author Joao Bispo
  */
-public class InfiniteCca implements Mapper {
+public class CcaMapperOld implements Mapper {
 
-   public InfiniteCca() {
+   public CcaMapperOld() {
       this.monitor = new Monitor();
    }
 

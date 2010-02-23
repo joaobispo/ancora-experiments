@@ -17,6 +17,8 @@
 
 package org.ancora.SharedLibrary.MbDynamicMapping.DataContainer;
 
+import org.ancora.MbDynamicMapping.Architecture.Data;
+
 /**
  *
  * @author Joao Bispo
@@ -36,7 +38,9 @@ public class Coordinate {
       return column;
    }
 
-   
+   public String asDataString() {
+      return line+Data.FU_COORDINATE_SEPARATOR+column;
+   }
 
    /**
     * INSTANCE VARIABLES

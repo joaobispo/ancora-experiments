@@ -17,6 +17,8 @@
 
 package org.ancora.MbDynamicMapping.Architecture;
 
+import org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib.Coordinate;
+
 /**
  * Represents data inside the architecture.
  *
@@ -34,9 +36,30 @@ public class Data {
       literal,
       fu;
    }
+
+   public DataType getDataType() {
+      return dataType;
+   }
+
+   public String getValue() {
+      return value;
+   }
+
+   public Coordinate getValueAsCoordinate() {
+      String[] coordinate = value.split(FU_COORDINATE_SEPARATOR);
+      return new Coordinate(Integer.valueOf(coordinate[0]), Integer.valueOf(coordinate[1]));
+   }
+
+   public static String registerAsString(int reg) {
+      return REGISTER_PREFIX+reg;
+   }
+
    /**
     * INSTANCE VARIABLES
     */
    final private DataType dataType;
    final private String value;
+
+   final public static String FU_COORDINATE_SEPARATOR = ",";
+   final public static String REGISTER_PREFIX = "r";
 }

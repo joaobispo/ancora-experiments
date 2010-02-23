@@ -27,7 +27,7 @@ import org.ancora.SharedLibrary.MbDynamicMapping.DataContainer.Coordinate;
  */
 public class MicroblazeFu {
 
-   public MicroblazeFu(String operationName, List<MicroblazeFu> inputs, Coordinate coordinate) {
+   public MicroblazeFu(String operationName, List<Data> inputs, Coordinate coordinate) {
       this.operationName = operationName;
       this.inputs = inputs;
       this.coordinate = coordinate;
@@ -38,7 +38,7 @@ public class MicroblazeFu {
       return coordinate;
    }
 
-   public List<MicroblazeFu> getInputs() {
+   public List<Data> getInputs() {
       return inputs;
    }
 
@@ -46,12 +46,14 @@ public class MicroblazeFu {
       return operationName;
    }
 
-
+   public Data asData() {
+      return new Data(Data.DataType.fu, coordinate.asDataString());
+   }
 
    /**
     * INSTANCE VARIABLES
     */
    private String operationName;
-   private List<MicroblazeFu> inputs;
+   private List<Data> inputs;
    private Coordinate coordinate;
 }
