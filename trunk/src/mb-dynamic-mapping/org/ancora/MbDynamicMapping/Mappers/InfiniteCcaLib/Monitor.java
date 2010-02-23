@@ -36,6 +36,8 @@ public class Monitor {
    maxMappedLines = 0;
    maxLiveIn = 0;
    maxLiveOut = 0;
+
+   immInstructions = 0;
    }
 
    public void addMoveInstructions(int numberOfMoves) {
@@ -139,4 +141,6 @@ public class Monitor {
    public int maxMappedLines;
    public int maxLiveIn;
    public int maxLiveOut;
+
+   public int immInstructions;
 }
