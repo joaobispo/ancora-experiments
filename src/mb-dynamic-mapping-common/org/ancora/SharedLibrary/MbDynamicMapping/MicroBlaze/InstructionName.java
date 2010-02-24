@@ -59,7 +59,7 @@ public enum InstructionName {
          return valueOf(instructionName);
       } catch(IllegalArgumentException ex) {
          Logger.getLogger(InstructionName.class.getName()).
-                 warning("Could not find instruction '"+instructionName+"'");
+                 warning("Instruction not yet present in the list: '"+instructionName+"'");
          return null;
       }
    }

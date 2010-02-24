@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MbDynamicMapping.Architecture;
+package org.ancora.MbDynamicMapping.IR;
 
 import org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib.Coordinate;
 
@@ -24,20 +24,25 @@ import org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib.Coordinate;
  *
  * @author Joao Bispo
  */
-public class Data {
+public class Operand {
 
-   public Data(DataType dataType, String value) {
+   public Operand(OpType dataType, String value, int bitSize) {
       this.dataType = dataType;
       this.value = value;
+      this.bitSize = bitSize;
    }
 
-   public enum DataType {
+   public enum OpType {
       register,
       literal,
       fu;
+
+      public String getShortForm() {
+         return this.name().substring(0,1);
+      }
    }
 
-   public DataType getDataType() {
+   public OpType getOpType() {
       return dataType;
    }
 
@@ -54,11 +59,28 @@ public class Data {
       return REGISTER_PREFIX+reg;
    }
 
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append(dataType.getShortForm());
+      builder.append("_");
+      builder.append(value);
+      builder.append("(");
+      builder.append(bitSize);
+      builder.append(")");
+
+      return builder.toString();
+   }
+
+
+
    /**
     * INSTANCE VARIABLES
     */
-   final private DataType dataType;
+   final private OpType dataType;
    final private String value;
+   final private int bitSize;
 
    final public static String FU_COORDINATE_SEPARATOR = ",";
    final public static String REGISTER_PREFIX = "r";

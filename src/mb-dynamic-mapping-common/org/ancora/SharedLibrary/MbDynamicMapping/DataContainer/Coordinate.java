@@ -17,7 +17,7 @@
 
 package org.ancora.SharedLibrary.MbDynamicMapping.DataContainer;
 
-import org.ancora.MbDynamicMapping.Architecture.Data;
+import org.ancora.MbDynamicMapping.IR.Operand;
 
 /**
  *
@@ -39,7 +39,7 @@ public class Coordinate {
    }
 
    public String asDataString() {
-      return line+Data.FU_COORDINATE_SEPARATOR+column;
+      return line+Operand.FU_COORDINATE_SEPARATOR+column;
    }
 
    /**
