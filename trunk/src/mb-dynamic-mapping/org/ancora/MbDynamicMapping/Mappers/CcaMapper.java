@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import org.ancora.MbDynamicMapping.Architecture.GeneralInstruction;
 import org.ancora.MbDynamicMapping.Architecture.InfiniteForwardMatrix;
+import org.ancora.MbDynamicMapping.IR.MicroBlazeParsing;
+import org.ancora.MbDynamicMapping.IR.Operation;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
 import org.ancora.MbDynamicMapping.Interface.InstructionWindow;
 import org.ancora.MbDynamicMapping.Interface.Mapper;
@@ -71,9 +73,18 @@ public class CcaMapper implements Mapper {
       Instruction instruction = instWindow.nextInstruction();
       int immCounter = 0;
       while(instruction != null) {
+         Operation operation = MicroBlazeParsing.parseInstruction(instruction, instWindow);
+         /*
+         Operation operation = new Operation();
+         operation.setAddress(instruction.getAddress());
+         operation.setOperation(instruction.getOperation());
+         MicroBlazeParsing.parseOperandsType1(instruction, operation);
+         */
+          System.out.println(operation);
+
          // Parse instruction into a general instruction
          //GeneralInstruction gInst = GeneralInstruction.parseMicroblazeInstruction(instruction);
-
+/*
          if(!instruction.getOperation().equals(InstructionName.imm.getName())) {
             immCounter++;
          }
@@ -81,7 +92,8 @@ public class CcaMapper implements Mapper {
          // Check in instruction is "IMM". If yes, join instruction with the
          // next one.
          instruction = fuseImm(instruction, instWindow);
-
+*/
+         
          instruction = instWindow.nextInstruction();
 
       }

@@ -17,9 +17,11 @@
 
 package org.ancora.MbDynamicMapping.Architecture;
 
+import org.ancora.MbDynamicMapping.IR.Operand;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.MicroBlaze.Instructions.Instruction;
+import org.ancora.SharedLibrary.MbDynamicMapping.MicroBlaze.MicroBlazeParam;
 
 /**
  * Represents a general instruction which can be mapped on the RPU.
@@ -31,15 +33,15 @@ public class GeneralInstruction {
    public GeneralInstruction(int address, String operation) {
       this.address = address;
       this.operation = operation;
-      this.inputs = new ArrayList<Data>();
-      this.outputs = new ArrayList<Data>();
+      this.inputs = new ArrayList<Operand>();
+      this.outputs = new ArrayList<Operand>();
    }
 
-   public List<Data> getInputList() {
+   public List<Operand> getInputList() {
       return inputs;
    }
 
-   public List<Data> getOutputList() {
+   public List<Operand> getOutputList() {
       return outputs;
    }
 
@@ -58,14 +60,14 @@ public class GeneralInstruction {
       // Parse read registers
       Integer[] readRegs = mbInstruction.getReadRegisters();
       for(Integer reg : readRegs) {
-         Data newData = null;
+         Operand newData = null;
          // Check if is r0. If yes, this is considered as literal
          if(reg == 0) {
-            newData = new Data(Data.DataType.literal, Integer.toString(0));
+            newData = new Operand(Operand.OpType.literal, Integer.toString(0), MicroBlazeParam.REGISTER_SIZE_BITS);
          }
          //Add as a register
          else {
-            newData = new Data(Data.DataType.register, Data.registerAsString(reg));
+            newData = new Operand(Operand.OpType.register, Operand.registerAsString(reg), MicroBlazeParam.REGISTER_SIZE_BITS);
          }
 
          gInst.getInputList().add(newData);
@@ -74,13 +76,13 @@ public class GeneralInstruction {
       // Parse immediate
       Integer immReg = mbInstruction.getImmediate();
       if(immReg != null) {
-         gInst.getInputList().add(new Data(Data.DataType.literal, Data.registerAsString(immReg)));
+         gInst.getInputList().add(new Operand(Operand.OpType.literal, Operand.registerAsString(immReg), MicroBlazeParam.IMMEDIATE_SIZE_BITS));
       }
 
       // Parse output
       Integer writeReg = mbInstruction.getWriteRegister();
       if(writeReg != null) {
-         gInst.getOutputList().add(new Data(Data.DataType.register, Data.registerAsString(writeReg)));
+         gInst.getOutputList().add(new Operand(Operand.OpType.register, Operand.registerAsString(writeReg), MicroBlazeParam.REGISTER_SIZE_BITS));
       }
 
       return gInst;
@@ -91,6 +93,6 @@ public class GeneralInstruction {
     */
    private final int address;
    private final String operation;
-   private final List<Data> inputs;
-   private final List<Data> outputs;
+   private final List<Operand> inputs;
+   private final List<Operand> outputs;
 }

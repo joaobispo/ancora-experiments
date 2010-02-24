@@ -46,6 +46,20 @@ public class InstructionWindow {
    }
 
    /**
+    * Peeks the window to see if there are instructions left. If false, it means
+    * that a call to nextInstruction would return null. 
+    * 
+    * @return true if it still has instructions. False otherwise.
+    */
+   public boolean hasInstructions() {
+      if(pointer >= instructions.length) {
+         return false;
+      } else {
+        return true;
+      }
+   }
+
+   /**
     * Returns to the beginning of the stream
     */
    public void reset() {
