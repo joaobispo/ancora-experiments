@@ -28,7 +28,7 @@ import org.ancora.SharedLibrary.MicroBlazePackage.BitUtils;
  */
 public class Instruction {
 
-   public Instruction(int address, String operation, Integer[] registers) {
+   public Instruction(int address, InstructionName operation, Integer[] registers) {
       this.address = address;
       this.operation = operation;
       this.registers = registers;
@@ -129,7 +129,7 @@ public class Instruction {
       return address;
    }
 
-   public String getOperation() {
+   public InstructionName getOperation() {
       return operation;
    }
 
@@ -260,6 +260,6 @@ public class Instruction {
     * INSTANCE VARIABLES
     */
    private final int address;
-   private final String operation;
+   private final InstructionName operation;
    private final Integer[] registers;
 }

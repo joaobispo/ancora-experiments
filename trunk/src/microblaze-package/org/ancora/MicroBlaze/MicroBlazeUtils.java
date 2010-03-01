@@ -18,9 +18,9 @@
 package org.ancora.MicroBlaze;
 
 import java.util.Arrays;
-import org.ancora.MicroBlaze.Instructions.BranchInstruction;
 import org.ancora.MicroBlaze.Instructions.Instruction;
-import org.ancora.MicroBlaze.Instructions.InstructionWithDelaySlot;
+import org.ancora.MicroBlaze.Instructions.InstructionName;
+import org.ancora.MicroBlaze.Instructions.InstructionProperties;
 import org.ancora.SharedLibrary.MicroBlazePackage.ParseUtils;
 
 /**
@@ -91,6 +91,7 @@ public class MicroBlazeUtils {
       traceInstruction = traceInstruction.substring(whiteSpaceIndex).trim();
       whiteSpaceIndex = ParseUtils.indexOfFirstWhiteSpace(traceInstruction);
       String operationString = traceInstruction.substring(0, whiteSpaceIndex);
+      InstructionName operationEnum = InstructionName.getEnum(operationString);
 
       String registersString = traceInstruction.substring(whiteSpaceIndex).trim();
 
@@ -108,7 +109,7 @@ public class MicroBlazeUtils {
       registers = Instruction.buildRegisterArray(operationString, registers);
 
       // Build Instruction
-      Instruction instruction = new Instruction(instructionAddress, operationString,
+      Instruction instruction = new Instruction(instructionAddress, operationEnum,
               registers);
 
       return instruction;
@@ -119,7 +120,9 @@ public class MicroBlazeUtils {
     * @param operation the operation name (add, lw...)
     * @return true if the given MicroBlaze operation is a branch. False otherwise.
     */
-   public static boolean isBranch(String operation) {
+   public static boolean isBranch(InstructionName operation) {
+      return InstructionProperties.branchInstruction.contains(operation);
+/*
       boolean isBranch = true;
       try{
          BranchInstruction.valueOf(operation);
@@ -128,13 +131,16 @@ public class MicroBlazeUtils {
       }
 
       return isBranch;
+ */
    }
 
    /**
     * @param operation the operation name (add, lw...)
     * @return true if the given MicroBlaze operation has a delay slot.
     */
-   public static boolean hasDelaySlot(String operation) {
+   public static boolean hasDelaySlot(InstructionName operation) {
+      return InstructionProperties.instructionWithDelaySlot.contains(operation);
+      /*
       boolean hasDelaySlot = true;
       try{
          InstructionWithDelaySlot.valueOf(operation);
@@ -143,6 +149,7 @@ public class MicroBlazeUtils {
       }
 
       return hasDelaySlot;
+       */
    }
 
   
