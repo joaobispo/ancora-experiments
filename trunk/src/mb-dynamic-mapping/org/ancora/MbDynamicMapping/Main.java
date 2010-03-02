@@ -22,6 +22,7 @@ import java.util.List;
 import org.ancora.MbDynamicMapping.App.CommandLineParser;
 import org.ancora.MbDynamicMapping.App.Execution;
 import org.ancora.MbDynamicMapping.Options.TraceProperties;
+import org.ancora.MbDynamicMapping.Transition.DmeParser;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlaze.Trace.TraceReader;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -55,7 +56,8 @@ public class Main {
       // Execute each "Execution"
       for(Execution execution : executions) {
          System.out.println("Running Execution "+execution);
-         run(execution);
+         //run(execution);
+         testIR(execution);
          System.out.println(" ");
       }
    }
@@ -96,6 +98,31 @@ public class Main {
       //   System.out.println("Check Passed: Mapper Total Instructions.");
       //}
 
+   }
+
+
+   private static void testIR(Execution execution) {
+      // Setup Trace Reader
+      TraceReader traceReader = TraceReader.createTraceReader(execution.getTrace());
+
+      // Link Mapper to Partitioner
+      //execution.getPartitioner().addListener(execution.getMapper());
+
+      // Link DmeParser to Partitioner
+      execution.getPartitioner().addListener(new DmeParser());
+      
+      // Read instructions and feed them to the partitioner
+      Instruction instruction = traceReader.nextInstruction();
+      while(instruction != null) {
+         execution.getPartitioner().accept(instruction);
+         instruction = traceReader.nextInstruction();
+      }
+
+      // Finish run
+      execution.getPartitioner().flush();
+
+      // Treat data
+      treatData(execution);
    }
 
    //

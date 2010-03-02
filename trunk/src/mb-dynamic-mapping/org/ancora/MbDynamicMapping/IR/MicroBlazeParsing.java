@@ -20,7 +20,7 @@ package org.ancora.MbDynamicMapping.IR;
 import java.util.logging.Logger;
 import org.ancora.MbDynamicMapping.Interface.InstructionWindow;
 import org.ancora.MicroBlaze.Instructions.Instruction;
-import org.ancora.SharedLibrary.MbDynamicMapping.MicroBlaze.InstructionName;
+import org.ancora.MicroBlaze.Instructions.InstructionName;
 import org.ancora.SharedLibrary.MbDynamicMapping.MicroBlaze.MicroBlazeParam;
 
 /**
@@ -69,7 +69,8 @@ public class MicroBlazeParsing {
 
    public static Operation parseInstruction(Instruction mbInstruction, InstructionWindow instWindow) {
       // Get InstructionName enum
-      InstructionName instructionName = InstructionName.getEnum(mbInstruction.getOperation());
+//      InstructionName instructionName = InstructionName.getEnum(mbInstruction.getOperation());
+      InstructionName instructionName = mbInstruction.getOperation();
       Operation operation = new Operation();
 
       if(instructionName == null) {

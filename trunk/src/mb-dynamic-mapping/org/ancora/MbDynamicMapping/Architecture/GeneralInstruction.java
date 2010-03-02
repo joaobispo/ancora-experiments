@@ -55,7 +55,8 @@ public class GeneralInstruction {
     */
    public static GeneralInstruction parseMicroblazeInstruction(Instruction mbInstruction) {
       // Create GeneralInstruction
-      GeneralInstruction gInst = new GeneralInstruction(mbInstruction.getAddress(), mbInstruction.getOperation());
+      // MOD MBPACK
+      GeneralInstruction gInst = new GeneralInstruction(mbInstruction.getAddress(), mbInstruction.getOperation().getName());
 
       // Parse read registers
       Integer[] readRegs = mbInstruction.getReadRegisters();

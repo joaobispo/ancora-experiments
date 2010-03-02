@@ -257,7 +257,8 @@ public class CcaMapper implements Mapper {
 
       int newLiteral = BitUtils.fuseInt(instruction.getImmediate(), typeBInst.getImmediate());
 
-      typeBInst.setImmediate(newLiteral);
+      // MOD MBPACK
+      //typeBInst.setImmediate(newLiteral);
       return typeBInst;
    }
 
