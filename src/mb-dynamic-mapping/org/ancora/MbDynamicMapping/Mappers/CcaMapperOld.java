@@ -95,7 +95,8 @@ public class CcaMapperOld implements Mapper {
         
 
          // Place operation
-         Coordinate coor = cca.mapOperation(destinationLine, inst.getOperation(), inputProducers);
+         // MOD MBPACK
+         Coordinate coor = cca.mapOperation(destinationLine, inst.getOperation().name(), inputProducers);
 
          // Parse Write Register
          boolean validReg = parseWriteRegister(inst.getWriteRegister(), coor);
