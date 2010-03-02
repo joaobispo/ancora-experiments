@@ -20,6 +20,7 @@ package org.ancora.MbDynamicMapping.Transition;
 import java.util.Arrays;
 import java.util.List;
 import org.ancora.IrForDynamicMapping.Operation;
+import org.ancora.IrForDynamicMapping.OperationName;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlockListener;
 import org.ancora.MicroBlaze.Instructions.Instruction;
@@ -39,12 +40,17 @@ public class DmeParser implements InstructionBlockListener {
       List<Operation> operations = MbToIrParser.parseInstructions(instructions);
       // Show
       show(instructions, operations);
+      // Stats
+      //countAddAndMove(operations);
+
 
    }
 
    @Override
    public void flush() {
       // Do Nothing
+      //System.out.println("Number of add_intenger:"+addIntegerCounter);
+      //System.out.println("Number of move:"+moveCounter);
    }
 
    private void show(List<Instruction> instructions, List<Operation> operations) {
@@ -59,5 +65,27 @@ public class DmeParser implements InstructionBlockListener {
       }
       System.out.println(" ");
    }
+
+   private void countAddAndMove(List<Operation> operations) {
+      for(Operation operation : operations) {
+         OperationName opName = operation.getOperation();
+
+         if(opName == OperationName.integer_add) {
+            addIntegerCounter++;
+         }
+
+         if(opName == OperationName.move) {
+            moveCounter++;
+         }
+      }
+   }
+
+   /**
+    * INSTANCE VARIABLES
+    */
+   private int addIntegerCounter;
+   private int moveCounter;
+
+
 
 }

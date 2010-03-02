@@ -17,7 +17,9 @@
 
 package org.ancora.SharedLibrary.MbDynamicMapping;
 
+import java.util.EnumSet;
 import java.util.logging.Logger;
+import org.ancora.MicroBlaze.Instructions.InstructionName;
 
 /**
  *
@@ -81,4 +83,44 @@ public class MicroBlazeUtils {
          return reg;
       }
    }
+
+   /**
+    * @param operation the operation name (add, lw...)
+    * @return true if the given MicroBlaze operation performs linking. False otherwise.
+    */
+   public static boolean performsLinking(InstructionName operation) {
+      return instructionWithLinking.contains(operation);
+   }
+
+   /**
+    * @param operation the operation name (add, lw...)
+    * @return true if the given MicroBlaze operation is an uncoditional branch
+    * which uses an absolute value. False otherwise.
+    */
+   public static boolean unconditionalBranchWithAbsoluteValue(InstructionName operation) {
+      return instructionWithAbsoluteUnconditionalBranch.contains(operation);
+   }
+
+   /**
+    * Instructions which perform linking
+    */
+   private static final EnumSet<InstructionName> instructionWithLinking = EnumSet.of(
+           InstructionName.brld,
+           InstructionName.brald,
+           InstructionName.brlid,
+           InstructionName.bralid
+   );
+
+   /**
+    * Instructions which are uncoditional branches with absolute values
+    */
+   private static final EnumSet<InstructionName> instructionWithAbsoluteUnconditionalBranch = EnumSet.of(
+           InstructionName.bra,
+           InstructionName.brad,
+           InstructionName.brald,
+           InstructionName.brai,
+           InstructionName.braid,
+           InstructionName.bralid
+   );
+
 }

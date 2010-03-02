@@ -17,6 +17,7 @@
 
 package org.ancora.IrForDynamicMapping;
 
+import java.util.logging.Logger;
 import org.ancora.MbDynamicMapping.IR.*;
 import org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib.Coordinate;
 
@@ -51,9 +52,25 @@ public class Operand {
       return value;
    }
 
+   public int getBitSize() {
+      return bitSize;
+   }
+
    public Coordinate getValueAsCoordinate() {
       String[] coordinate = value.split(FU_COORDINATE_SEPARATOR);
       return new Coordinate(Integer.valueOf(coordinate[0]), Integer.valueOf(coordinate[1]));
+   }
+
+   public int getValueAsIntegerLiteral() {
+      int result = 0;
+      try {
+         result = Integer.parseInt(value);
+      } catch(NumberFormatException e) {
+         Logger.getLogger(Operand.class.getName()).
+                 warning("Error when parsing '"+value+"' to an Integer.");
+      }
+
+      return result;
    }
 
    public static String registerAsString(int reg) {

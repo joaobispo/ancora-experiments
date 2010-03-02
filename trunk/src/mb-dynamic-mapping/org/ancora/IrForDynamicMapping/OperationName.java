@@ -27,12 +27,13 @@ public enum OperationName {
    integer_rsub(3,2),
    integer_and(2,1),
    move(1,1),
-   exit_equal(1,1),
-   exit_not_equal(1,1),
-   exit_less(1,1),
-   exit_less_or_equal(1,1),
-   exit_greater(1,1),
-   exit_greater_or_equal(1,1),
+   exit(1,0),
+   exit_equal(2,0),
+   exit_not_equal(2,0),
+   exit_less(2,0),
+   exit_less_or_equal(2,0),
+   exit_greater(2,0),
+   exit_greater_or_equal(2,0),
    invalid_op(0,0);
 
    private OperationName(int numInputs, int numOutputs) {
@@ -47,7 +48,6 @@ public enum OperationName {
    public int getNumOutputs() {
       return numOutputs;
    }
-
 
 
    /**

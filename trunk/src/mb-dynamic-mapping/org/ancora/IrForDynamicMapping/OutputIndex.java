@@ -23,7 +23,7 @@ package org.ancora.IrForDynamicMapping;
  */
 public enum OutputIndex {
 
-   arithmeticResult(0),
+   firstResult(0),
    carry(1);
 
    private OutputIndex(int index) {
