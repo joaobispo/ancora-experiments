@@ -26,13 +26,19 @@ import org.ancora.SharedLibrary.BitUtils;
  */
 public class Operation {
 
-   public Operation(int numInputs, int numOutputs) {
+
+   private Operation(int numInputs, int numOutputs) {
       this.address = 0;
       this.operation = OperationName.invalid_op;
       this.inputs = new Operand[numInputs];
       this.outputs = new Operand[numOutputs];
    }
 
+   public static Operation newOperation(OperationName operationName) {
+      Operation operation = new Operation(operationName.getNumInputs(), operationName.getNumOutputs());
+      operation.setOperation(operationName);
+      return operation;
+   }
 
    /*
    public Operation(int address, String operation) {
@@ -51,16 +57,16 @@ public class Operation {
       return address;
    }
 
-   /*
+   
    public Operand[] getInputs() {
       return inputs;
    }
-    */
-/*
+    
+
    public Operand[] getOutputs() {
       return outputs;
    }
-*/
+
    public void setAddress(int address) {
       this.address = address;
    }
@@ -69,7 +75,7 @@ public class Operation {
       this.inputs = inputs;
    }
 */
-   public void setOperation(OperationName operation) {
+   private void setOperation(OperationName operation) {
       this.operation = operation;
    }
 /*

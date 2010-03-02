@@ -37,70 +37,70 @@ public class ArithmeticAndLogic {
       Instruction instruction = instructions.get(index);
       InstructionName instructionName = instruction.getOperation();
 
-      OperationName operationName = OperationName.integer_add;
+      Operation operation = Operation.newOperation(OperationName.integer_add);
 
-      Operation operation = new Operation(operationName.getNumInputs(), operationName.getNumOutputs());
+      //OperationName operationName = OperationName.integer_add;
+      //Operation operation = new Operation(operationName.getNumInputs(), operationName.getNumOutputs());
+      // Set Operation
+      //operation.setOperation(operationName);
 
       // Set Address
       operation.setAddress(instruction.getAddress());
-      // Set Operation
-      operation.setOperation(operationName);
+      
 
       // Set inputs
       List<Operand> inputs = GeneralParsing.parseReadType1(instruction);
-      operation.setInput(InputIndex.firstAluOperand, inputs.get(0));
-      operation.setInput(InputIndex.secondAluOperand, inputs.get(1));
+      operation.setInput(InputIndex.firstOperand, inputs.get(0));
+      operation.setInput(InputIndex.secondOperand, inputs.get(1));
 
       // Set Output
       List<Operand> outputs = GeneralParsing.parseWriteType1(instruction);
-      operation.setOutput(OutputIndex.arithmeticResult, outputs.get(0));
+      operation.setOutput(OutputIndex.firstResult, outputs.get(0));
 
       switch(instructionName) {
          case add:
-            operation.setOutput(OutputIndex.carry, GeneralParsing.buildCarryRegister());
+            operation.setOutput(OutputIndex.carry, GeneralParsing.newMbCarryRegisterOperand());
             break;
          case addc:
-            operation.setInput(InputIndex.carry, GeneralParsing.buildCarryRegister());
-            operation.setOutput(OutputIndex.carry, GeneralParsing.buildCarryRegister());
+            operation.setInput(InputIndex.carry, GeneralParsing.newMbCarryRegisterOperand());
+            operation.setOutput(OutputIndex.carry, GeneralParsing.newMbCarryRegisterOperand());
             break;
          case addk:
             // Do Nothing
             break;
          case addkc:
-            operation.setInput(InputIndex.carry, GeneralParsing.buildCarryRegister());
+            operation.setInput(InputIndex.carry, GeneralParsing.newMbCarryRegisterOperand());
             break;
          case addi:
-            operation.setOutput(OutputIndex.carry, GeneralParsing.buildCarryRegister());
+            operation.setOutput(OutputIndex.carry, GeneralParsing.newMbCarryRegisterOperand());
             break;
          case addic:
-            operation.setInput(InputIndex.carry, GeneralParsing.buildCarryRegister());
-            operation.setOutput(OutputIndex.carry, GeneralParsing.buildCarryRegister());
+            operation.setInput(InputIndex.carry, GeneralParsing.newMbCarryRegisterOperand());
+            operation.setOutput(OutputIndex.carry, GeneralParsing.newMbCarryRegisterOperand());
             break;
          case addik:
             // Do Nothing
             break;
          case addikc:
-            operation.setInput(InputIndex.carry, GeneralParsing.buildCarryRegister());
+            operation.setInput(InputIndex.carry, GeneralParsing.newMbCarryRegisterOperand());
             break;
          default:
             Logger.getLogger(ArithmeticAndLogic.class.getName()).
                     warning("MicroBlaze Instruction '"+instructionName+"' does" +
-                    "not translate to an '"+operationName+"'");
+                    "not translate to an '"+operation.getOperation()+"'");
             break;
       }
 
       //
       // At this point, optimizations can be made
       //
-      if(GeneralParsing.COMPUTE_LITERALS) {
-         // Check if all inputs are literals
-         // Add literals and transform instruction in move
-      }
+      List<Operation> optimizedOperations = Optimizations.computeIntegerAddLiterals(operation);
+      
 
-      // Update index
+      // Update index - read one MicroBlaze instruction
       index++;
       // Update operation list
-      operations.add(operation);
+      operations.addAll(optimizedOperations);
 
       return index;
    }

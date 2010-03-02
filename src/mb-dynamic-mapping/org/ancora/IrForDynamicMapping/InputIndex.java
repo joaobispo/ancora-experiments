@@ -23,8 +23,8 @@ package org.ancora.IrForDynamicMapping;
  */
 public enum InputIndex {
 
-   firstAluOperand(0),
-   secondAluOperand(1),
+   firstOperand(0),
+   secondOperand(1),
    carry(2);
 
    private InputIndex(int index) {

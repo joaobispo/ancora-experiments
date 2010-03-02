@@ -45,7 +45,7 @@ public class MbToIrParser {
       return operations;
    }
 
-   private static int parseIntruction(List<Instruction> instructions, List<Operation> operations, int index) {
+   public static int parseIntruction(List<Instruction> instructions, List<Operation> operations, int index) {
       InstructionName instructionName = instructions.get(index).getOperation();
       switch(instructionName) {
          case add:
@@ -64,6 +64,30 @@ public class MbToIrParser {
             return ArithmeticAndLogic.parseIntegerAdd(instructions, operations, index);
          case addikc:
             return ArithmeticAndLogic.parseIntegerAdd(instructions, operations, index);
+         case br:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case bri:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case brd:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case brid:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case brld:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case brlid:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case bra:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case brai:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case brad:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case braid:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case brald:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
+         case bralid:
+            return Branches.parseUnconditionalBranch(instructions, operations, index);
             
          default:
             Logger.getLogger(MbToIrParser.class.getName()).
