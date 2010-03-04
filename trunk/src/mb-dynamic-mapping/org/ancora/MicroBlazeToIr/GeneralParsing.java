@@ -38,6 +38,7 @@ import org.ancora.MicroBlaze.MicroBlazeUtils;
  */
 public class GeneralParsing {
 
+
    /**
     * Does an operand parsing of type one to the read registers and immediate value.
     * @param instruction
@@ -84,7 +85,15 @@ public class GeneralParsing {
       // Parse output
       Integer writeReg = instruction.getWriteRegister();
       if(writeReg != null) {
-         operands.add(new Operand(Operand.OpType.register, Operand.registerAsString(writeReg), registerSize));
+         Operand newData;
+         // Check if is r0. If yes, this is considered as literal
+         if(writeReg == 0) {
+            newData = new Operand(Operand.OpType.literal, Integer.toString(0), registerSize);
+         } else {
+            newData = new Operand(Operand.OpType.register, Operand.registerAsString(writeReg), registerSize);
+         }
+
+         operands.add(newData);
       }
 
       return operands;
@@ -97,6 +106,10 @@ public class GeneralParsing {
 
    public static Operand newMbLiteralOperand(int value) {
       return new Operand(Operand.OpType.literal, Integer.toString(value), REGISTER_SIZE_BITS);
+   }
+
+   public static Operand newMbRegisterOperand(String register) {
+      return new Operand(Operand.OpType.register, register, REGISTER_SIZE_BITS);
    }
 
    /**
@@ -157,7 +170,7 @@ public class GeneralParsing {
     public static int getCarryOutAdd(int rA, int rB, int carry) {
         if(carry != 0 && carry != 1) {
             Logger.getLogger(GeneralParsing.class.getName()).
-                    warning("getCarryOut: Carry is different than 0 or 1 ("+
+                    warning("Carry is different than 0 or 1 ("+
                     carry+")");
         }
 
@@ -176,6 +189,45 @@ public class GeneralParsing {
 
         // Do the summation
         long result = lRa + lRb + lCarry;
+
+        //System.out.println("Result:"+Long.toBinaryString(result));
+
+        // Get the carry bit
+        int carryOut = (int) ((result & MASK_BIT_33) >>> 32);
+        return carryOut;
+    }
+
+    /**
+     * Calculates the carryOut of the reverse subtraction of rA with rB and
+     * carry. Operation is rB + ~rA + carry.
+     *
+     * @param rA
+     * @param rB
+     * @param carry the carry from the previous operation. Should be 0 or 1.
+     * @return 1 if there is carry out, or 0 if not.
+     */
+    public static int getCarryOutRsub(int rA, int rB, int carry) {
+        if(carry != 0 && carry != 1) {
+            Logger.getLogger(GeneralParsing.class.getName()).
+                    warning("Carry is different than 0 or 1 ("+
+                    carry+")");
+        }
+
+        //System.out.println("rA:"+Integer.toBinaryString(rA));
+        //System.out.println("rB:"+Integer.toBinaryString(rB));
+
+        // Extend operands to long and mask them
+        long lRa = rA & MASK_32_BITS;
+        long lRb = rB & MASK_32_BITS;
+        // Carry must be 0 or 1, it shouldn't need to be masked.
+        long lCarry = carry;
+
+
+        //System.out.println("lRa:"+Long.toBinaryString(lRa));
+        //System.out.println("lRb:"+Long.toBinaryString(lRb));
+
+        // Do the summation
+        long result = lRb + ~lRa + lCarry;
 
         //System.out.println("Result:"+Long.toBinaryString(result));
 
@@ -213,11 +265,77 @@ public class GeneralParsing {
          Operand inputLiteral = new Operand(OpType.literal, Integer.toString(instruction.getAddress()), REGISTER_SIZE_BITS);
 
          Operation moveOperation = Operation.newOperation(OperationName.move);
+         moveOperation.setAddress(instruction.getAddress());
          moveOperation.setInput(InputIndex.firstOperand, inputLiteral);
          moveOperation.setOutput(OutputIndex.firstResult, outputs.get(0));
 
          operations.add(moveOperation);
       }
+   }
+
+       /**
+     * Returns true if a is greater than b.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static boolean unsignedComp(int a, int b) {
+            // Unsigned Comparison
+            long longA = a & MASK_32_BITS;
+            long longB = b & MASK_32_BITS;
+            return longA > longB;
+    }
+
+   /**
+    * Clears a specific bit of an int.
+    *
+    * @param bit the bit to clear. The least significant bit is bit 0
+    * @param target the integer where the bit will be cleared
+    * @return the updated value of the target
+    */
+   public static int clearBit(int bit, int target) {
+      // Create mask
+      int mask = 1 << bit;
+      // Clear bit
+      return target & ~mask;
+   }
+
+    /**
+     * Performs a 32-bit unsigned division.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static int unsignedDiv(int a, int b) {
+         final long la = a & MASK_32_BITS;
+         final long lb = b & MASK_32_BITS;
+
+         return (int) (la / lb);
+    }
+
+       /**
+    * Fuses the lower 16 bits of two ints.
+    *
+    * TODO: Verify correcteness.
+    * <p>Ex.:
+    * upper16 = 1001
+    * lower16 = 101
+    * result = 00000000000010010000000000000101
+    *
+    * @param upper16
+    * @param lower16
+    * @return
+    */
+   public static int fuseInt(int upper16, int lower16){
+      // Mask the 16 bits of each one
+      upper16 = upper16 & Integer.parseInt("0000FFFF", 16);
+      lower16 = lower16 & Integer.parseInt("0000FFFF", 16);
+      // Shift Upper16
+      upper16 = upper16 << 16;
+      // Merge
+      return upper16 | lower16;
    }
 
    /**
@@ -236,7 +354,7 @@ public class GeneralParsing {
    public static final String CARRY_REGISTER_NAME = "msr_c";
 
    public static boolean COMPUTE_LITERALS = true;
-
+   public static boolean REMOVE_WRITES_TO_LITERALS = true;
 
 
 
