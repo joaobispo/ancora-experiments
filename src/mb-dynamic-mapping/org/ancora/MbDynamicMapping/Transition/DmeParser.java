@@ -18,13 +18,16 @@
 package org.ancora.MbDynamicMapping.Transition;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.ancora.IrForDynamicMapping.Operation;
 import org.ancora.IrForDynamicMapping.OperationName;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlockListener;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlazeToIr.MbToIrParser;
+import org.ancora.SharedLibrary.BitUtils;
 
 /**
  *
@@ -32,8 +35,24 @@ import org.ancora.MicroBlazeToIr.MbToIrParser;
  */
 public class DmeParser implements InstructionBlockListener {
 
+   public DmeParser() {
+      shownBlocks = new HashSet<Integer>();
+   }
+
+
+
    @Override
    public void accept(InstructionBlock instructionBlock) {
+      // Check if instruction block wasn't shown already
+      int hash = calculateHash(instructionBlock.getInstructions());
+
+      // Check if hash was already seen
+      if(shownBlocks.contains(hash)) {
+         return;
+      } else {
+         shownBlocks.add(hash);
+      }
+
       // Transform array in list
       List<Instruction> instructions = Arrays.asList(instructionBlock.getInstructions());
       // Give them to the parser
@@ -54,7 +73,7 @@ public class DmeParser implements InstructionBlockListener {
    }
 
    private void show(List<Instruction> instructions, List<Operation> operations) {
-      System.out.println("Translated Instructions:");
+      System.out.println("Original/Translated Instructions:");
       System.out.println("-----------------------");
       for(Instruction instruction : instructions) {
          System.out.println(instruction);
@@ -63,6 +82,7 @@ public class DmeParser implements InstructionBlockListener {
       for(Operation operation : operations) {
          System.out.println(operation);
       }
+      System.out.println("-----------------------");
       System.out.println(" ");
    }
 
@@ -81,10 +101,28 @@ public class DmeParser implements InstructionBlockListener {
    }
 
    /**
+    * Calculate hash value for given list of instructions.
+    *
+    * @param instructions
+    * @return
+    */
+   private int calculateHash(Instruction[] instructions) {
+      int hash = 4;
+      for(Instruction instruction : instructions) {
+         hash = BitUtils.superFastHash(instruction.getAddress(), hash);
+      }
+
+      return hash;
+   }
+
+   /**
     * INSTANCE VARIABLES
     */
    private int addIntegerCounter;
    private int moveCounter;
+
+   private Set<Integer> shownBlocks;
+
 
 
 

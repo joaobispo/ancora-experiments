@@ -25,7 +25,9 @@ public enum InputIndex {
 
    firstOperand(0),
    secondOperand(1),
-   carry(2);
+   carry(2),
+   source_bit(1),
+   destination_bit(2);
 
    private InputIndex(int index) {
       this.index = index;
