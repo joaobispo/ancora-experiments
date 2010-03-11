@@ -18,6 +18,7 @@
 package org.ancora.MicroBlazeToIr;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Logger;
 import org.ancora.IrForDynamicMapping.InputIndex;
@@ -27,7 +28,6 @@ import org.ancora.IrForDynamicMapping.Operation;
 import org.ancora.IrForDynamicMapping.OperationName;
 import org.ancora.IrForDynamicMapping.OutputIndex;
 import org.ancora.MicroBlaze.Instructions.Instruction;
-import org.ancora.MicroBlaze.Instructions.InstructionName;
 import org.ancora.MicroBlaze.MicroBlazeUtils;
 
 /**
@@ -306,9 +306,13 @@ public class GeneralParsing {
      *
      * @param a
      * @param b
-     * @return
+     * @return a / b, or 0 if b == 0.
      */
     public static int unsignedDiv(int a, int b) {
+       if(b == 0) {
+          return 0;
+       }
+
          final long la = a & MASK_32_BITS;
          final long lb = b & MASK_32_BITS;
 
@@ -355,6 +359,24 @@ public class GeneralParsing {
 
    public static boolean COMPUTE_LITERALS = true;
    public static boolean REMOVE_WRITES_TO_LITERALS = true;
+
+   public static final EnumSet<OperationName> isBinaryOperationOpt = EnumSet.of(
+           OperationName.integer_mul,
+           OperationName.integer_div,
+           OperationName.integer_div_unsigned,
+           OperationName.integer_and,
+           OperationName.integer_and_not,
+           OperationName.integer_or,
+           OperationName.integer_xor,
+           OperationName.integer_srl,
+           OperationName.integer_sll,
+           OperationName.integer_sra,
+           OperationName.integer_compare_msb,
+           OperationName.integer_compare_msb_unsigned);
+
+   public static final EnumSet<OperationName> isCarryOperationOpt = EnumSet.of(
+           OperationName.integer_add,
+           OperationName.integer_rsub);
 
 
 

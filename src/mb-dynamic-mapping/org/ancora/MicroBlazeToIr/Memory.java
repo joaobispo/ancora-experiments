@@ -60,7 +60,9 @@ public class Memory {
       addOp.setInput(InputIndex.secondOperand, secondOperand);
       addOp.setOutput(OutputIndex.firstResult, tempRegister);
 
-      newOperations.add(addOp);
+      // Optimize operations
+      List<Operation> optimizedOperations = Optimizations.computeLiteralsOfCarryOperation(addOp);
+      newOperations.addAll(optimizedOperations);
 
       Operation memOp = Operation.newOperation(operationName);
 
