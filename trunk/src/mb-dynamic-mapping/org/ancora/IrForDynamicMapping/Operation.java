@@ -40,6 +40,28 @@ public class Operation {
       return operation;
    }
 
+   /**
+    * Creates a copy of the operation
+    * @param operation
+    * @return
+    */
+   public Operation copy() {
+      Operation newOperation = new Operation(this.inputs.length, this.outputs.length);
+
+      newOperation.address = this.address;
+      newOperation.operation = this.operation;
+
+      for(int i=0; i<newOperation.inputs.length;i++) {
+         newOperation.inputs[i] = this.inputs[i];
+      }
+
+      for(int i=0; i<newOperation.outputs.length;i++) {
+         newOperation.outputs[i] = this.outputs[i];
+      }
+
+      return newOperation;
+   }
+
    /*
    public Operation(int address, String operation) {
       this.address = address;
@@ -87,8 +109,16 @@ public class Operation {
       return inputs[index.getIndex()];
    }
 
+   public Operand getInput(int index) {
+      return inputs[index];
+   }
+
    public Operand getOutput(OutputIndex index) {
       return outputs[index.getIndex()];
+   }
+
+   public Operand getOutput(int index) {
+      return outputs[index];
    }
 
    public void setInput(InputIndex index, Operand operand) {
@@ -97,6 +127,14 @@ public class Operation {
 
    public void setOutput(OutputIndex index, Operand operand) {
       outputs[index.getIndex()] = operand;
+   }
+
+   public void setInput(int index, Operand operand) {
+      inputs[index] = operand;
+   }
+
+   public void setOutput(int index, Operand operand) {
+      outputs[index] = operand;
    }
 
    @Override

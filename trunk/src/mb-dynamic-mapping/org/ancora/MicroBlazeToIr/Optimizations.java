@@ -45,6 +45,7 @@ public class Optimizations {
      if(GeneralParsing.REMOVE_WRITES_TO_LITERALS) {
          // Check if output is a literal
          if(operation.getOutput(OutputIndex.firstResult).getOpType() == Operand.OpType.literal) {
+//            System.out.println("removed "+operation);
             return operations;
          }
       }
@@ -109,6 +110,7 @@ public class Optimizations {
       if(GeneralParsing.REMOVE_WRITES_TO_LITERALS) {
          // Check if output is a literal
          if(operation.getOutput(OutputIndex.firstResult).getOpType() == Operand.OpType.literal) {
+//            System.out.println("removed "+operation);
             return operations;
          }
       }
