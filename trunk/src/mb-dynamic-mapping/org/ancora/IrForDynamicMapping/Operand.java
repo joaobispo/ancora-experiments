@@ -18,8 +18,6 @@
 package org.ancora.IrForDynamicMapping;
 
 import java.util.logging.Logger;
-import org.ancora.MbDynamicMapping.IR.*;
-import org.ancora.MbDynamicMapping.Mappers.InfiniteCcaLib.Coordinate;
 
 /**
  * Represents data inside the architecture.
@@ -75,6 +73,14 @@ public class Operand {
 
    public static String registerAsString(int reg) {
       return REGISTER_PREFIX+reg;
+   }
+
+   public static String coordinateAsString(int line, int col) {
+      return line+FU_COORDINATE_SEPARATOR+col;
+   }
+
+   public static String coordinateAsString(Coordinate coor) {
+      return coor.line+FU_COORDINATE_SEPARATOR+coor.column;
    }
 
    @Override

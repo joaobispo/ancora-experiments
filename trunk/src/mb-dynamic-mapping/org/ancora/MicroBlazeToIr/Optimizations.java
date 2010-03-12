@@ -199,6 +199,42 @@ public class Optimizations {
             return input1 >>> input2;
          case integer_xor:
             return input1 ^ input2;
+         case exit_equal:
+            if(input1 == 0) {
+               return 1;
+            } else {
+               return 0;
+            }
+         case exit_greater:
+            if(input1 > 0) {
+               return 1;
+            } else {
+               return 0;
+            }
+         case exit_greater_or_equal:
+            if(input1 >= 0) {
+               return 1;
+            } else {
+               return 0;
+            }
+         case exit_less:
+            if(input1 < 0) {
+               return 1;
+            } else {
+               return 0;
+            }
+         case exit_less_or_equal:
+            if(input1 <= 0) {
+               return 1;
+            } else {
+               return 0;
+            }
+         case exit_not_equal:
+            if(input1 != 0) {
+               return 1;
+            } else {
+               return 0;
+            }
 
          default:
             Logger.getLogger(Optimizations.class.getName()).

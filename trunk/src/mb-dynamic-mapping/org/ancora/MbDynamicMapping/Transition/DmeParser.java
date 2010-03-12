@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.ancora.InfiniteMapper.IfmMapper;
 import org.ancora.IrForDynamicMapping.Operation;
 import org.ancora.IrForDynamicMapping.OperationName;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
@@ -42,6 +43,8 @@ public class DmeParser implements InstructionBlockListener {
       optimizedOperationHistogram = new OperationHistogram();
 
       optimizations = new IrConstantPropagation();
+
+      mapper = new IfmMapper();
    }
 
 
@@ -111,15 +114,17 @@ public class DmeParser implements InstructionBlockListener {
       //countAddAndMove(operations);
 
       // Give operations to the mapper
-      
-
+      mapper.accept(operations);
+      mapper.saveStats();
+      mapper.clearArchitecture();
    }
 
    @Override
    public void flush() {
-      System.out.println(operationHistogram.toString());
-      System.out.println("-----------------Constant Propagation--------------");
-      System.out.println(optimizedOperationHistogram.toString());
+      mapper.showStats();
+      //System.out.println(operationHistogram.toString());
+      //System.out.println("-----------------Constant Propagation--------------");
+      //System.out.println(optimizedOperationHistogram.toString());
       //showHistogram();
 
 
@@ -230,6 +235,7 @@ public class DmeParser implements InstructionBlockListener {
    private Set<Integer> shownBlocks;
 
    private int mbInstructions;
+   private IfmMapper mapper;
 
 
 
