@@ -46,6 +46,7 @@ public class IfmMonitor {
    public String getStats() {
       StringBuilder builder = new StringBuilder();
 
+      builder.append("Total cycles:"+getTotalCycles()+"\n");
       //builder.append("Total Move Operations:"+totalMoveInstructions);
       builder.append("Averages:\n");
       builder.append("Live-Ins Per Block (Average):"+getLiveInPerBlockAverage()+"\n");
@@ -114,6 +115,10 @@ public class IfmMonitor {
 
    public float getNormalInstructionsPerMoveInstructions() {
       return (float)getMappedNotMoveInstructions()/(float)totalMoveInstructions;
+   }
+
+   public int getTotalCycles() {
+      return totalCcaLines;
    }
 
    /**
