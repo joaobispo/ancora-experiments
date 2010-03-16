@@ -148,6 +148,9 @@ public class IfmMapper {
       Operand literal = operation.getInput(InputIndex.firstOperand);
       literalsTable.put(registerName, literal);
 
+      // Remove register from current producers, if it is there
+      currentProducers.remove(registerName);
+
       return true;
    }
 
@@ -176,11 +179,16 @@ public class IfmMapper {
          }
 
          if(opInputs[i].getOpType() == Operand.OpType.register) {
-            
-
-            // Check if current producers have this register
+            // This can be combine in one class
             String register = opInputs[i].getValue();
-            Operand op = currentProducers.get(register);
+            Operand op = null;
+            // Check if literals table has this register
+            op = literalsTable.get(register);
+            // Check if current producers have this register
+            if(op == null) {
+               op = currentProducers.get(register);
+            }
+            
             if(op == null) {
                liveIns.add(register);
             } else {
@@ -246,6 +254,7 @@ public class IfmMapper {
          // Update current producers table
          String registerName = opOutputs[i].getValue();
          currentProducers.put(registerName, output);
+         literalsTable.remove(registerName);
 
          // Check if it is a temporary register
          boolean isTempReg = isTempReg(registerName);
