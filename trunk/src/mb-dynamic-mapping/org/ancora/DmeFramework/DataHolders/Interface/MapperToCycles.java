@@ -15,26 +15,19 @@
  *  under the License.
  */
 
-package org.ancora.DmeFramework.System;
+package org.ancora.DmeFramework.DataHolders.Interface;
+
+import java.util.List;
+import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.CycleType;
+import org.ancora.DmeFramework.Interfaces.MapperMonitor;
 
 /**
- * Collects data for a MicroBlaze-RPU system.
+ * Transform the data in an MapperMonitor into ExecutionSteps
  *
  * @author Joao Bispo
  */
-public class MonitorMbRpu {
+public interface MapperToCycles {
 
-   //public void
-
-   public void addMicroBlazeCycles(int cycles) {
-
-   }
-
-   public void addRpuCycles(int cycles) {
-      
-   }
-   
-   /**
-    * INSTANCE VARIABLES
-    */
+   void getExecutionSteps(MapperMonitor monitor, List<Integer> executionCycles,
+           List<CycleType> executionTypes);
 }

@@ -17,11 +17,14 @@
 
 package org.ancora.DMExplorer;
 
+import java.io.File;
 import java.util.List;
 import org.ancora.DMExplorer.DataHolders.Execution;
 import org.ancora.DMExplorer.Options.TraceProperties;
 import org.ancora.DMExplorer.Parsers.CommandLineParser;
-import org.ancora.DmeFramework.System.SystemMbRpu;
+import org.ancora.DmeFramework.Statistics.MicroBlazeRpuDataProcess;
+import org.ancora.DmeFramework.System.MicroBlazeRpuMonitor;
+import org.ancora.DmeFramework.System.MicroBlazeRpuSystem;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlaze.Trace.TraceReader;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -78,8 +81,14 @@ public class Main {
       // Setup Trace Reader
       TraceReader traceReader = TraceReader.createTraceReader(execution.getTrace());
 
-      // Instantiate MicroBlaze-RPU system with given mapper
-      SystemMbRpu system = new SystemMbRpu(execution.getMapper());
+      // Get CPI (Cycles Per Instruction) of Trace
+      float traceCpi = getTraceCpi(execution.getTrace());
+
+      // Instantiate Monitor for the System
+      MicroBlazeRpuMonitor systemMonitor = new MicroBlazeRpuMonitor(traceCpi);
+
+      // Instantiate MicroBlaze-RPU system with given mapper and monitor
+      MicroBlazeRpuSystem system = new MicroBlazeRpuSystem(execution.getMapper(), systemMonitor);
 
       // Link System to Partitioner
       execution.getPartitioner().addListener(system);
@@ -95,14 +104,31 @@ public class Main {
       execution.getPartitioner().flush();
 
       // Output statistics
-      processData(execution, system);
+      //
+      MicroBlazeRpuDataProcess stats = new MicroBlazeRpuDataProcess(systemMonitor);
+      processData(stats);
    }
 
-   private static void processData(Execution execution, SystemMbRpu system) {
-      TraceProperties traceProps = Utils.getTraceProperties(execution.getTrace());
+
+   private static void processData(MicroBlazeRpuDataProcess stats) {
+      stats.showDiffMbCyclesSysHis();
+   }
+
+   
+   private static void processData(Execution execution, MicroBlazeRpuSystem system) {
+      System.out.println("Instructions executed on Mb:"+system.getMonitor().getMicroblazeExecutedInstructions());
+
 
       // See what kind of data we want to output here.
       // Probably should be work for another class.
    }
+    
+
+   private static float getTraceCpi(File trace) {
+      TraceProperties traceProps = Utils.getTraceProperties(trace);
+      return traceProps.getCpi();
+   }
+
+
 
 }

@@ -37,6 +37,10 @@ public class DummyPartitioner extends Partitioner {
 
    @Override
    public void accept(Instruction instruction) {
+      // Build InstructionBlock using only one instruction
+      InstructionBlock iBlock = new InstructionBlock(instruction);
+      // Use the instruction address as the hash
+      iBlock.setHash(instruction.getAddress());
       noticeListeners(new InstructionBlock(instruction));
    }
 
