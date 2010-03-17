@@ -43,7 +43,7 @@ public class MicroBlazeRpuDataProcess {
     * int values).
     */
    public void showDiffMbCyclesSysHis() {
-      int sysCycles = (int) StatsUtils.microBlazeCycles(monitor.getMicroblazeExecutedInstructions(), monitor.getTraceCpi());
+      int sysCycles = (int) StatsUtils.microBlazeCycles(monitor.getTotalMicroblazeInstructions(), monitor.getTraceCpi());
       int hisCycles = (int) (calcHistoryMbCycles()*monitor.getTraceCpi());
 
       System.out.println("MB SystemMonitor cycles:"+sysCycles);
@@ -63,6 +63,37 @@ public class MicroBlazeRpuDataProcess {
       return acc;
    }
 
+   public void showSpeedup() {
+      int totalMbInstructions = monitor.getTotalMicroblazeInstructions();
+      float cpi = monitor.getTraceCpi();
+      float cyclesMbWithoutMap = StatsUtils.microBlazeCycles(totalMbInstructions, cpi);
+
+      int executedMbInstructions = history.getSteps(StepType.MicroBlaze);
+      float cyclesMbWithMap = StatsUtils.microBlazeCycles(executedMbInstructions, cpi);
+
+      //Assume each communication and rpu step is equivalent to a cycle
+      int commSteps = history.getSteps(StepType.Communication);
+      //int commCycles = StatsUtils.communicationCycles(commSteps);
+
+      int rpuSteps = history.getSteps(StepType.RPU);
+
+      float mappedCycles = (float)commSteps + (float) rpuSteps + cyclesMbWithMap;
+
+      float speedup = cyclesMbWithoutMap / mappedCycles;
+
+      System.out.println("Cycles before Mapping:"+cyclesMbWithoutMap);
+      System.out.println("Cycles after Mapping:"+mappedCycles);
+      System.out.println("Communication Cycles:"+commSteps);
+      System.out.println("Speed-Up:"+speedup);
+   }
+
+   public void showIlp() {
+      int executedOperations = monitor.executedOperationsOnRpu();
+      int cyclesOnRpu = monitor.cyclesOfRpu();
+
+      float ilp = (float) executedOperations / (float) cyclesOnRpu;
+      System.out.println("ILP:"+ilp);
+   }
    /**
     * INSTANCE VARIABLES
     */

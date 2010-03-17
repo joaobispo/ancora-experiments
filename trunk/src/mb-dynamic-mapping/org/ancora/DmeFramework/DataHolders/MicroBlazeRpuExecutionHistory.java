@@ -59,6 +59,17 @@ public class MicroBlazeRpuExecutionHistory {
       mapper2steps.getExecutionSteps(monitor, executionSteps, executionTypes);
    }
 
+   public int getSteps(StepType type) {
+       int acc = 0;
+      for(int i=0; i<executionSteps.size(); i++) {
+         if(executionTypes.get(i) == type) {
+            acc += executionSteps.get(i);
+         }
+      }
+
+      return acc;
+   }
+
    public int getTotalSteps() {
       int acc = 0;
 

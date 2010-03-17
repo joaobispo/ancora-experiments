@@ -20,6 +20,7 @@ package org.ancora.DMExplorer.Plugins;
 import java.util.logging.Logger;
 import org.ancora.DMExplorer.Plugins.Dummies.DummyPartitioner;
 import org.ancora.DmeFramework.Interfaces.Partitioner;
+import org.ancora.PartitionerBasicBlock.BasicBlock;
 
 /**
  * Name of the supported partitioners.
@@ -47,7 +48,7 @@ public enum PartitionerName {
          case dummypartitioner:
             return "DummyPartitioner";
          case basicblock:
-            return "BasicBlock";
+            return BasicBlock.NAME;
          default:
             return "Name Not Defined";
       }
@@ -58,8 +59,7 @@ public enum PartitionerName {
          case dummypartitioner:
             return new DummyPartitioner();
          case basicblock:
-            //return new BasicBlock();
-            return null;
+            return new BasicBlock();
          default:
              Logger.getLogger(PartitionerName.class.getName()).
                  info("Partitioner Constructor for '"+this.getName()+"' not defined.'");

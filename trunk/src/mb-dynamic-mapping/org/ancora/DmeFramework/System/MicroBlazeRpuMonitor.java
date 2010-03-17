@@ -24,7 +24,6 @@ import org.ancora.DmeFramework.DataHolders.InstructionBlock;
 import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory;
 import org.ancora.DmeFramework.DataHolders.RpuExecution;
 import org.ancora.DmeFramework.Interfaces.MapperMonitor;
-import org.ancora.DmeFramework.Statistics.StatsUtils;
 
 /**
  * Collects data for a MicroBlaze-RPU system.
@@ -37,9 +36,13 @@ public class MicroBlazeRpuMonitor {
       this.traceCpi = traceCpi;
       this.rpuExecutions = new ArrayList<RpuExecution>();
 
-      microblazeExecutedInstructions = 0;
+      totalMicroBlazeInstructions = 0;
       executionHistory = new MicroBlazeRpuExecutionHistory(new SimpleRpuCommModel());
 
+   }
+
+   public void incrementTotalMicroBlazeInstructions(int instructions) {
+      totalMicroBlazeInstructions += instructions;
    }
 
    public void addMicroBlazeExecution(InstructionBlock instructionBlock) {
@@ -54,7 +57,7 @@ public class MicroBlazeRpuMonitor {
       int microBlazeInstructions = instructionBlock.getTotalInstructions();
 
       // Update MicroBlaze Instructions
-      microblazeExecutedInstructions += microBlazeInstructions;
+      //microblazeExecutedInstructions += microBlazeInstructions;
 
       // Build ExecutionHistory
       //float microBlazeCycles = StatsUtils.microBlazeCycles(microBlazeInstructions, traceCpi);
@@ -75,6 +78,10 @@ public class MicroBlazeRpuMonitor {
       // Build an RpuExecution
       int iterations = instructionBlock.getIterations();
       int hash = instructionBlock.getHash();
+      // WARNING
+      // Using directly mapperMonitor instead of copying it.
+      // It works, if the Mapper creates a new Monitor for each mapping, instead
+      // of reusing the same monitor object.
       RpuExecution newExec = new RpuExecution(mapperMonitor, iterations, hash);
       // Add execution
       rpuExecutions.add(newExec);
@@ -87,8 +94,8 @@ public class MicroBlazeRpuMonitor {
       return executionHistory;
    }
 
-   public int getMicroblazeExecutedInstructions() {
-      return microblazeExecutedInstructions;
+   public int getTotalMicroblazeInstructions() {
+      return totalMicroBlazeInstructions;
    }
 
    public List<RpuExecution> getRpuExecutions() {
@@ -99,13 +106,27 @@ public class MicroBlazeRpuMonitor {
       return traceCpi;
    }
 
-   
+   public int executedOperationsOnRpu() {
+      int acc = 0;
+      for(RpuExecution exec : rpuExecutions) {
+         acc+=exec.getMonitor().getMappedOperations();
+      }
+      return acc;
+   }
+
+   public int cyclesOfRpu() {
+      int acc = 0;
+      for(RpuExecution exec : rpuExecutions) {
+         acc+=exec.getMonitor().getCycles();
+      }
+      return acc;
+   }
 
    /**
     * INSTANCE VARIABLES
     */
    private float traceCpi;
-   private int microblazeExecutedInstructions;
+   private int totalMicroBlazeInstructions;
    private List<RpuExecution> rpuExecutions;
    private MicroBlazeRpuExecutionHistory executionHistory;
 }

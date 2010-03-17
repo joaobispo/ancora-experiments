@@ -112,16 +112,19 @@ public class Main {
 
    private static void processData(MicroBlazeRpuDataProcess stats) {
       //stats.showDiffMbCyclesSysHis();
+      stats.showSpeedup();
+      stats.showIlp();
    }
 
-   
+   /*
    private static void processData(Execution execution, MicroBlazeRpuSystem system) {
-      System.out.println("Instructions executed on Mb:"+system.getMonitor().getMicroblazeExecutedInstructions());
+      System.out.println("Instructions executed on Mb:"+system.getMonitor().getTotalMicroblazeInstructions());
 
 
       // See what kind of data we want to output here.
       // Probably should be work for another class.
    }
+    */
     
 
    private static float getTraceCpi(File trace) {

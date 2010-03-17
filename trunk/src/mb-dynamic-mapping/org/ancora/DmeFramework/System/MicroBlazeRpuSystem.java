@@ -51,7 +51,8 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
          monitor.addMicroBlazeExecution(instructionBlock);
        }
 
-      // Save stats to the monitor?
+      // Update number of MicroBlaze Instructions
+      monitor.incrementTotalMicroBlazeInstructions(instructionBlock.getTotalInstructions());
 
    }
 
