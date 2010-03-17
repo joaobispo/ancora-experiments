@@ -51,4 +51,6 @@ public interface Mapper {
     * @param numberOfExecutions
     */
    //void execute(int numberOfExecutions);
+
+   boolean hasMappingFailed();
 }

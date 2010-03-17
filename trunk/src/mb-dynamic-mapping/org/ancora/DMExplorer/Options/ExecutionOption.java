@@ -22,6 +22,8 @@ package org.ancora.DMExplorer.Options;
  * @author Joao Bispo
  */
 public enum ExecutionOption {
+   feeddistance,
+   pelinesize,
    settracefolder,
    trace,
    part,
@@ -29,6 +31,10 @@ public enum ExecutionOption {
 
    public String getHelpMessage() {
       switch(this) {
+         case feeddistance:
+            return "Sets the maximum distance for communication between PEs.";
+         case pelinesize:
+            return "Sets the maximum number of PEs per line. Use 0 for an infinite line.";
          case settracefolder:
             return "Sets the folder where the trace is";
          case trace:
@@ -44,6 +50,10 @@ public enum ExecutionOption {
 
    public String getName() {
       switch(this) {
+         case feeddistance:
+            return "feedDistance";
+         case pelinesize:
+            return "peLineSize";
          case settracefolder:
             return "setTraceFolder";
          case trace:

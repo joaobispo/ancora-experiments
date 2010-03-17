@@ -131,6 +131,38 @@ public class MicroBlazeRpuMonitor {
       return acc;
    }
 
+   public int getMaxLiveIn() {
+      int max = 0;
+      for(RpuExecution exec : rpuExecutions) {
+         max = Math.max(max, exec.getMonitor().getLiveIn());
+      }
+      return max;
+   }
+
+   public int getMaxLiveOut() {
+      int max = 0;
+      for(RpuExecution exec : rpuExecutions) {
+         max = Math.max(max, exec.getMonitor().getLiveOut());
+      }
+      return max;
+   }
+
+   public double getMaxIlp() {
+      double max = 0;
+      for(RpuExecution exec : rpuExecutions) {
+         max = Math.max(max, exec.getMonitor().getMaxIlp());
+      }
+      return max;
+   }
+
+   public int getMaxCycles() {
+      int max = 0;
+      for(RpuExecution exec : rpuExecutions) {
+         max = Math.max(max, exec.getMonitor().getCycles());
+      }
+      return max;
+   }
+
    /**
     * INSTANCE VARIABLES
     */

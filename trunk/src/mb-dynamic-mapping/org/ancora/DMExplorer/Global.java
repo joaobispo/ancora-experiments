@@ -15,37 +15,14 @@
  *  under the License.
  */
 
-package org.ancora.DmeFramework.Interfaces;
+package org.ancora.DMExplorer;
 
 /**
- * Statistics about the mapping
  *
  * @author Joao Bispo
  */
-public interface MapperMonitor {
+public class Global {
 
-   int getMaxIlp();
-
-   int getLiveIn();
-
-   int getLiveOut();
-
-   /**
-    * @return number of IR operations mapped
-    */
-   int getMappedOperations();
-
-   /**
-    * @return number of RPU elements used
-    */
-   int getMappedElements();
-
-   int getCycles();
-
-   /**
-    * Builds a copy of this MapperMonitor.
-    *
-    * @return a MapperMonitor
-    */
-   MapperMonitor copy();
+   public static int peLineSize = 0;
+   public static int feedDistance = 1;
 }

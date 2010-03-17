@@ -101,6 +101,14 @@ public class MicroBlazeRpuDataProcess {
       float ilp = (float) executedOperations / (float) cyclesOnRpu;
       System.out.println("ILP:"+ilp);
    }
+
+   public void showMax() {
+      System.out.println("Max Live-In:"+monitor.getMaxLiveIn());
+      System.out.println("Max Live-Out:"+monitor.getMaxLiveOut());
+      System.out.println("Max ILP:"+monitor.getMaxIlp());
+      System.out.println("Max Cycles:"+monitor.getMaxCycles());
+   }
+
    /**
     * INSTANCE VARIABLES
     */

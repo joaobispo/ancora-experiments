@@ -61,12 +61,19 @@ public class DummyMapper implements Mapper {
       dummyMonitor = dummy;
    }
 
+      @Override
+   public boolean hasMappingFailed() {
+      return false;
+   }
+
    /**
     * INSTANCE VARIABLES
     */
    //private int totalInstructions;
    private boolean shownMessage;
    private MapperMonitor dummyMonitor;
+
+
 
 
 

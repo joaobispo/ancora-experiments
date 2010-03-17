@@ -24,9 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.DMExplorer.DataHolders.Execution;
+import org.ancora.DMExplorer.Global;
 import org.ancora.DMExplorer.Options.ExecutionOption;
 import org.ancora.DMExplorer.Plugins.MapperName;
 import org.ancora.DMExplorer.Plugins.PartitionerName;
+import org.ancora.SharedLibrary.ParseUtils;
 
 /**
  * Parses lines of executions.
@@ -122,6 +124,20 @@ public class ExecutionParser {
                     info("Error in line '"+line+"': Folder '" + traceFolder + "' is not a valid folder.");
             return null;
          }
+      }
+
+      // Check if there is a PeLineSize
+      String peLineSize = options.get(ExecutionOption.pelinesize);
+      if (peLineSize != null) {
+         // Save data on Global Preferences
+         Global.peLineSize = ParseUtils.parseInt(peLineSize);
+      }
+
+      // Check if there is a FeedDistance
+      String feedDistance = options.get(ExecutionOption.feeddistance);
+      if (feedDistance != null) {
+         // Save data on Global Preferences
+         Global.feedDistance = ParseUtils.parseInt(feedDistance);
       }
 
       // Check for a set of execution variables

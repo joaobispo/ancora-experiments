@@ -26,8 +26,8 @@ import org.ancora.DmeFramework.Interfaces.MapperMonitor;
 public class IfmMapperMonitor implements MapperMonitor {
 
    @Override
-   public double getIlp() {
-      return (double) mappedOperations / (double) cycles;
+   public int getMaxIlp() {
+      return maxIlp;
    }
 
    @Override
@@ -68,4 +68,5 @@ public class IfmMapperMonitor implements MapperMonitor {
    int mappedOperations;
    int mappedElements;
    int cycles;
+   int maxIlp;
 }

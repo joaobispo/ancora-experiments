@@ -32,8 +32,9 @@ import org.ancora.SharedLibrary.MbDynamicMapping.ParseUtils;
  */
 public class InfiniteForwardMatrix {
 
-   public InfiniteForwardMatrix() {
+   public InfiniteForwardMatrix(int maxLineSize) {
       lines = new ArrayList<IfmMapperLine>();
+      this.maxLineSize = maxLineSize;
    }
 
    public int getFirstAvaliableColumn(int line) {
@@ -231,18 +232,6 @@ public class InfiniteForwardMatrix {
       return builder.toString();
    }
 
-
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   private List<IfmMapperLine> lines;
-
-   private int moveOperations;
-   private int totalOperations;
-
-   private final int OPERATION_MAX_STRING_LENGHT = 8;
-
    private void decrementMove(Fu fu) {
       if(fu.getOperation() == null) {
          moveOperations--;
@@ -254,6 +243,61 @@ public class InfiniteForwardMatrix {
          moveOperations++;
       }
    }
+
+   public int getFirstAvaliableLine(int from) {
+      boolean isAvaliable = isLineAvaliable(from);
+
+      if(isAvaliable) {
+         return from;
+      }
+
+      // Find an avaliable line
+      int nextLine = from+1;
+      while(!isLineAvaliable(nextLine)) {
+         nextLine++;
+      }
+      
+      return nextLine;
+
+   }
+
+   public int getSizeOfBiggestLine() {
+      int maxSize = 0;
+      for(IfmMapperLine line : lines) {
+         maxSize = Math.max(maxSize, line.getSize());
+      }
+      return maxSize;
+   }
+
+
+   public boolean isLineAvaliable(int line) {
+      // Size 0 means infinite matrix
+      if(maxLineSize == 0) {
+         return true;
+      }
+
+      // Check if line already maxxed the size
+      int col = getFirstAvaliableColumn(line);
+      if(col<maxLineSize) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+   /**
+    * INSTANCE VARIABLES
+    */
+   private List<IfmMapperLine> lines;
+   private int maxLineSize;
+
+   private int moveOperations;
+   private int totalOperations;
+
+   private final int OPERATION_MAX_STRING_LENGHT = 8;
+
+
+
 
 
 }
