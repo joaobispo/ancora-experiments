@@ -32,10 +32,11 @@ import org.ancora.MicroBlazeToIr.MbToIrParser;
  *
  * @author Joao Bispo
  */
-public class SystemMbRpu implements InstructionBlockListener {
+public class MicroBlazeRpuSystem implements InstructionBlockListener {
 
-   public SystemMbRpu(Mapper mapper) {
+   public MicroBlazeRpuSystem(Mapper mapper, MicroBlazeRpuMonitor systemMonitor) {
       this.mapper = mapper;
+      this.monitor = systemMonitor;
    }
 
     @Override
@@ -44,7 +45,10 @@ public class SystemMbRpu implements InstructionBlockListener {
 
        // Check if the block is for the RPU or for the MicroBlaze processor
        if (rpuMappable) {
-          mapToRpu(instructionBlock);
+          mapToRpu(instructionBlock, mapper);
+          monitor.addRpuExecution(instructionBlock, mapper.getMonitor());
+       } else {
+         monitor.addMicroBlazeExecution(instructionBlock);
        }
 
       // Save stats to the monitor?
@@ -52,7 +56,7 @@ public class SystemMbRpu implements InstructionBlockListener {
    }
 
 
-   private void mapToRpu(InstructionBlock instructionBlock) {
+   private static void mapToRpu(InstructionBlock instructionBlock, Mapper mapper) {
       // Transform MicroBlaze instructions in IR operations
       // Feed them to the mapper
       //throw new UnsupportedOperationException("Not yet implemented");
@@ -77,10 +81,17 @@ public class SystemMbRpu implements InstructionBlockListener {
       // Do Nothing
    }
 
+   public MicroBlazeRpuMonitor getMonitor() {
+      return monitor;
+   }
+
+   
+
    /**
     * INSTANCE VARIABLES
     */
    private Mapper mapper;
+   private MicroBlazeRpuMonitor monitor;
 
 
 

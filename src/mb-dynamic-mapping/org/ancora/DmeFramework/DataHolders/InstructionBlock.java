@@ -37,7 +37,7 @@ public class InstructionBlock {
       this.instructions[0] = instruction;
       this.penaltyInstructions = new Instruction[0];
       this.iterations = 1;
-      this.id = -1;
+      this.hash = -1;
    }
 
    /**
@@ -56,7 +56,7 @@ public class InstructionBlock {
       this.instructions = instructions;
       this.penaltyInstructions = penaltyInstructions;
       this.iterations = iterations;
-      this.id = -1;
+      this.hash = -1;
    }
 
    
@@ -103,8 +103,8 @@ public class InstructionBlock {
    /**
     * @return a number with uniquely identifies this block of instructions.
     */
-   public long getId() {
-      return id;
+   public int getHash() {
+      return hash;
    }
 
    /**
@@ -112,8 +112,8 @@ public class InstructionBlock {
     * 
     * @param id
     */
-   public void setId(long id) {
-      this.id = id;
+   public void setHash(int id) {
+      this.hash = id;
    }
 
 
@@ -127,5 +127,5 @@ public class InstructionBlock {
    private Instruction[] instructions;
    private Instruction[] penaltyInstructions;
    private int iterations;
-   private long id;
+   private int hash;
 }
