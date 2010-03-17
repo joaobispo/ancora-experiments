@@ -20,7 +20,7 @@ package org.ancora.DmeFramework.DataHolders;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.DmeFramework.Interfaces.MapperMonitor;
-import org.ancora.DmeFramework.DataHolders.Interface.MapperToCycles;
+import org.ancora.DmeFramework.DataHolders.Interface.MapperToSteps;
 
 /**
  * Records the history of executions.
@@ -29,47 +29,47 @@ import org.ancora.DmeFramework.DataHolders.Interface.MapperToCycles;
  */
 public class MicroBlazeRpuExecutionHistory {
 
-   public MicroBlazeRpuExecutionHistory(MapperToCycles mapper2cycles) {
-      this.executionCycles = new ArrayList<Integer>();
-      this.executionTypes = new ArrayList<CycleType>();
-      this.mapper2cycles = mapper2cycles;
+   public MicroBlazeRpuExecutionHistory(MapperToSteps mapper2steps) {
+      this.executionSteps = new ArrayList<Integer>();
+      this.executionTypes = new ArrayList<StepType>();
+      this.mapper2steps = mapper2steps;
    }
 
 
    public void addMicroBlazeExecution(int cycles) {
       // Check if last added execution is of type MicroBlaze
-      boolean isMicroBlazeType = lastAddedCycleIsOfType(CycleType.MicroBlaze);
+      boolean isMicroBlazeType = lastAddedStepIsOfType(StepType.MicroBlaze);
 
       // If it is, increment last cycle variable
       if(isMicroBlazeType) {
-         int index = executionCycles.size()-1;
-         int newCycles = executionCycles.get(index) + cycles;
-         executionCycles.set(index, newCycles);
+         int index = executionSteps.size()-1;
+         int newCycles = executionSteps.get(index) + cycles;
+         executionSteps.set(index, newCycles);
          return;
       }
 
       // Is not MicroBlaze type
       // Create new entry
-      executionCycles.add(cycles);
-      executionTypes.add(CycleType.MicroBlaze);
+      executionSteps.add(cycles);
+      executionTypes.add(StepType.MicroBlaze);
    }
 
    public void addRpuExecution(MapperMonitor monitor) {
-      // Delegate updates to the MapperToCycles
-      mapper2cycles.getExecutionSteps(monitor, executionCycles, executionTypes);
+      // Delegate updates to the MapperToSteps
+      mapper2steps.getExecutionSteps(monitor, executionSteps, executionTypes);
    }
 
-   public int getTotalCycles() {
+   public int getTotalSteps() {
       int acc = 0;
 
-      for(Integer i : executionCycles) {
+      for(Integer i : executionSteps) {
          acc += i;
       }
 
       return acc;
    }
 
-   private boolean lastAddedCycleIsOfType(CycleType cycleType) {
+   private boolean lastAddedStepIsOfType(StepType stepType) {
       // Check if there list is empty
       if(executionTypes.size() == 0) {
          return false;
@@ -77,7 +77,7 @@ public class MicroBlazeRpuExecutionHistory {
 
       // Get last type and compare
       int index = executionTypes.size()-1;
-      if(executionTypes.get(index) == cycleType) {
+      if(executionTypes.get(index) == stepType) {
          return true;
       } else {
          return false;
@@ -88,21 +88,21 @@ public class MicroBlazeRpuExecutionHistory {
    public String toString() {
       StringBuilder builder = new StringBuilder();
 
-      for(int i=0; i<executionCycles.size(); i++) {
+      for(int i=0; i<executionSteps.size(); i++) {
          builder.append(executionTypes.get(i));
          builder.append(":");
-         builder.append(executionCycles.get(i));
+         builder.append(executionSteps.get(i));
          builder.append("\n");
       }
 
       return builder.toString();
    }
 
-   public List<Integer> getExecutionCycles() {
-      return executionCycles;
+   public List<Integer> getExecutionSteps() {
+      return executionSteps;
    }
 
-   public List<CycleType> getExecutionTypes() {
+   public List<StepType> getExecutionTypes() {
       return executionTypes;
    }
 
@@ -111,13 +111,13 @@ public class MicroBlazeRpuExecutionHistory {
    /**
     * INSTANCE VARIABLES
     */
-   private List<Integer> executionCycles;
-   private List<CycleType> executionTypes;
-   private MapperToCycles mapper2cycles;
+   private List<Integer> executionSteps;
+   private List<StepType> executionTypes;
+   private MapperToSteps mapper2steps;
 
 
 
-   public enum CycleType {
+   public enum StepType {
       MicroBlaze,
       RPU,
       Communication

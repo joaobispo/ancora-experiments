@@ -18,7 +18,7 @@
 package org.ancora.DmeFramework.Statistics;
 
 import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory;
-import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.CycleType;
+import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.StepType;
 import org.ancora.DmeFramework.System.MicroBlazeRpuMonitor;
 
 /**
@@ -44,7 +44,7 @@ public class MicroBlazeRpuDataProcess {
     */
    public void showDiffMbCyclesSysHis() {
       int sysCycles = (int) StatsUtils.microBlazeCycles(monitor.getMicroblazeExecutedInstructions(), monitor.getTraceCpi());
-      int hisCycles = calcHistoryMbCycles();
+      int hisCycles = (int) (calcHistoryMbCycles()*monitor.getTraceCpi());
 
       System.out.println("MB SystemMonitor cycles:"+sysCycles);
       System.out.println("MB ExecutionHist cycles:"+hisCycles);
@@ -53,10 +53,10 @@ public class MicroBlazeRpuDataProcess {
    public int calcHistoryMbCycles() {
       int acc = 0;
       for(int i=0; i<history.getExecutionTypes().size(); i++) {
-         CycleType type = history.getExecutionTypes().get(i);
+         StepType type = history.getExecutionTypes().get(i);
 
-         if(type == CycleType.MicroBlaze) {
-            acc += history.getExecutionCycles().get(i);
+         if(type == StepType.MicroBlaze) {
+            acc += history.getExecutionSteps().get(i);
          }
       }
 

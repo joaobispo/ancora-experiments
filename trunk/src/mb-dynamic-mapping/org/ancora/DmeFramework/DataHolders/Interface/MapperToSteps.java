@@ -18,7 +18,7 @@
 package org.ancora.DmeFramework.DataHolders.Interface;
 
 import java.util.List;
-import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.CycleType;
+import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.StepType;
 import org.ancora.DmeFramework.Interfaces.MapperMonitor;
 
 /**
@@ -26,8 +26,8 @@ import org.ancora.DmeFramework.Interfaces.MapperMonitor;
  *
  * @author Joao Bispo
  */
-public interface MapperToCycles {
+public interface MapperToSteps {
 
    void getExecutionSteps(MapperMonitor monitor, List<Integer> executionCycles,
-           List<CycleType> executionTypes);
+           List<StepType> executionTypes);
 }

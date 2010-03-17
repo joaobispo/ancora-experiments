@@ -18,15 +18,15 @@
 package org.ancora.DmeFramework.System;
 
 import java.util.List;
-import org.ancora.DmeFramework.DataHolders.Interface.MapperToCycles;
-import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.CycleType;
+import org.ancora.DmeFramework.DataHolders.Interface.MapperToSteps;
+import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.StepType;
 import org.ancora.DmeFramework.Interfaces.MapperMonitor;
 
 /**
  *
  * @author Joao Bispo
  */
-public class SimpleRpuCommModel implements MapperToCycles {
+public class SimpleRpuCommModel implements MapperToSteps {
 
    /**
     * Adds three blocks:
@@ -39,14 +39,14 @@ public class SimpleRpuCommModel implements MapperToCycles {
     * @param executionTypes
     */
    @Override
-   public void getExecutionSteps(MapperMonitor monitor, List<Integer> executionCycles, List<CycleType> executionTypes) {
-      executionTypes.add(CycleType.Communication);
+   public void getExecutionSteps(MapperMonitor monitor, List<Integer> executionCycles, List<StepType> executionTypes) {
+      executionTypes.add(StepType.Communication);
       executionCycles.add(monitor.getLiveIn());
 
-      executionTypes.add(CycleType.RPU);
+      executionTypes.add(StepType.RPU);
       executionCycles.add(monitor.getCycles());
 
-      executionTypes.add(CycleType.Communication);
+      executionTypes.add(StepType.Communication);
       executionCycles.add(monitor.getLiveOut());
    }
 

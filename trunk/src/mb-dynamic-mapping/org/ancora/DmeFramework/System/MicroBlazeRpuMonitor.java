@@ -57,11 +57,11 @@ public class MicroBlazeRpuMonitor {
       microblazeExecutedInstructions += microBlazeInstructions;
 
       // Build ExecutionHistory
-      float microBlazeCycles = StatsUtils.microBlazeCycles(microBlazeInstructions, traceCpi);
-      int microBlazeCyclesInt = (int)microBlazeCycles;
+      //float microBlazeCycles = StatsUtils.microBlazeCycles(microBlazeInstructions, traceCpi);
+      //int microBlazeCyclesInt = (int)microBlazeCycles;
       //System.out.println("MicroBlazeCycles:"+microBlazeCycles);
       //System.out.println("MicroBlazeCyclesInt:"+microBlazeCyclesInt);
-      executionHistory.addMicroBlazeExecution(microBlazeCyclesInt);
+      executionHistory.addMicroBlazeExecution(microBlazeInstructions);
    }
 
    public void addRpuExecution(InstructionBlock instructionBlock, MapperMonitor mapperMonitor) {
