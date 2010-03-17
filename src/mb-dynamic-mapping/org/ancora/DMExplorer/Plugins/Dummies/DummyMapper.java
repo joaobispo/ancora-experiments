@@ -43,23 +43,30 @@ public class DummyMapper implements Mapper {
 
    @Override
    public MapperMonitor getMonitor() {
-      System.out.println("No MapperMonitor Implemented.");
-      return null;
+      return dummyMonitor;
    }
 
    @Override
    public void mapOperations(List<Operation> operations) {
       if (!shownMessage) {
-         System.out.println("No Mapping being done");
+         System.out.println("No Mapping being done.");
+         System.out.println("Using a Dummy MappingMonitor.");
          shownMessage = true;
       }
+
+      DummyMapperMonitor dummy = new DummyMapperMonitor();
+      dummy.processOperationList(operations);
+
+      // Update monitor
+      dummyMonitor = dummy;
    }
 
    /**
     * INSTANCE VARIABLES
     */
    //private int totalInstructions;
-   boolean shownMessage;
+   private boolean shownMessage;
+   private MapperMonitor dummyMonitor;
 
 
 

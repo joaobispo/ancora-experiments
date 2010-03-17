@@ -20,6 +20,7 @@ package org.ancora.DMExplorer.Plugins;
 import java.util.logging.Logger;
 import org.ancora.DMExplorer.Plugins.Dummies.DummyMapper;
 import org.ancora.DmeFramework.Interfaces.Mapper;
+import org.ancora.InfiniteMapper.IfmMapper;
 
 
 /**
@@ -29,7 +30,7 @@ import org.ancora.DmeFramework.Interfaces.Mapper;
  */
 public enum MapperName {
    dummyrpu,
-   infinitecca;
+   infiniteforwardmatrix;
 
    public String getHelpMessage() {
       switch (this) {
@@ -37,8 +38,8 @@ public enum MapperName {
             return "Does nothing with the received operations.";
             //return "All operations are mapped to a single universal FU which executes" +
             //        " each operation in one cycle.";
-         case infinitecca:
-            return "Maps operations to an infinite CCA.";
+         case infiniteforwardmatrix:
+            return "Maps operations to an infinite forward matrix.";
          default:
             return "Message Not Defined";
       }
@@ -48,8 +49,8 @@ public enum MapperName {
       switch (this) {
          case dummyrpu:
             return "DummyRPU";
-         case infinitecca:
-            return "InfiniteCCA";
+         case infiniteforwardmatrix:
+            return IfmMapper.NAME;
          default:
             return "Name Not Defined";
       }
@@ -59,10 +60,8 @@ public enum MapperName {
       switch (this) {
          case dummyrpu:
             return new DummyMapper();
-         case infinitecca:
-            //return new CcaMapperOld();
-            //return new CcaMapper();
-            return null;
+         case infiniteforwardmatrix:
+            return new IfmMapper();
          default:
              Logger.getLogger(MapperName.class.getName()).
                  info("Mapper Constructor for '"+this.getName()+"' not defined.'");

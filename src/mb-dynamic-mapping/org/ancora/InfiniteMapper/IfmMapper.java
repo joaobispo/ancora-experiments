@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import org.ancora.DmeFramework.Interfaces.Mapper;
+import org.ancora.DmeFramework.Interfaces.MapperMonitor;
 import org.ancora.IrForDynamicMapping.Coordinate;
 import org.ancora.IrForDynamicMapping.InputIndex;
 import org.ancora.IrForDynamicMapping.Operand;
@@ -35,7 +37,7 @@ import org.ancora.MicroBlazeToIr.Optimizations;
  *
  * @author Joao Bispo
  */
-public class IfmMapper {
+public class IfmMapper implements Mapper {
 
    public IfmMapper() {
       monitor = new IfmMonitor();
@@ -49,13 +51,24 @@ public class IfmMapper {
       liveOuts = new HashSet<String>();
    }
 
-   public void accept(List<Operation> operations) {
+    @Override
+   public String getName() {
+      return NAME;
+   }
+
+   @Override
+   public MapperMonitor getMonitor() {
+      return mapperMonitor;
+   }
+
+   @Override
+   public void mapOperations(List<Operation> operations) {
       for (Operation operation : operations) {
          // Check for exit operations
          boolean isExit = processExitOperation(operation);
          if(isExit) {
             // Show conditional exists
-            return;
+            break;
          }
 
          // Check for move operations
@@ -67,6 +80,8 @@ public class IfmMapper {
          // Map operation
          mapOperation(operation);
       }
+      // Operations are mapped; Update MapperMonitor
+      mapperMonitor = updateMonitor();
    }
 
 
@@ -160,7 +175,7 @@ public class IfmMapper {
     * @return
     */
    
-   public void mapOperation(Operation operation) {
+   private void mapOperation(Operation operation) {
       Operand[] opInputs = operation.getInputs();
       Operand[] opOutputs = operation.getOutputs();
       // Fu data
@@ -344,6 +359,18 @@ public class IfmMapper {
 
    }
 
+   private IfmMapperMonitor updateMonitor() {
+      // Create new Monitor
+      IfmMapperMonitor newMonitor = new IfmMapperMonitor();
+      newMonitor.liveIn = liveIns.size();
+      newMonitor.liveOut = liveOuts.size();
+      newMonitor.mappedOperations = matrix.getNumberOfMappedOps() - matrix.getMoveOperations();
+      newMonitor.mappedElements = matrix.getNumberOfMappedOps();
+      newMonitor.cycles = matrix.getNumberOfMappedLines();
+
+      return newMonitor;
+   }
+
    public void clearArchitecture() {
       matrix = new InfiniteForwardMatrix();
 
@@ -364,6 +391,7 @@ public class IfmMapper {
     */
    private InfiniteForwardMatrix matrix;
    private IfmMonitor monitor;
+   private IfmMapperMonitor mapperMonitor;
 
    private int feedDistance = 1;
 
@@ -372,6 +400,11 @@ public class IfmMapper {
    private Map<String, Operand> literalsTable;
    private Set<String> liveIns;
    private Set<String> liveOuts;
+
+   public static final String NAME = "InfiniteForwardMatrix";
+
+
+
 
 
 

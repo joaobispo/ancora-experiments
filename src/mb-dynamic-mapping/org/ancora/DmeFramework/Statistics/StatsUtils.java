@@ -33,4 +33,8 @@ public class StatsUtils {
    public static float microBlazeCycles(int instructions, float cpi) {
       return instructions*cpi;
    }
+
+   public static int communicationCycles(int commSteps) {
+      return commSteps;
+   }
 }

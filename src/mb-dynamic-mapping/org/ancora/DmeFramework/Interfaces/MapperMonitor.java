@@ -24,7 +24,7 @@ package org.ancora.DmeFramework.Interfaces;
  */
 public interface MapperMonitor {
 
-   float getIlp();
+   double getIlp();
 
    int getLiveIn();
 
