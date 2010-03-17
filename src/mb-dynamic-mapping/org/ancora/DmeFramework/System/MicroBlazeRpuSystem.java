@@ -41,6 +41,10 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
 
     @Override
    public void accept(InstructionBlock instructionBlock) {
+       if(mappingFailed) {
+          return;
+       }
+
       boolean rpuMappable = instructionBlock.mapToHardware();
 
        // Check if the block is for the RPU or for the MicroBlaze processor
@@ -57,7 +61,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
    }
 
 
-   private static void mapToRpu(InstructionBlock instructionBlock, Mapper mapper) {
+   private void mapToRpu(InstructionBlock instructionBlock, Mapper mapper) {
       // Transform MicroBlaze instructions in IR operations
       // Feed them to the mapper
       //throw new UnsupportedOperationException("Not yet implemented");
@@ -68,6 +72,11 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       List<Operation> operations = MbToIrParser.parseInstructions(instructions);
       // Feed operations to mapper
       mapper.mapOperations(operations);
+
+      // Check if mapping failed
+      if(mapper.hasMappingFailed()) {
+         mappingFailed = true;
+      }
    }
 
    /*
@@ -86,6 +95,11 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       return monitor;
    }
 
+   public boolean hasMappingFailed() {
+      return mappingFailed;
+   }
+
+
    
 
    /**
@@ -93,7 +107,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
     */
    private Mapper mapper;
    private MicroBlazeRpuMonitor monitor;
-
+   private boolean mappingFailed = false;
 
 
 }

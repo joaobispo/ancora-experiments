@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import org.ancora.DMExplorer.Global;
 import org.ancora.DmeFramework.Interfaces.Mapper;
 import org.ancora.DmeFramework.Interfaces.MapperMonitor;
 import org.ancora.IrForDynamicMapping.Coordinate;
@@ -42,13 +43,15 @@ public class IfmMapper implements Mapper {
    public IfmMapper() {
       monitor = new IfmMonitor();
 
-      matrix = new InfiniteForwardMatrix();
+      matrix = new InfiniteForwardMatrix(Global.peLineSize);
       
       conditionalExit = new Hashtable<Operand, Operand>();
       currentProducers = new Hashtable<String, Operand>();
       literalsTable = new Hashtable<String, Operand>();
       liveIns = new HashSet<String>();
       liveOuts = new HashSet<String>();
+
+      feedDistance = Global.feedDistance;
    }
 
     @Override
@@ -77,7 +80,7 @@ public class IfmMapper implements Mapper {
             // Show conditional exists
             mapperMonitor = updateMonitor();
             // Show Mapping
-//            System.out.println(matrix.toString());
+            // System.out.println(matrix.toString());
             return;
          }
 
@@ -89,6 +92,10 @@ public class IfmMapper implements Mapper {
 
          // Map operation
          mapOperation(operation);
+
+         if(mappingFailed) {
+            return;
+         }
       }
       // Operations are mapped; Update MapperMonitor
       mapperMonitor = updateMonitor();
@@ -239,6 +246,9 @@ public class IfmMapper implements Mapper {
       if(feedDistance > 0) {
          for(int i=0; i<fuInputs.length; i++) {
             Fu newMove = addMoveOperations(destinationLine, fuInputs[i]);
+            if(mappingFailed) {
+               return;
+            }
          }
       }
       
@@ -260,6 +270,9 @@ public class IfmMapper implements Mapper {
 
          destinationLine = Math.max(destinationLine, (operand.getValueAsCoordinate().getLine()+1));
       }
+
+      // Get the first avaliable line from the given destination line
+      destinationLine = matrix.getFirstAvaliableLine(destinationLine);
 
       return destinationLine;
    }
@@ -331,6 +344,17 @@ public class IfmMapper implements Mapper {
          for(int j=0; j<numberOfMoves; j++) {
             // Line
             int line = startingLine+j;
+            // Check if line is avaliable. If not, mapping is not possible
+            boolean isAvaliable = matrix.isLineAvaliable(line);
+            if(!isAvaliable) {
+               Logger.getLogger(IfmMapper.class.getName()).
+                       warning("Mapping is not possible for a matrix with " +
+                       "maximum line size of "+Global.peLineSize);
+               mappingFailed = true;
+               return null;
+            }
+
+            line = matrix.getFirstAvaliableLine(line);
             // Get column
             int col = matrix.getFirstAvaliableColumn(line);
             newMove = matrix.mapMoveOperation(line, col, input);
@@ -365,7 +389,7 @@ public class IfmMapper implements Mapper {
       // Number of executed cycles
       executedCycles += matrix.getNumberOfMappedLines();
       // Ilp
-      ilp += matrix.getIlp();
+      ilp += matrix.getMaxIlp();
       ilpWithMoves += matrix.getIlpWithMoves();
        */
 
@@ -379,12 +403,14 @@ public class IfmMapper implements Mapper {
       newMonitor.mappedOperations = matrix.getNumberOfMappedOps() - matrix.getMoveOperations();
       newMonitor.mappedElements = matrix.getNumberOfMappedOps();
       newMonitor.cycles = matrix.getNumberOfMappedLines();
+      newMonitor.maxIlp = matrix.getSizeOfBiggestLine();
+
 
       return newMonitor;
    }
 
    public void clearArchitecture() {
-      matrix = new InfiniteForwardMatrix();
+      matrix = new InfiniteForwardMatrix(Global.peLineSize);
 
       conditionalExit = new Hashtable<Operand, Operand>();
       currentProducers = new Hashtable<String, Operand>();
@@ -398,6 +424,13 @@ public class IfmMapper implements Mapper {
       //System.out.println("Literals Table");
       //System.out.println(literalsTable);
    }
+
+   
+   @Override
+   public boolean hasMappingFailed() {
+      return mappingFailed;
+   }
+
    /**
     * INSTANCE VARIABLES
     */
@@ -414,6 +447,10 @@ public class IfmMapper implements Mapper {
    private Set<String> liveOuts;
 
    public static final String NAME = "InfiniteForwardMatrix";
+
+   private boolean mappingFailed = false;
+
+
 
 
 

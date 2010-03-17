@@ -113,7 +113,10 @@ public class Main {
    private static void processData(MicroBlazeRpuDataProcess stats) {
       //stats.showDiffMbCyclesSysHis();
       stats.showSpeedup();
+      System.out.println(" ");
       stats.showIlp();
+      System.out.println(" ");
+      stats.showMax();
    }
 
    /*

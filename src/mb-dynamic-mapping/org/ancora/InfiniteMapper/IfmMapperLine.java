@@ -19,7 +19,6 @@ package org.ancora.InfiniteMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Represents a line of the Infinite Forward Matrix.

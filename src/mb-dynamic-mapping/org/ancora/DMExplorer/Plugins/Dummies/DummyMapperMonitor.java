@@ -34,7 +34,7 @@ public class DummyMapperMonitor implements MapperMonitor {
 
 
    @Override
-   public double getIlp() {
+   public int getMaxIlp() {
       return 1;
    }
 
