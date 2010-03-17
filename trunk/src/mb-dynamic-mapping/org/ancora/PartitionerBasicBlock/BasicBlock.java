@@ -86,10 +86,12 @@ public class BasicBlock extends Partitioner {
       noticeListeners(iBlock);
       // Clean current instructions
       currentInstructions = new ArrayList<Instruction>();
+      //counter++;
    }
 
    @Override
    public void flush() {
+      //System.out.println("Sent "+counter+" BasicBlocks.");
       flushListeners();
    }
 
@@ -103,4 +105,5 @@ public class BasicBlock extends Partitioner {
 
    public static final String NAME = "BasicBlock";
 
+   //int counter;
 }

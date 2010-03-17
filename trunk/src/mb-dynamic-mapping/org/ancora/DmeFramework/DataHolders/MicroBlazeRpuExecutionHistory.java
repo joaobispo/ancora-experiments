@@ -117,8 +117,15 @@ public class MicroBlazeRpuExecutionHistory {
       return executionTypes;
    }
 
+/*
+   public int getCommunicationIterationOptimized() {
+      int lastMapHash
+      
 
-
+      return 0;
+   }
+*/
+   
    /**
     * INSTANCE VARIABLES
     */

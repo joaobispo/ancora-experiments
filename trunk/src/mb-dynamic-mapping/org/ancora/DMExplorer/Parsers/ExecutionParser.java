@@ -175,6 +175,12 @@ public class ExecutionParser {
          } catch (IllegalArgumentException ex) {
             Logger.getLogger(ExecutionParser.class.getName()).
                     info("Error in line '" + line + "': Invalid Mapper Block '" + mapperNameString + "'");
+            Logger.getLogger(ExecutionParser.class.getName()).
+                    info("Avaliable Mappers:");
+            for (MapperName mName : MapperName.values()) {
+               Logger.getLogger(ExecutionParser.class.getName()).
+                       info(mName.getName());
+            }
             return null;
          }
       }

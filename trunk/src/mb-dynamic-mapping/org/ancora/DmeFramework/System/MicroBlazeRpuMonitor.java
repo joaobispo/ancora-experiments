@@ -122,6 +122,15 @@ public class MicroBlazeRpuMonitor {
       return acc;
    }
 
+   public int getLiveInsOutsOfRpu() {
+      int acc = 0;
+      for(RpuExecution exec : rpuExecutions) {
+         acc+=exec.getMonitor().getLiveIn();
+         acc+=exec.getMonitor().getLiveOut();
+      }
+      return acc;
+   }
+
    /**
     * INSTANCE VARIABLES
     */
