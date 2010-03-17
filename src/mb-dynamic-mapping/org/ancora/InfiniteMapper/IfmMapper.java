@@ -63,12 +63,22 @@ public class IfmMapper implements Mapper {
 
    @Override
    public void mapOperations(List<Operation> operations) {
+      // Clear previous mapping
+      clearArchitecture();
+
+//      System.out.println("Input:");
+//      for(Operation op : operations) {
+//         System.out.println(op);
+//      }
       for (Operation operation : operations) {
          // Check for exit operations
          boolean isExit = processExitOperation(operation);
          if(isExit) {
             // Show conditional exists
-            break;
+            mapperMonitor = updateMonitor();
+            // Show Mapping
+//            System.out.println(matrix.toString());
+            return;
          }
 
          // Check for move operations
@@ -82,6 +92,8 @@ public class IfmMapper implements Mapper {
       }
       // Operations are mapped; Update MapperMonitor
       mapperMonitor = updateMonitor();
+      // Show Mapping
+//      System.out.println(matrix.toString());
    }
 
 

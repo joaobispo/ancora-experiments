@@ -72,10 +72,15 @@ public class MicroBlazeRpuDataProcess {
       float cyclesMbWithMap = StatsUtils.microBlazeCycles(executedMbInstructions, cpi);
 
       //Assume each communication and rpu step is equivalent to a cycle
-      int commSteps = history.getSteps(StepType.Communication);
+      //int commSteps = history.getSteps(StepType.Communication);
       //int commCycles = StatsUtils.communicationCycles(commSteps);
+      int commSteps = monitor.getLiveInsOutsOfRpu();
+      // Write communication optimized for iterations
+      //int commSteps = history.
 
-      int rpuSteps = history.getSteps(StepType.RPU);
+
+      //int rpuSteps = history.getSteps(StepType.RPU);
+      int rpuSteps = monitor.cyclesOfRpu();
 
       float mappedCycles = (float)commSteps + (float) rpuSteps + cyclesMbWithMap;
 
@@ -84,6 +89,8 @@ public class MicroBlazeRpuDataProcess {
       System.out.println("Cycles before Mapping:"+cyclesMbWithoutMap);
       System.out.println("Cycles after Mapping:"+mappedCycles);
       System.out.println("Communication Cycles:"+commSteps);
+      System.out.println("RPU Cycles:"+rpuSteps);
+      System.out.println("Mb Cycles:"+cyclesMbWithMap);
       System.out.println("Speed-Up:"+speedup);
    }
 

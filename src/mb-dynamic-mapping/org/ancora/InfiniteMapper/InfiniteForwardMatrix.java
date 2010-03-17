@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import org.ancora.IrForDynamicMapping.Operand;
 import org.ancora.IrForDynamicMapping.Operation;
+import org.ancora.SharedLibrary.MbDynamicMapping.ParseUtils;
 
 /**
  * Repreents an Infinite Forward Matrix which accepts maps of parameterizable
@@ -126,14 +127,19 @@ public class InfiniteForwardMatrix {
       // Add to column
       // Check if position already has Fu
       if(col < mapperLine.getSize()) {
+         decrementMove(mapperLine.getFu(col));
          mapperLine.setFu(col, fu);
          Logger.getLogger(IfmMapperLine.class.getName()).
                  warning("Replacing Fu at line '"+line+"', column '"+col+"'");
+
+         incrementMove(fu);
          return true;
       }
       // Check if position is the next Fu
       if(col == mapperLine.getSize()) {
          mapperLine.addFu(fu);
+         incrementMove(fu);
+         totalOperations++;
          return true;
       }
 
@@ -149,6 +155,7 @@ public class InfiniteForwardMatrix {
    }
 
    public int getMoveOperations() {
+  /*
       int totalOps = 0;
       for(IfmMapperLine line : lines) {
          for(int i=0; i<line.getSize(); i++) {
@@ -157,7 +164,13 @@ public class InfiniteForwardMatrix {
             }
          }
       }
-      return totalOps;
+      //return totalOps;
+      
+      if(totalOps != moveOperations) {
+         System.out.println("MoveDiff - Original("+totalOps+") vs New("+moveOperations+")");
+      }
+*/
+      return moveOperations;
    }
 
 /**
@@ -165,11 +178,18 @@ public class InfiniteForwardMatrix {
  * @return
  */
    public int getNumberOfMappedOps() {
+/*
       int totalOps = 0;
       for(IfmMapperLine line : lines) {
          totalOps += line.getSize();
       }
-      return totalOps;
+
+     if(totalOps != totalOperations) {
+         System.out.println("TotalDiff - Original("+totalOps+") vs New("+totalOperations+")");
+      }
+      //return totalOps;
+ */
+      return totalOperations;
    }
 
    public float getIlp() {
@@ -189,12 +209,51 @@ public class InfiniteForwardMatrix {
       return (float)getNumberOfMappedOps() / (float)getNumberOfMappedLines();
    }
 
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("Matrix Mapping:\n");
+      for(IfmMapperLine fuLine : lines) {
+         for(int i=0; i<fuLine.getSize(); i++) {
+            Operation op = fuLine.getFu(i).getOperation();
+            String opName;
+            if(op == null) {
+               opName = "MOVE";
+            } else {
+               opName = op.getOperation().toString();
+            }
+            builder.append(ParseUtils.padRight(opName, OPERATION_MAX_STRING_LENGHT));
+            builder.append("|");
+         }
+         // End line
+         builder.append("\n");
+      }
+      return builder.toString();
+   }
+
+
 
    /**
     * INSTANCE VARIABLES
     */
    private List<IfmMapperLine> lines;
 
+   private int moveOperations;
+   private int totalOperations;
+
+   private final int OPERATION_MAX_STRING_LENGHT = 8;
+
+   private void decrementMove(Fu fu) {
+      if(fu.getOperation() == null) {
+         moveOperations--;
+      }
+   }
+
+   private void incrementMove(Fu fu) {
+      if(fu.getOperation() == null) {
+         moveOperations++;
+      }
+   }
 
 
 }
