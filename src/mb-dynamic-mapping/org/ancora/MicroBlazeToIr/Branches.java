@@ -26,7 +26,6 @@ import org.ancora.IrForDynamicMapping.Operation;
 import org.ancora.IrForDynamicMapping.OperationName;
 import org.ancora.IrForDynamicMapping.OutputIndex;
 import org.ancora.MicroBlaze.Instructions.Instruction;
-import org.ancora.MicroBlaze.MicroBlazeUtils;
 
 /**
  * Transforms MicroBlaze branch instructions.

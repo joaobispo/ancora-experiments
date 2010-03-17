@@ -15,32 +15,17 @@
  *  under the License.
  */
 
-package org.ancora.IrForDynamicMapping;
+package org.ancora.DmeFramework.Interfaces.Base;
 
 /**
+ * Methods for an object which consumes other objects in a stream-like manner.
  *
  * @author Joao Bispo
  */
-public class Coordinate {
-
-   public Coordinate(int line, int column) {
-      this.line = line;
-      this.column = column;
-   }
-
-   public int getLine() {
-      return line;
-   }
-
-   public int getColumn() {
-      return column;
-   }
-
-   
+public interface StreamListener {
 
    /**
-    * INSTANCE VARIABLES
+    * Signals the end of a stream of data, finishes any pending processing.
     */
-   final int line;
-   final int column;
+   public void flush();
 }

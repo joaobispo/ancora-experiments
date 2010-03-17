@@ -15,32 +15,16 @@
  *  under the License.
  */
 
-package org.ancora.IrForDynamicMapping;
+package org.ancora.DmeFramework.Interfaces.Base;
+
+import org.ancora.MicroBlaze.Instructions.Instruction;
 
 /**
- *
+ * Object which listens other objects for Instruction objects.
+ * 
  * @author Joao Bispo
  */
-public class Coordinate {
+public interface InstructionListener extends StreamListener {
 
-   public Coordinate(int line, int column) {
-      this.line = line;
-      this.column = column;
-   }
-
-   public int getLine() {
-      return line;
-   }
-
-   public int getColumn() {
-      return column;
-   }
-
-   
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   final int line;
-   final int column;
+   public void accept(Instruction instruction);
 }

@@ -15,32 +15,17 @@
  *  under the License.
  */
 
-package org.ancora.IrForDynamicMapping;
+package org.ancora.DmeFramework.Interfaces.Base;
+
+import org.ancora.DmeFramework.DataHolders.InstructionBlock;
+
 
 /**
- *
+ * Object which listens other objects for InstructionBlock objects.
+ * 
  * @author Joao Bispo
  */
-public class Coordinate {
+public interface InstructionBlockListener extends StreamListener {
 
-   public Coordinate(int line, int column) {
-      this.line = line;
-      this.column = column;
-   }
-
-   public int getLine() {
-      return line;
-   }
-
-   public int getColumn() {
-      return column;
-   }
-
-   
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   final int line;
-   final int column;
+   public void accept(InstructionBlock instructionBlock);
 }

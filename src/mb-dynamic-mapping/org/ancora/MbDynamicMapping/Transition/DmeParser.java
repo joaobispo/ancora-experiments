@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Set;
 import org.ancora.InfiniteMapper.IfmMapper;
 import org.ancora.IrForDynamicMapping.Operation;
-import org.ancora.IrForDynamicMapping.OperationName;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlockListener;
+import org.ancora.MbDynamicMapping.Interface.Mapper;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlazeToIr.MbToIrParser;
 import org.ancora.SharedLibrary.BitUtils;
@@ -44,7 +44,7 @@ public class DmeParser implements InstructionBlockListener {
 
       optimizations = new IrConstantPropagation();
 
-      mapper = new IfmMapper();
+//      mapper = new IfmMapper();
    }
 
 
@@ -114,23 +114,19 @@ public class DmeParser implements InstructionBlockListener {
       //countAddAndMove(operations);
 
       // Give operations to the mapper
-      mapper.accept(operations);
-      mapper.saveStats();
-      mapper.clearArchitecture();
+ //     mapper.accept(operations);
+ //     mapper.saveStats();
+ //     mapper.clearArchitecture();
    }
 
    @Override
    public void flush() {
-      mapper.showStats();
+ //     mapper.showStats();
       //System.out.println(operationHistogram.toString());
       //System.out.println("-----------------Constant Propagation--------------");
       //System.out.println(optimizedOperationHistogram.toString());
       //showHistogram();
 
-
-      // Do Nothing
-      //System.out.println("Number of add_intenger:"+addIntegerCounter);
-      //System.out.println("Number of move:"+moveCounter);
    }
 
    private void show(List<Instruction> instructions, List<Operation> operations) {
@@ -162,36 +158,6 @@ public class DmeParser implements InstructionBlockListener {
       System.out.println(" ");   }
 
 
-   /*
-   private void buildOperationHistogram(List<Operation> operations) {
-       for(Operation operation : operations) {
-         OperationName opName = operation.getOperation();
-
-         Integer value = operationHistogram.get(opName);
-         if(value == null) {
-            value = 0;
-         }
-         value++;
-         operationHistogram.put(opName, value);
-         
-      }
-   }
-    */
-/*
-   private void countAddAndMove(List<Operation> operations) {
-      for(Operation operation : operations) {
-         OperationName opName = operation.getOperation();
-
-         if(opName == OperationName.integer_add) {
-            addIntegerCounter++;
-         }
-
-         if(opName == OperationName.move) {
-            moveCounter++;
-         }
-      }
-   }
-*/
    /**
     * Calculate hash value for given list of instructions.
     *
@@ -208,25 +174,10 @@ public class DmeParser implements InstructionBlockListener {
    }
 
 
-
-/*
-   private int getNumberOperations(OperationName opName) {
-     Integer value = operationHistogram.get(opName);
-     if(value == null) {
-        return 0;
-     } else {
-        return value;
-     }
-   }
- */
-
    /**
     * INSTANCE VARIABLES
     */
-   //private int addIntegerCounter;
-   //private int moveCounter;
 
-   //private Map<OperationName, Integer> operationHistogram;
    private OperationHistogram operationHistogram;
    private OperationHistogram optimizedOperationHistogram;
 
@@ -235,7 +186,9 @@ public class DmeParser implements InstructionBlockListener {
    private Set<Integer> shownBlocks;
 
    private int mbInstructions;
-   private IfmMapper mapper;
+   //private IfmMapper mapper;
+
+ //  private Mapper mapper;
 
 
 
