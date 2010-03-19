@@ -107,6 +107,7 @@ public class MicroBlazeRpuDataProcess {
       System.out.println("Max Live-Out:"+monitor.getMaxLiveOut());
       System.out.println("Max ILP:"+monitor.getMaxIlp());
       System.out.println("Max Cycles:"+monitor.getMaxCycles());
+      System.out.println("Total Operations:"+monitor.getTotalMappedOperations());
    }
 
    /**

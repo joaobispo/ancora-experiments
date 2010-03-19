@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.InfiniteMapper;
+package org.ancora.Mappers.InfiniteMapper;
 
 
 /**

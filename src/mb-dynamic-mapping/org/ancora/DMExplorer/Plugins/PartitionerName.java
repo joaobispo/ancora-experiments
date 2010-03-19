@@ -20,7 +20,8 @@ package org.ancora.DMExplorer.Plugins;
 import java.util.logging.Logger;
 import org.ancora.DMExplorer.Plugins.Dummies.DummyPartitioner;
 import org.ancora.DmeFramework.Interfaces.Partitioner;
-import org.ancora.PartitionerBasicBlock.BasicBlock;
+import org.ancora.Partitioners.BasicBlock.BasicBlock;
+import org.ancora.Partitioners.SuperBlock.SuperBlock;
 
 /**
  * Name of the supported partitioners.
@@ -29,7 +30,8 @@ import org.ancora.PartitionerBasicBlock.BasicBlock;
  */
 public enum PartitionerName {
    dummypartitioner,
-   basicblock;
+   basicblock,
+   superblock;
 
   public String getHelpMessage() {
       switch(this) {
@@ -38,6 +40,10 @@ public enum PartitionerName {
          case basicblock:
             return "Builds BasicBlocks, mappable on custom hardware. Inspects" +
                     " the content of the instruction to determine the limits of the BasicBlock";
+         case superblock:
+            return "Builds SuperBlocks, mappable on custom hardware. Inspects " +
+                    "the content of the instruction to determine the limits of BasicBlocks," +
+                    " which are used to build SuperBlocks.";
          default:
             return "Message Not Defined";
       }
@@ -49,6 +55,8 @@ public enum PartitionerName {
             return "DummyPartitioner";
          case basicblock:
             return BasicBlock.NAME;
+         case superblock:
+            return SuperBlock.NAME;
          default:
             return "Name Not Defined";
       }
@@ -60,6 +68,8 @@ public enum PartitionerName {
             return new DummyPartitioner();
          case basicblock:
             return new BasicBlock();
+         case superblock:
+            return new SuperBlock();
          default:
              Logger.getLogger(PartitionerName.class.getName()).
                  info("Partitioner Constructor for '"+this.getName()+"' not defined.'");

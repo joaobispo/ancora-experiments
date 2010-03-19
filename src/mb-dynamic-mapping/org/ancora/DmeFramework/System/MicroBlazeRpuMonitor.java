@@ -163,6 +163,14 @@ public class MicroBlazeRpuMonitor {
       return max;
    }
 
+   public int getTotalMappedOperations() {
+       int acc = 0;
+      for(RpuExecution exec : rpuExecutions) {
+         acc += exec.getMonitor().getMappedOperations();
+      }
+      return acc;
+   }
+
    /**
     * INSTANCE VARIABLES
     */
