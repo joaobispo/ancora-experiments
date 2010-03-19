@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.ancora.InfiniteMapper.IfmMapper;
+import org.ancora.Mappers.InfiniteMapper.IfmMapper;
 import org.ancora.IrForDynamicMapping.Operation;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlock;
 import org.ancora.MbDynamicMapping.Interface.InstructionBlockListener;

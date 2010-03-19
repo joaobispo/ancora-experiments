@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.PartitionerBasicBlock;
+package org.ancora.Partitioners.BasicBlock;
 
 import java.util.ArrayList;
 import java.util.List;

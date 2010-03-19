@@ -17,10 +17,7 @@
 
 package org.ancora.DmeFramework.Interfaces;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.ancora.DmeFramework.DataHolders.InstructionBlock;
-import org.ancora.DmeFramework.Interfaces.Base.InstructionBlockListener;
+import org.ancora.DmeFramework.Interfaces.Base.InstructionBlockSource;
 import org.ancora.DmeFramework.Interfaces.Base.InstructionListener;
 
 /**
@@ -29,10 +26,10 @@ import org.ancora.DmeFramework.Interfaces.Base.InstructionListener;
  *
  * @author Joao Bispo
  */
-public abstract class Partitioner implements InstructionListener {
+public abstract class Partitioner extends InstructionBlockSource implements InstructionListener  {
 
    public Partitioner() {
-      listeners = new ArrayList<InstructionBlockListener>();
+      //listeners = new ArrayList<InstructionBlockListener>();
    }
 
 
@@ -46,6 +43,7 @@ public abstract class Partitioner implements InstructionListener {
     * 
     * @param listener
     */
+   /*
    public void addListener(InstructionBlockListener listener) {
       listeners.add(listener);
    }
@@ -61,11 +59,11 @@ public abstract class Partitioner implements InstructionListener {
          listeners.get(i).flush();
       }
    }
-
+*/
 
 
    /**
     * INSTANCE VARIABLES
     */
-   private List<InstructionBlockListener> listeners;
+   //private List<InstructionBlockListener> listeners;
 }

@@ -20,7 +20,7 @@ package org.ancora.DMExplorer.Plugins;
 import java.util.logging.Logger;
 import org.ancora.DMExplorer.Plugins.Dummies.DummyMapper;
 import org.ancora.DmeFramework.Interfaces.Mapper;
-import org.ancora.InfiniteMapper.IfmMapper;
+import org.ancora.Mappers.InfiniteMapper.IfmMapper;
 
 
 /**
