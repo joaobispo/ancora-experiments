@@ -40,11 +40,44 @@ public class RpuExecution {
       return mappingHash;
    }
 
+   /*
    public MapperMonitor getMonitor() {
       return monitor;
    }
+    */
 
+   /**
+    * @return for how many cycles executed, multiplied by the number of iterations.
+    */
+   public int getTotalCycles() {
+      return monitor.getCycles() * iterations;
+   }
+
+    /**
+    * @return number of mapped operations, multiplied by the number of iterations.
+    */
+   public int getTotalMappedOperations() {
+      return monitor.getMappedOperations() * iterations;
+   }
+
+   /**
+    * @return number of used elements, multiplied by the number of iterations
+    */
+   public int getTotalMappedElements() {
+      return monitor.getMappedElements() * iterations;
+   }
+
+   public int getLiveIn() {
+      return monitor.getLiveIn();
+   }
+
+   public int getLiveOut() {
+      return monitor.getLiveOut();
+   }
    
+   public int getMaxIlp() {
+      return monitor.getMaxIlp();
+   }
 
    /**
     * INSTANCE VARIABLES

@@ -20,7 +20,7 @@ package org.ancora.DmeFramework.System;
 import java.util.List;
 import org.ancora.DmeFramework.DataHolders.Interface.MapperToSteps;
 import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.StepType;
-import org.ancora.DmeFramework.Interfaces.MapperMonitor;
+import org.ancora.DmeFramework.DataHolders.RpuExecution;
 
 /**
  *
@@ -34,20 +34,24 @@ public class SimpleRpuCommModel implements MapperToSteps {
     * <br>1 Rpu block with cycles equal to the number of the mapper cycles;
     * <br>1 Comm block with cycles equal to the number of live-outs;
     *
+    * <p>The number of iterations will be multiplied by the number of cycles of the RPU,
+    * but not by the number of cycles of the live-ins or live-outs. This simulates
+    * a situation where there is communication only at the beginning and end of a loop.
+    *
     * @param monitor
     * @param executionCycles
     * @param executionTypes
     */
    @Override
-   public void getExecutionSteps(MapperMonitor monitor, List<Integer> executionCycles, List<StepType> executionTypes) {
+   public void getExecutionSteps(RpuExecution rpuExecution, List<Integer> executionCycles, List<StepType> executionTypes) {
       executionTypes.add(StepType.Communication);
-      executionCycles.add(monitor.getLiveIn());
+      executionCycles.add(rpuExecution.getLiveIn());
 
       executionTypes.add(StepType.RPU);
-      executionCycles.add(monitor.getCycles());
+      executionCycles.add(rpuExecution.getTotalCycles());
 
       executionTypes.add(StepType.Communication);
-      executionCycles.add(monitor.getLiveOut());
+      executionCycles.add(rpuExecution.getLiveOut());
    }
 
 }

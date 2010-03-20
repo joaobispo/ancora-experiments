@@ -87,7 +87,7 @@ public class MicroBlazeRpuMonitor {
       rpuExecutions.add(newExec);
 
       // Build ExecutionHistory
-      executionHistory.addRpuExecution(mapperMonitor);
+      executionHistory.addRpuExecution(newExec);
    }
 
    public MicroBlazeRpuExecutionHistory getExecutionHistory() {
@@ -109,7 +109,8 @@ public class MicroBlazeRpuMonitor {
    public int executedOperationsOnRpu() {
       int acc = 0;
       for(RpuExecution exec : rpuExecutions) {
-         acc+=exec.getMonitor().getMappedOperations();
+         //acc+=exec.getMonitor().getMappedOperations();
+         acc+=exec.getTotalMappedOperations();
       }
       return acc;
    }
@@ -117,7 +118,8 @@ public class MicroBlazeRpuMonitor {
    public int cyclesOfRpu() {
       int acc = 0;
       for(RpuExecution exec : rpuExecutions) {
-         acc+=exec.getMonitor().getCycles();
+         //acc+=exec.getMonitor().getCycles();
+         acc+=exec.getTotalCycles();
       }
       return acc;
    }
@@ -125,8 +127,10 @@ public class MicroBlazeRpuMonitor {
    public int getLiveInsOutsOfRpu() {
       int acc = 0;
       for(RpuExecution exec : rpuExecutions) {
-         acc+=exec.getMonitor().getLiveIn();
-         acc+=exec.getMonitor().getLiveOut();
+         //acc+=exec.getMonitor().getLiveIn();
+         //acc+=exec.getMonitor().getLiveOut();
+         acc+=exec.getLiveIn();
+         acc+=exec.getLiveOut();
       }
       return acc;
    }
@@ -134,7 +138,7 @@ public class MicroBlazeRpuMonitor {
    public int getMaxLiveIn() {
       int max = 0;
       for(RpuExecution exec : rpuExecutions) {
-         max = Math.max(max, exec.getMonitor().getLiveIn());
+         max = Math.max(max, exec.getLiveIn());
       }
       return max;
    }
@@ -142,7 +146,7 @@ public class MicroBlazeRpuMonitor {
    public int getMaxLiveOut() {
       int max = 0;
       for(RpuExecution exec : rpuExecutions) {
-         max = Math.max(max, exec.getMonitor().getLiveOut());
+         max = Math.max(max, exec.getLiveOut());
       }
       return max;
    }
@@ -150,7 +154,7 @@ public class MicroBlazeRpuMonitor {
    public double getMaxIlp() {
       double max = 0;
       for(RpuExecution exec : rpuExecutions) {
-         max = Math.max(max, exec.getMonitor().getMaxIlp());
+         max = Math.max(max, exec.getMaxIlp());
       }
       return max;
    }
@@ -158,7 +162,7 @@ public class MicroBlazeRpuMonitor {
    public int getMaxCycles() {
       int max = 0;
       for(RpuExecution exec : rpuExecutions) {
-         max = Math.max(max, exec.getMonitor().getCycles());
+         max = Math.max(max, exec.getTotalCycles());
       }
       return max;
    }
@@ -166,7 +170,8 @@ public class MicroBlazeRpuMonitor {
    public int getTotalMappedOperations() {
        int acc = 0;
       for(RpuExecution exec : rpuExecutions) {
-         acc += exec.getMonitor().getMappedOperations();
+         //acc += exec.getMonitor().getMappedOperations();
+         acc += exec.getTotalMappedOperations();
       }
       return acc;
    }

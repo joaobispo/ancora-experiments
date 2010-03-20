@@ -15,17 +15,43 @@
  *  under the License.
  */
 
-package org.ancora.DMExplorer;
+package org.ancora.DmeFramework.Statistics;
 
-import org.ancora.Partitioners.SuperBlockLoop.SuperBlockLoop;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  *
  * @author Joao Bispo
  */
-public class Global {
+public class HashCounter {
 
-   public static int peLineSize = 0;
-   public static int feedDistance = 1;
-   public static int maxPatternSize = SuperBlockLoop.DEFAULT_MAX_PATTERN_SIZE;
+   public HashCounter() {
+      hashes = new Hashtable<Integer,Integer>();
+      counter = 1;
+   }
+
+
+   /**
+    * Given an hash value, returns a normalized value for this hash.
+    *
+    * @param hash
+    * @return
+    */
+   public int convertHash(int hash) {
+      Integer index = hashes.get(hash);
+      if (index == null) {
+         index = counter;
+         hashes.put(hash, index);
+         counter++;
+      }
+
+      return index;
+   }
+
+   /**
+    * INSTANCE VARIABLES
+    */
+      private Map<Integer,Integer> hashes;
+   private int counter;
 }
