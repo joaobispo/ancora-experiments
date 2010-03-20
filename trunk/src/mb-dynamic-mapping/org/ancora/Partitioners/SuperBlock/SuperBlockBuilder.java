@@ -35,8 +35,9 @@ import org.ancora.SharedLibrary.BitUtils;
 public class SuperBlockBuilder extends InstructionBlockSource implements InstructionBlockListener {
 
    public SuperBlockBuilder() {
-      instructions = null;
-      lastBasicBlockAddress = -1;
+      //instructions = null;
+      //lastBasicBlockAddress = -1;
+      prepareStateForNewSuperBlock();
    }
 
 
@@ -45,11 +46,13 @@ public class SuperBlockBuilder extends InstructionBlockSource implements Instruc
    public void accept(InstructionBlock instructionBlock) {
       // This block may be redundant...
       // Check if it is the start of a new SuperBlock
+      /*
       if(instructions == null) {
-         resetState();
+         prepareStateForNewSuperBlock();
          updateCurrentSuperBlock(instructionBlock);
          return;
       }
+       */
 
 
       // Check if the current basicBlock is a forward jump or a backward jump
@@ -66,7 +69,7 @@ public class SuperBlockBuilder extends InstructionBlockSource implements Instruc
 
       if(!forwardJump) {
          completeSuperBlock();
-         resetState();
+         prepareStateForNewSuperBlock();
       }
 
       updateCurrentSuperBlock(instructionBlock);
@@ -85,10 +88,10 @@ public class SuperBlockBuilder extends InstructionBlockSource implements Instruc
       //   consumer.consumeSuperBlock(currentSuperBlock);
       //}
 
-
+      prepareStateForNewSuperBlock();
       // Erase current basic block
-      instructions = null;
-      lastBasicBlockAddress = -1;
+      //instructions = null;
+      //lastBasicBlockAddress = -1;
    }
 
    private void updateCurrentSuperBlock(InstructionBlock basicBlock) {
@@ -114,7 +117,7 @@ public class SuperBlockBuilder extends InstructionBlockSource implements Instruc
       flushListeners();
    }
 
-   private void resetState() {
+   private void prepareStateForNewSuperBlock() {
       instructions = new ArrayList<Instruction>();
       hash = HASH_INITIAL_VALUE;
       lastBasicBlockAddress = -1;

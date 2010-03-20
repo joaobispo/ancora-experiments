@@ -18,6 +18,7 @@
 package org.ancora.DMExplorer.Plugins;
 
 import java.util.logging.Logger;
+import org.ancora.DMExplorer.Global;
 import org.ancora.DMExplorer.Plugins.Dummies.DummyMapper;
 import org.ancora.DmeFramework.Interfaces.Mapper;
 import org.ancora.Mappers.InfiniteMapper.IfmMapper;
@@ -61,7 +62,7 @@ public enum MapperName {
          case dummyrpu:
             return new DummyMapper();
          case infiniteforwardmatrix:
-            return new IfmMapper();
+            return new IfmMapper(Global.peLineSize, Global.feedDistance);
          default:
              Logger.getLogger(MapperName.class.getName()).
                  info("Mapper Constructor for '"+this.getName()+"' not defined.'");

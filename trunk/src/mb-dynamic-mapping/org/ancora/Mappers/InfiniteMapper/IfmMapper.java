@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import org.ancora.DMExplorer.Global;
 import org.ancora.DmeFramework.Interfaces.Mapper;
 import org.ancora.DmeFramework.Interfaces.MapperMonitor;
 import org.ancora.IrForDynamicMapping.Coordinate;
@@ -40,10 +39,13 @@ import org.ancora.MicroBlazeToIr.Optimizations;
  */
 public class IfmMapper implements Mapper {
 
-   public IfmMapper() {
+   public IfmMapper(int peLineSize, int feedDistance) {
+           this.peLineSize = peLineSize;
+      this.feedDistance = feedDistance;
+
       monitor = new IfmMonitor();
 
-      matrix = new InfiniteForwardMatrix(Global.peLineSize);
+      matrix = new InfiniteForwardMatrix(peLineSize);
       
       conditionalExit = new Hashtable<Operand, Operand>();
       currentProducers = new Hashtable<String, Operand>();
@@ -51,7 +53,8 @@ public class IfmMapper implements Mapper {
       liveIns = new HashSet<String>();
       liveOuts = new HashSet<String>();
 
-      feedDistance = Global.feedDistance;
+      //feedDistance = Global.feedDistance;
+
    }
 
     @Override
@@ -349,7 +352,7 @@ public class IfmMapper implements Mapper {
             if(!isAvaliable) {
                Logger.getLogger(IfmMapper.class.getName()).
                        warning("Mapping is not possible for a matrix with " +
-                       "maximum line size of "+Global.peLineSize);
+                       "maximum line size of "+peLineSize);
                mappingFailed = true;
                return null;
             }
@@ -410,7 +413,7 @@ public class IfmMapper implements Mapper {
    }
 
    public void clearArchitecture() {
-      matrix = new InfiniteForwardMatrix(Global.peLineSize);
+      matrix = new InfiniteForwardMatrix(peLineSize);
 
       conditionalExit = new Hashtable<Operand, Operand>();
       currentProducers = new Hashtable<String, Operand>();
@@ -438,7 +441,8 @@ public class IfmMapper implements Mapper {
    private IfmMonitor monitor;
    private IfmMapperMonitor mapperMonitor;
 
-   private int feedDistance = 1;
+   private int feedDistance;
+   private int peLineSize;
 
    private Map<Operand, Operand> conditionalExit;
    private Map<String, Operand> currentProducers;

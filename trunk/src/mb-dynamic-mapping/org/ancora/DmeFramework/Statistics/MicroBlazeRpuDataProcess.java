@@ -86,11 +86,11 @@ public class MicroBlazeRpuDataProcess {
 
       float speedup = cyclesMbWithoutMap / mappedCycles;
 
-      System.out.println("Cycles before Mapping:"+cyclesMbWithoutMap);
-      System.out.println("Cycles after Mapping:"+mappedCycles);
-      System.out.println("Communication Cycles:"+commSteps);
-      System.out.println("RPU Cycles:"+rpuSteps);
-      System.out.println("Mb Cycles:"+cyclesMbWithMap);
+ //     System.out.println("Cycles before Mapping:"+cyclesMbWithoutMap);
+ //     System.out.println("Cycles after Mapping:"+mappedCycles);
+ //     System.out.println("Communication Cycles:"+commSteps);
+ //     System.out.println("RPU Cycles:"+rpuSteps);
+ //     System.out.println("Mb Cycles:"+cyclesMbWithMap);
       System.out.println("Speed-Up:"+speedup);
    }
 

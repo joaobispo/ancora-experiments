@@ -140,6 +140,13 @@ public class ExecutionParser {
          Global.feedDistance = ParseUtils.parseInt(feedDistance);
       }
 
+      // Check if there is a MaxPatternSize
+      String maxPatternSize = options.get(ExecutionOption.maxpatternsize);
+      if (maxPatternSize != null) {
+         // Save data on Global Preferences
+         Global.maxPatternSize = ParseUtils.parseInt(maxPatternSize);
+      }
+
       // Check for a set of execution variables
       List<File> traces = new ArrayList<File>();
 //      Mapper mapper = null;

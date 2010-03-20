@@ -19,7 +19,6 @@ package org.ancora.DmeFramework.DataHolders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.ancora.DmeFramework.Interfaces.MapperMonitor;
 import org.ancora.DmeFramework.DataHolders.Interface.MapperToSteps;
 
 /**
@@ -54,9 +53,9 @@ public class MicroBlazeRpuExecutionHistory {
       executionTypes.add(StepType.MicroBlaze);
    }
 
-   public void addRpuExecution(MapperMonitor monitor) {
+   public void addRpuExecution(RpuExecution rpuExecution) {
       // Delegate updates to the MapperToSteps
-      mapper2steps.getExecutionSteps(monitor, executionSteps, executionTypes);
+      mapper2steps.getExecutionSteps(rpuExecution, executionSteps, executionTypes);
    }
 
    public int getSteps(StepType type) {

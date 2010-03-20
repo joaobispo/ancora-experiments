@@ -22,6 +22,7 @@ package org.ancora.DMExplorer.Options;
  * @author Joao Bispo
  */
 public enum ExecutionOption {
+   maxpatternsize,
    feeddistance,
    pelinesize,
    settracefolder,
@@ -31,6 +32,8 @@ public enum ExecutionOption {
 
    public String getHelpMessage() {
       switch(this) {
+         case maxpatternsize:
+            return "Sets the maximum pattern size for the SuperBlockLoop";
          case feeddistance:
             return "Sets the maximum distance for communication between PEs.";
          case pelinesize:
@@ -50,6 +53,8 @@ public enum ExecutionOption {
 
    public String getName() {
       switch(this) {
+         case maxpatternsize:
+            return "maxPatternSize";
          case feeddistance:
             return "feedDistance";
          case pelinesize:

@@ -22,6 +22,7 @@ import java.util.List;
 import org.ancora.DmeFramework.DataHolders.InstructionBlock;
 import org.ancora.DmeFramework.Interfaces.Base.InstructionBlockListener;
 import org.ancora.DmeFramework.Interfaces.Mapper;
+import org.ancora.DmeFramework.Statistics.HashCounter;
 import org.ancora.IrForDynamicMapping.Operation;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlazeToIr.MbToIrParser;
@@ -37,6 +38,8 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
    public MicroBlazeRpuSystem(Mapper mapper, MicroBlazeRpuMonitor systemMonitor) {
       this.mapper = mapper;
       this.monitor = systemMonitor;
+      hashCounter = new HashCounter();
+
    }
 
     @Override
@@ -58,6 +61,8 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       // Update number of MicroBlaze Instructions
       monitor.incrementTotalMicroBlazeInstructions(instructionBlock.getTotalInstructions());
 
+      //showInstructionBlock(instructionBlock);
+      mbInstructionsCounter+=instructionBlock.getTotalInstructions();
    }
 
 
@@ -70,6 +75,18 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       List<Instruction> instructions = Arrays.asList(instructionBlock.getInstructions());
       // Give them to the parser
       List<Operation> operations = MbToIrParser.parseInstructions(instructions);
+
+      /*
+      // Perform optimizations on the operations
+      IrConstantPropagation optimizations = new IrConstantPropagation();
+      // Perform optimizations on all operations
+      for(Operation operation : operations) {
+         optimizations.acceptOperation(operation);
+      }
+      // Show optimized operations
+      operations = optimizations.getOptimizedOperations();
+*/
+      
       // Feed operations to mapper
       mapper.mapOperations(operations);
 
@@ -88,6 +105,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
 
    @Override
    public void flush() {
+      //System.out.println("TotalMbInstructions:"+mbInstructionsCounter);
       // Do Nothing
    }
 
@@ -108,6 +126,25 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
    private Mapper mapper;
    private MicroBlazeRpuMonitor monitor;
    private boolean mappingFailed = false;
+
+   //private Map<Integer,Integer> hashes;
+   //private int counter;
+   private HashCounter hashCounter;
+   private int mbInstructionsCounter;
+
+   private void showInstructionBlock(InstructionBlock block) {
+      int index = hashCounter.convertHash(block.getHash());
+      int instruc = block.getTotalInstructions();
+      System.out.println("Hash:"+index+", Iterations:"+block.getIterations()+", Instructions:"+instruc);
+
+      // Check if instructionblock was already shown
+      /*
+      if(!shownBlocks.contains(block.getHash())) {
+         shownBlocks.add(block.getHash());
+         System.out.println(block);
+      }
+       */
+   }
 
 
 }

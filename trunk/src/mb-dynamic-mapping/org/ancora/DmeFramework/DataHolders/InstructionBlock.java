@@ -116,6 +116,36 @@ public class InstructionBlock {
       this.hash = id;
    }
 
+   public void setIterations(int iterations) {
+      this.iterations = iterations;
+   }
+
+   public void setMapToHardware(boolean mapToHardware) {
+      this.mapToHardware = mapToHardware;
+   }
+
+   
+
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append("-----Instruction Block: "+iterations+" iterations, ");
+      if(mapToHardware) {
+         builder.append("RPU");
+      } else {
+         builder.append("MicroBlaze");
+      }
+      builder.append(" ------\n");
+
+      for(Instruction inst : instructions) {
+         builder.append(inst);
+         builder.append("\n");
+      }
+
+      return builder.toString();
+   }
+
 
 
 

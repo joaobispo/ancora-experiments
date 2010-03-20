@@ -18,10 +18,13 @@
 package org.ancora.DMExplorer.Plugins;
 
 import java.util.logging.Logger;
+import org.ancora.DMExplorer.Global;
 import org.ancora.DMExplorer.Plugins.Dummies.DummyPartitioner;
 import org.ancora.DmeFramework.Interfaces.Partitioner;
 import org.ancora.Partitioners.BasicBlock.BasicBlock;
 import org.ancora.Partitioners.SuperBlock.SuperBlock;
+import org.ancora.Partitioners.SuperBlockIterations.SuperBlockIterations;
+import org.ancora.Partitioners.SuperBlockLoop.SuperBlockLoop;
 
 /**
  * Name of the supported partitioners.
@@ -31,7 +34,9 @@ import org.ancora.Partitioners.SuperBlock.SuperBlock;
 public enum PartitionerName {
    dummypartitioner,
    basicblock,
-   superblock;
+   superblock,
+   superblockloop,
+   superblockiterations;
 
   public String getHelpMessage() {
       switch(this) {
@@ -44,6 +49,14 @@ public enum PartitionerName {
             return "Builds SuperBlocks, mappable on custom hardware. Inspects " +
                     "the content of the instruction to determine the limits of BasicBlocks," +
                     " which are used to build SuperBlocks.";
+         case superblockloop:
+            return "Builds SuperBlockLoops, mappable on custom hardware. Inspects " +
+                    "the content of the instruction to determine the limits of BasicBlocks " +
+                    " and SuperBlocks, which are used to build SuperBlockLoops.";
+         case superblockiterations:
+            return "Builds sequences of the same SuperBlock. Inspects " +
+                    "the content of the instruction to determine the limits of BasicBlocks " +
+                    " and SuperBlocks.";
          default:
             return "Message Not Defined";
       }
@@ -57,6 +70,10 @@ public enum PartitionerName {
             return BasicBlock.NAME;
          case superblock:
             return SuperBlock.NAME;
+         case superblockloop:
+            return SuperBlockLoop.NAME;
+         case superblockiterations:
+            return SuperBlockIterations.NAME;
          default:
             return "Name Not Defined";
       }
@@ -70,6 +87,10 @@ public enum PartitionerName {
             return new BasicBlock();
          case superblock:
             return new SuperBlock();
+         case superblockloop:
+            return new SuperBlockLoop(Global.maxPatternSize);
+         case superblockiterations:
+            return new SuperBlockIterations();
          default:
              Logger.getLogger(PartitionerName.class.getName()).
                  info("Partitioner Constructor for '"+this.getName()+"' not defined.'");
