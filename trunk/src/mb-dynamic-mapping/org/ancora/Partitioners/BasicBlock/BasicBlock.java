@@ -47,6 +47,15 @@ public class BasicBlock extends Partitioner {
 
    @Override
    public void accept(Instruction instruction) {
+/*
+      if(instruction.getAddress() == 472) {
+         System.out.println("Current Inst:");
+         System.out.println(currentInstructions);
+         System.out.println("Previous had delay slot? -> "+previousInstructionHadDelaySlot);
+      }
+
+*/
+
       // Add instruction to current block of instructions
       currentInstructions.add(instruction);
 
@@ -81,8 +90,11 @@ public class BasicBlock extends Partitioner {
       // Basic Block can be identified by the address of its first instruction
       int hash = currentInstructions.get(0).getAddress();
       iBlock.setHash(hash);
-      
+
       // Send Instruction Block  to listeners
+      System.out.println("--BasicBlock Begin--");
+      System.out.println(iBlock);
+      System.out.println("--BasicBlock End--");
       noticeListeners(iBlock);
       // Clean current instructions
       currentInstructions = new ArrayList<Instruction>();
@@ -91,6 +103,9 @@ public class BasicBlock extends Partitioner {
 
    @Override
    public void flush() {
+      if(currentInstructions.size() > 0) {
+         completeBasicBlock();
+      }
       //System.out.println("Sent "+counter+" BasicBlocks.");
       flushListeners();
    }
@@ -106,4 +121,5 @@ public class BasicBlock extends Partitioner {
    public static final String NAME = "BasicBlock";
 
    //int counter;
+
 }

@@ -30,7 +30,9 @@ import org.ancora.IrForDynamicMapping.Operand;
 import org.ancora.IrForDynamicMapping.Operation;
 import org.ancora.IrForDynamicMapping.OperationName;
 import org.ancora.IrForDynamicMapping.OutputIndex;
+import org.ancora.MicroBlazeToIr.Memory;
 import org.ancora.MicroBlazeToIr.Optimizations;
+import org.ancora.SharedLibrary.DataStructures.PushingQueue;
 
 /**
  * Maps IR operations to a Infinite Forward Matrix architecture.
@@ -54,7 +56,7 @@ public class IfmMapper implements Mapper {
       liveOuts = new HashSet<String>();
 
       //feedDistance = Global.feedDistance;
-
+      operationQueue = new PushingQueue<Operation>(2);
    }
 
     @Override
@@ -72,11 +74,17 @@ public class IfmMapper implements Mapper {
       // Clear previous mapping
       clearArchitecture();
 
+//      System.out.println("Mapping Start");
+
 //      System.out.println("Input:");
 //      for(Operation op : operations) {
 //         System.out.println(op);
 //      }
       for (Operation operation : operations) {
+         operationQueue.insertElement(operation);
+
+         showDebug();
+//         System.out.println("Mapping Op:"+operation);
          // Check for exit operations
          boolean isExit = processExitOperation(operation);
          if(isExit) {
@@ -99,7 +107,13 @@ public class IfmMapper implements Mapper {
          if(mappingFailed) {
             return;
          }
+
       }
+
+      showDebug();
+ //           System.out.println("Mapping End");
+
+
       // Operations are mapped; Update MapperMonitor
       mapperMonitor = updateMonitor();
       // Show Mapping
@@ -238,7 +252,17 @@ public class IfmMapper implements Mapper {
          System.out.println("mapOperation Error: shouldn't be here");
       }
 
-      int destinationLine = calculateDestinationLine(fuInputs);
+      boolean isMemoryOperation = Memory.isMemoryOperation.contains(operation.getOperation());
+
+      int fromLine = 0;
+      // 1 Memory operation per line
+      if(isMemoryOperation) {
+         // Check last line used by memory operation
+         fromLine = lastLineUseByMemoryOperation + 1;
+      }
+      
+
+      int destinationLine = calculateDestinationLine(fuInputs, fromLine);
 
       int destinationCol = matrix.getFirstAvaliableColumn(destinationLine);
       Fu mappedOp = matrix.mapNewOperation(destinationLine, destinationCol, operation, fuInputs);
@@ -254,13 +278,25 @@ public class IfmMapper implements Mapper {
             }
          }
       }
+
+      // Update memory line
+      /*
+      if(isMemoryOperation) {
+         // Check last line used by memory operation
+         lastLineUseByMemoryOperation = destinationLine;
+      }
+       */
+      // Scenario 2: parallel loads, serial stores
+      if(Memory.isStore.contains(operation.getOperation())) {
+         lastLineUseByMemoryOperation = destinationLine;
+      }
       
    }
 
 
-   private int calculateDestinationLine(Operand[] fuInputs) {
-      // Always try to put operation in the first line
-      int destinationLine = 0;
+   private int calculateDestinationLine(Operand[] fuInputs, int fromLine) {
+      // Start with operation in the given line
+      int destinationLine = fromLine;
       // For each input, check if it is a coordinate
       for(Operand operand : fuInputs) {
          if(operand == null) {
@@ -420,6 +456,8 @@ public class IfmMapper implements Mapper {
       liveIns = new HashSet<String>();
       liveOuts = new HashSet<String>();
       literalsTable = new Hashtable<String, Operand>();
+
+      lastLineUseByMemoryOperation = -1;
    }
 
    public void showStats() {
@@ -453,6 +491,22 @@ public class IfmMapper implements Mapper {
    public static final String NAME = "InfiniteForwardMatrix";
 
    private boolean mappingFailed = false;
+
+   private PushingQueue<Operation> operationQueue;
+
+   private int lastLineUseByMemoryOperation;
+
+   /*
+   private enum MemoryPolicy {
+
+   }
+    */
+
+   private void showDebug() {
+         //            System.out.println("Producers:"+currentProducers);
+         //System.out.println("Literals:"+literalsTable);
+         //System.out.println(matrix);
+   }
 
 
 

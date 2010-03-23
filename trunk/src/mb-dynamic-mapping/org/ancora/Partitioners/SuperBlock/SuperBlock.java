@@ -37,6 +37,8 @@ public class SuperBlock extends Partitioner implements InstructionBlockListener 
       // Link blocks
       basicBlockBuilder.addListener(superBlockBuilder);
       superBlockBuilder.addListener(this);
+
+      flushed = false;
    }
 
 
@@ -54,12 +56,20 @@ public class SuperBlock extends Partitioner implements InstructionBlockListener 
 
    @Override
    public void flush() {
-      flushListeners();
+      if (!flushed) {
+         flushed = true;
+         basicBlockBuilder.flush();
+      } else {
+         flushListeners();
+      }
+
+      //flushListeners();
    }
 
 
    @Override
    public void accept(InstructionBlock instructionBlock) {
+      System.out.println(instructionBlock);
       // Send the superblock to the listeners
       noticeListeners(instructionBlock);
    }
@@ -69,6 +79,8 @@ public class SuperBlock extends Partitioner implements InstructionBlockListener 
     */
     private BasicBlock basicBlockBuilder;
     private SuperBlockBuilder superBlockBuilder;
+
+    private boolean flushed;
 
    public static final String NAME = "SuperBlock";
 

@@ -124,6 +124,24 @@ public class Memory {
       public static final EnumSet<OperationName> isStore = EnumSet.of(
            OperationName.store_8,
            OperationName.store_16,
-           OperationName.store_32
+           OperationName.store_32,
+           OperationName.store_add_8,
+           OperationName.store_add_16,
+           OperationName.store_add_32
+      );
+
+      public static final EnumSet<OperationName> isMemoryOperation = EnumSet.of(
+           OperationName.load_8,
+           OperationName.load_16,
+           OperationName.load_32,
+           OperationName.load_add_8,
+           OperationName.load_add_16,
+           OperationName.load_add_32,
+           OperationName.store_8,
+           OperationName.store_16,
+           OperationName.store_32,
+           OperationName.store_add_8,
+           OperationName.store_add_16,
+           OperationName.store_add_32
       );
 }

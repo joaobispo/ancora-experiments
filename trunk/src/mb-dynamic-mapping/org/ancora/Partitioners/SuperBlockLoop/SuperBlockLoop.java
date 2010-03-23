@@ -53,6 +53,7 @@ public class SuperBlockLoop extends Partitioner implements InstructionBlockListe
 
    @Override
    public void accept(Instruction instruction) {
+      //System.out.println(instruction);
       // Give instruction to BasicBlock
       basicBlockBuilder.accept(instruction);
    }
@@ -69,6 +70,7 @@ public class SuperBlockLoop extends Partitioner implements InstructionBlockListe
 
    @Override
    public void accept(InstructionBlock instructionBlock) {
+      //System.out.println(instructionBlock);
       // Send the SuperBlockLoop to the listeners
       noticeListeners(instructionBlock);
    }

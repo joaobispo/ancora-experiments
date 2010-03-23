@@ -26,8 +26,9 @@ import org.ancora.DmeFramework.Interfaces.MapperMonitor;
  */
 public class RpuExecution {
 
-   public RpuExecution(MapperMonitor monitor, int iterations, int mappingHash) {
+   public RpuExecution(MapperMonitor monitor, InstructionBlock block, int iterations, int mappingHash) {
       this.monitor = monitor;
+      this.instructionBlock = block;
       this.iterations = iterations;
       this.mappingHash = mappingHash;
    }
@@ -39,6 +40,12 @@ public class RpuExecution {
    public int getMappingHash() {
       return mappingHash;
    }
+
+   public InstructionBlock getInstructionBlock() {
+      return instructionBlock;
+   }
+
+   
 
    /*
    public MapperMonitor getMonitor() {
@@ -83,6 +90,7 @@ public class RpuExecution {
     * INSTANCE VARIABLES
     */
    private MapperMonitor monitor;
+   private InstructionBlock instructionBlock;
    private int iterations;
    private int mappingHash;
 }

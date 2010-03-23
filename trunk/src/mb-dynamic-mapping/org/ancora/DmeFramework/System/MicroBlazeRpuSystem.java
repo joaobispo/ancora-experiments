@@ -24,6 +24,7 @@ import org.ancora.DmeFramework.Interfaces.Base.InstructionBlockListener;
 import org.ancora.DmeFramework.Interfaces.Mapper;
 import org.ancora.DmeFramework.Statistics.HashCounter;
 import org.ancora.IrForDynamicMapping.Operation;
+import org.ancora.MbDynamicMapping.Transition.IrConstantPropagation;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlazeToIr.MbToIrParser;
 
@@ -44,6 +45,8 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
 
     @Override
    public void accept(InstructionBlock instructionBlock) {
+//             System.out.println(instructionBlock);
+
        if(mappingFailed) {
           return;
        }
@@ -76,7 +79,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       // Give them to the parser
       List<Operation> operations = MbToIrParser.parseInstructions(instructions);
 
-      /*
+      
       // Perform optimizations on the operations
       IrConstantPropagation optimizations = new IrConstantPropagation();
       // Perform optimizations on all operations
@@ -85,7 +88,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       }
       // Show optimized operations
       operations = optimizations.getOptimizedOperations();
-*/
+
       
       // Feed operations to mapper
       mapper.mapOperations(operations);
@@ -93,7 +96,18 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       // Check if mapping failed
       if(mapper.hasMappingFailed()) {
          mappingFailed = true;
+         return;
       }
+
+      // Check ilp
+      /*
+      if(mapper.getMonitor().getMaxIlp() > 1000) {
+         System.out.println("ILP > 1000");
+         System.out.println(instructionBlock);
+         System.out.println("------Operations--------");
+         System.out.println(operations);
+      }
+       */
    }
 
    /*
