@@ -35,6 +35,7 @@ public class MicroBlazeRpuMonitor {
    public MicroBlazeRpuMonitor(float traceCpi) {
       this.traceCpi = traceCpi;
       this.rpuExecutions = new ArrayList<RpuExecution>();
+      this.instructionBlockPartitions = new ArrayList<InstructionBlock>();
 
       totalMicroBlazeInstructions = 0;
       executionHistory = new MicroBlazeRpuExecutionHistory(new SimpleRpuCommModel());
@@ -46,6 +47,10 @@ public class MicroBlazeRpuMonitor {
    }
 
    public void addMicroBlazeExecution(InstructionBlock instructionBlock) {
+      // Add block to list
+      instructionBlockPartitions.add(instructionBlock);
+      
+      
       // Check
       if(instructionBlock.mapToHardware()) {
          Logger.getLogger(MicroBlazeRpuMonitor.class.getName()).
@@ -68,6 +73,9 @@ public class MicroBlazeRpuMonitor {
    }
 
    public void addRpuExecution(InstructionBlock instructionBlock, MapperMonitor mapperMonitor) {
+      // Add block to list
+      instructionBlockPartitions.add(instructionBlock);
+
       // Check
       if(!instructionBlock.mapToHardware()) {
          Logger.getLogger(MicroBlazeRpuMonitor.class.getName()).
@@ -82,7 +90,7 @@ public class MicroBlazeRpuMonitor {
       // Using directly mapperMonitor instead of copying it.
       // It works, if the Mapper creates a new Monitor for each mapping, instead
       // of reusing the same monitor object.
-      RpuExecution newExec = new RpuExecution(mapperMonitor, iterations, hash);
+      RpuExecution newExec = new RpuExecution(mapperMonitor, instructionBlock, iterations, hash);
       // Add execution
       rpuExecutions.add(newExec);
 
@@ -176,6 +184,11 @@ public class MicroBlazeRpuMonitor {
       return acc;
    }
 
+   public List<InstructionBlock> getInstructionBlockPartitions() {
+      return instructionBlockPartitions;
+   }
+
+
    /**
     * INSTANCE VARIABLES
     */
@@ -183,4 +196,5 @@ public class MicroBlazeRpuMonitor {
    private int totalMicroBlazeInstructions;
    private List<RpuExecution> rpuExecutions;
    private MicroBlazeRpuExecutionHistory executionHistory;
+   private List<InstructionBlock> instructionBlockPartitions;
 }

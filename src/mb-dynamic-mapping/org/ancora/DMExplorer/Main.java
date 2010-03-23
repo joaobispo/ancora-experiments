@@ -22,6 +22,7 @@ import java.util.List;
 import org.ancora.DMExplorer.DataHolders.Execution;
 import org.ancora.DMExplorer.Options.TraceProperties;
 import org.ancora.DMExplorer.Parsers.CommandLineParser;
+import org.ancora.DmeFramework.Statistics.IlpStats;
 import org.ancora.DmeFramework.Statistics.MicroBlazeRpuDataProcess;
 import org.ancora.DmeFramework.System.MicroBlazeRpuMonitor;
 import org.ancora.DmeFramework.System.MicroBlazeRpuSystem;
@@ -105,8 +106,12 @@ public class Main {
 
       // Output statistics
       //
-      MicroBlazeRpuDataProcess stats = new MicroBlazeRpuDataProcess(systemMonitor);
-      processData(stats);
+
+      //MicroBlazeRpuDataProcess stats = new MicroBlazeRpuDataProcess(systemMonitor);
+      //processData(stats);
+      File ilpStatsFile = new File("ilpStats.csv");
+      IlpStats.addData(ilpStatsFile, systemMonitor, execution);
+
    }
 
 

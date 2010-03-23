@@ -25,6 +25,7 @@ public enum InputIndex {
 
    firstOperand(0),
    secondOperand(1),
+   thirdOperand(2),
    carry(2),
    source_bit(1),
    destination_bit(2);
