@@ -18,18 +18,19 @@
 package org.ancora.Partitioners.Shared;
 
 import java.util.BitSet;
+import java.util.logging.Logger;
 import org.ancora.DmeFramework.DataHolders.InstructionBlock;
 import org.ancora.DmeFramework.Interfaces.Base.InstructionBlockListener;
 import org.ancora.DmeFramework.Statistics.HashCounter;
+import org.ancora.SharedLibrary.BitUtils;
 import org.ancora.SharedLibrary.DataStructures.PushingQueue;
 
 /**
  * Looks for patterns in SuperBlocks
  *
- *
  * @author Joao Bispo
  */
-public class PatternFinder implements InstructionBlockListener {
+public class PatternFinderV1 implements InstructionBlockListener {
 
    /**
     * Creates a new PatternFinder which will try to find patterns of maximum
@@ -39,25 +40,19 @@ public class PatternFinder implements InstructionBlockListener {
     * 
     * @param maxPatternSize
     */
-   public PatternFinder(int maxPatternSize) {
+   public PatternFinderV1(int maxPatternSize) {
       //consumers = new ArrayList<PatternFinderConsumer>();
       previousPatternSize = 0;
 
       // Check Pattern Size
-      /*
       if(maxPatternSize > 32) {
-         Logger.getLogger(PatternFinder.class.getName()).
+         Logger.getLogger(PatternFinderV1.class.getName()).
                  warning("Maximum pattern size is 32. Setting size to 32.");
          maxPatternSize = 32;
       }
-       */
 
       this.maxPatternSize = maxPatternSize;
-      matchQueues = new BitSet[maxPatternSize];
-      // Initialize matching queues
-      for(int i=0; i<maxPatternSize; i++) {
-         matchQueues[i] = new BitSet();
-      }
+      matchQueues = new int[maxPatternSize];
       queue = new PushingQueue<Integer>(maxPatternSize + 1);
 
       // Initiallize Queue
@@ -71,7 +66,11 @@ public class PatternFinder implements InstructionBlockListener {
       hashCounter = new HashCounter();
    }
 
-
+   /*
+   public void addPatternFinderConsumer(PatternFinderConsumer patternFinderConsumer) {
+      consumers.add(patternFinderConsumer);
+   }
+    */
 
 
    @Override
@@ -84,28 +83,22 @@ public class PatternFinder implements InstructionBlockListener {
       // Compare first element with all other elements and store result on
       // match queues
       for (int i = 0; i < maxPatternSize; i++) {
-
-         // Check if there is a match
+         // Shift match queue
+         matchQueues[i] <<= 1;
+         // Calculate match
          if (hashValue == queue.getElement(i + 1)) {
-            // We have a match.
-            // Shift match queue to the left
-            matchQueues[i] = matchQueues[i].get(1, i+1);
-            //matchQueues[i] <<= 1;
-            //Set the bit.
-            matchQueues[i].set(i);
-            //matchQueues[i] = BitUtils.setBit(0, matchQueues[i]);
+            // We have a match. Set the bit.
+            matchQueues[i] = BitUtils.setBit(0, matchQueues[i]);
          } else {
             // Reset queue
-            //matchQueues[i] = 0;
-            matchQueues[i].clear();
+            matchQueues[i] = 0;
          }
       }
 
       // Put all the results in a single bit array
       BitSet bitArray = new BitSet();
       for (int i = 0; i < matchQueues.length; i++) {
-         //if (BitUtils.getBit(i, matchQueues[i]) > 0) {
-         if (matchQueues[i].get(i)) {
+         if (BitUtils.getBit(i, matchQueues[i]) > 0) {
             bitArray.set(i);
          } else {
             bitArray.clear(i);
@@ -116,7 +109,33 @@ public class PatternFinder implements InstructionBlockListener {
       updateConsumers(patternSize);
       // Check if there is a pattern
       // Look if bit position is set, only first encountered matters
+  /*
+      int bitIndex = maxPatternSize - 1;
+      int foundMatch = 0;
+      for (int i = 0; i < matchQueues.length; i++) {
+         //if (BitUtils.getBit(bitIndex, matchQueues[i]) > 0) {
+         // Instead of using the same bitIndex for every queue, look at the bit
+         // the same size as the pattern
+         if (BitUtils.getBit(i, matchQueues[i]) > 0) {
+            // There was a match! Store it
+            foundMatch = i+1;
+            // If match is smaller than the last found match, continue
+            // Otherwise, cancel it
+            
+            //if(foundMatch >= previousPatternSize) {
+            //   break;
+            //}
+             
+            // There was a match! Inform and return.
+            updateConsumers(i + 1);
+            return;
+         }
+      }
 
+      //updateConsumers(foundMatch);
+      // No pattern was found
+      updateConsumers(0);
+*/
    }
 
    private int calculatePatternSize(BitSet bitArray, int previousPatternSize) {
@@ -194,7 +213,7 @@ public class PatternFinder implements InstructionBlockListener {
     * INSTANCE VARIABLES
     */
    private int maxPatternSize;
-   private BitSet[] matchQueues;
+   private int[] matchQueues;
    private PushingQueue<Integer> queue;
 
    //private List<PatternFinderConsumer> consumers;
