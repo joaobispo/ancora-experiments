@@ -17,8 +17,10 @@
 
 package org.ancora.DmeFramework.System;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import org.ancora.DMExplorer.DataHolders.Execution;
 import org.ancora.DmeFramework.DataHolders.InstructionBlock;
 import org.ancora.DmeFramework.Interfaces.Base.InstructionBlockListener;
 import org.ancora.DmeFramework.Interfaces.Mapper;
@@ -27,6 +29,7 @@ import org.ancora.IrForDynamicMapping.Operation;
 import org.ancora.MbDynamicMapping.Transition.IrConstantPropagation;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlazeToIr.MbToIrParser;
+import org.ancora.SharedLibrary.IoUtils;
 
 /**
  * Represents a computer system which has a MicroBlaze has the main CPU and an 
@@ -36,8 +39,8 @@ import org.ancora.MicroBlazeToIr.MbToIrParser;
  */
 public class MicroBlazeRpuSystem implements InstructionBlockListener {
 
-   public MicroBlazeRpuSystem(Mapper mapper, MicroBlazeRpuMonitor systemMonitor) {
-      this.mapper = mapper;
+   public MicroBlazeRpuSystem(Execution execution, MicroBlazeRpuMonitor systemMonitor) {
+      this.execution = execution;
       this.monitor = systemMonitor;
       hashCounter = new HashCounter();
 
@@ -58,8 +61,10 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
 
        // Check if the block is for the RPU or for the MicroBlaze processor
        if (rpuMappable) {
-          mapToRpu(instructionBlock, mapper);
-          monitor.addRpuExecution(instructionBlock, mapper.getMonitor());
+          List<Operation> operations = mapToRpu(instructionBlock, execution.getMapper());
+          monitor.addRpuExecution(instructionBlock, execution.getMapper().getMonitor());
+          // If mappable, print to a file
+          saveInstructionBlock(instructionBlock, operations);
        } else {
          monitor.addMicroBlazeExecution(instructionBlock);
        }
@@ -72,7 +77,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
    }
 
 
-   private void mapToRpu(InstructionBlock instructionBlock, Mapper mapper) {
+   private List<Operation> mapToRpu(InstructionBlock instructionBlock, Mapper mapper) {
       // Transform MicroBlaze instructions in IR operations
       // Feed them to the mapper
       //throw new UnsupportedOperationException("Not yet implemented");
@@ -99,7 +104,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       // Check if mapping failed
       if(mapper.hasMappingFailed()) {
          mappingFailed = true;
-         return;
+         return null;
       }
 
       // Check ilp
@@ -111,6 +116,8 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
          System.out.println(operations);
       }
        */
+
+      return operations;
    }
 
    /*
@@ -140,7 +147,8 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
    /**
     * INSTANCE VARIABLES
     */
-   private Mapper mapper;
+   private Execution execution;
+   //private Mapper mapper;
    private MicroBlazeRpuMonitor monitor;
    private boolean mappingFailed = false;
 
@@ -162,6 +170,43 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       }
        */
    }
+
+   private void saveInstructionBlock(InstructionBlock block, List<Operation> operations) {
+      // Check if it has the required number of iterations
+      int iterationThreshold = 1;
+      if(block.getIterations() <= iterationThreshold) {
+         return;
+      }
+
+      String filename = execution.getTrace().getName();
+      filename = filename.substring(0, filename.length()-4) + ".block";
+
+      File outFile = new File(filename);
+      //File outFile = new File("extracted.block");
+      StringBuilder builder = new StringBuilder();
+
+      // Header
+      builder.append("Block "+hashCounter.convertHash(block.getHash()));
+      builder.append(", "+block.getIterations()+" iterations.\n");
+      for(Instruction inst : block.getInstructions()) {
+         builder.append(inst);
+         builder.append("\n");
+      }
+
+      builder.append("\n");
+      builder.append("Operations:\n");
+
+      for(Operation op : operations) {
+         builder.append(op);
+         builder.append("\n");
+      }
+      builder.append("-------------------------------------------------\n");
+      builder.append("\n");
+
+      IoUtils.append(outFile, builder.toString());
+   }
+
+
 
 
 }

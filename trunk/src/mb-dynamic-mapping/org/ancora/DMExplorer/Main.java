@@ -117,7 +117,7 @@ public class Main {
       MicroBlazeRpuMonitor systemMonitor = new MicroBlazeRpuMonitor(traceCpi);
 
       // Instantiate MicroBlaze-RPU system with given mapper and monitor
-      MicroBlazeRpuSystem system = new MicroBlazeRpuSystem(execution.getMapper(), systemMonitor);
+      MicroBlazeRpuSystem system = new MicroBlazeRpuSystem(execution, systemMonitor);
 
       // Link System to Partitioner
       execution.getPartitioner().addListener(system);
