@@ -22,7 +22,7 @@ import org.ancora.DMExplorer.Global;
 import org.ancora.DMExplorer.Plugins.Dummies.DummyPartitioner;
 import org.ancora.DmeFramework.Interfaces.Partitioner;
 import org.ancora.Partitioners.BasicBlock.BasicBlock;
-import org.ancora.Partitioners.BasicBlockIterations.BasicBlockIterations;
+import org.ancora.Partitioners.BasicBlockLoop.BasicBlockLoop;
 import org.ancora.Partitioners.SuperBlock.SuperBlock;
 import org.ancora.Partitioners.SuperBlockIterations.SuperBlockIterations;
 import org.ancora.Partitioners.SuperBlockLoop.SuperBlockLoop;
@@ -81,7 +81,7 @@ public enum PartitionerName {
          case superblockiterations:
             return SuperBlockIterations.NAME;
          case basicblockiterations:
-            return BasicBlockIterations.NAME;
+            return BasicBlockLoop.NAME;
          default:
             return "Name Not Defined";
       }
@@ -100,7 +100,7 @@ public enum PartitionerName {
          case superblockiterations:
             return new SuperBlockIterations();
          case basicblockiterations:
-            return new BasicBlockIterations();
+            return new BasicBlockLoop();
          default:
              Logger.getLogger(PartitionerName.class.getName()).
                  info("Partitioner Constructor for '"+this.getName()+"' not defined.'");
