@@ -17,6 +17,7 @@
 
 package org.ancora.Partitioners.SuperBlockLoop;
 
+import org.ancora.Partitioners.Shared.PatternFinderInfo;
 import org.ancora.Partitioners.Shared.PatternFinder;
 import java.util.ArrayList;
 import java.util.Arrays;

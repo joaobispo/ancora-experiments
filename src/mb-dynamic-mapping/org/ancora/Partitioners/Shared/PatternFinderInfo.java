@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Partitioners.SuperBlockLoop;
+package org.ancora.Partitioners.Shared;
 
 /**
  * Encapsulates the information extracted by PatternFinder
