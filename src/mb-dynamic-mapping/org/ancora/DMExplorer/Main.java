@@ -84,11 +84,11 @@ public class Main {
                  warning("There were errors. Please, check the log.");
       }
 
-      File memAndCommFile = new File("memAndComm.csv");
-      memAndCommCount.saveData(memAndCommFile);
+      //File memAndCommFile = new File("memAndComm.csv");
+      //memAndCommCount.saveData(memAndCommFile);
 
-      //File instPerItFile = new File("inst-it-graph.csv");
-      //instPerIt.saveTraceCoverageData(instPerItFile);
+      File instPerItFile = new File("inst-it-graph.csv");
+      instPerIt.saveTraceCoverageData(instPerItFile);
 
       //File avgIterationSize = new File("avg-it-size.csv");
       //instPerIt.saveIterationSizeData(avgIterationSize);

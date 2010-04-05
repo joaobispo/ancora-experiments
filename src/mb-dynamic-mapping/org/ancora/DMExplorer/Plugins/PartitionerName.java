@@ -26,6 +26,7 @@ import org.ancora.Partitioners.BasicBlockLoop.BasicBlockLoop;
 import org.ancora.Partitioners.SuperBlock.SuperBlock;
 import org.ancora.Partitioners.SuperBlockLoop.SuperBlockLoop;
 import org.ancora.Partitioners.MegaBlockLoop.MegaBlockLoop;
+import org.ancora.Partitioners.MegaBlockLoopLevel2.MegaBlockLoopLevel2;
 
 /**
  * Name of the supported partitioners.
@@ -38,7 +39,8 @@ public enum PartitionerName {
    superblock,
    megablockloop,
    superblockloop,
-   basicblockloop;
+   basicblockloop,
+   megablocklooplevel2;
 
   public String getHelpMessage() {
       switch(this) {
@@ -63,6 +65,10 @@ public enum PartitionerName {
             return "Builds sequences of the same BasicBlock. Inspects " +
                     "the content of the instruction to determine the limits of BasicBlocks " +
                     " and SuperBlocks";
+         case megablocklooplevel2:
+                        return "Builds Nested SuperBlockLoops, mappable on custom hardware. Inspects " +
+                    "the content of the instruction to determine the limits of BasicBlocks " +
+                    ", SuperBlocks and MegaBlockLoops.";
          default:
             return "Message Not Defined";
       }
@@ -82,6 +88,8 @@ public enum PartitionerName {
             return SuperBlockLoop.NAME;
          case basicblockloop:
             return BasicBlockLoop.NAME;
+         case megablocklooplevel2:
+            return MegaBlockLoopLevel2.NAME;
          default:
             return "Name Not Defined";
       }
@@ -101,6 +109,8 @@ public enum PartitionerName {
             return new SuperBlockLoop();
          case basicblockloop:
             return new BasicBlockLoop();
+         case megablocklooplevel2:
+            return new MegaBlockLoopLevel2(Global.maxPatternSize, Global.maxPatternSize);
          default:
              Logger.getLogger(PartitionerName.class.getName()).
                  info("Partitioner Constructor for '"+this.getName()+"' not defined.'");
