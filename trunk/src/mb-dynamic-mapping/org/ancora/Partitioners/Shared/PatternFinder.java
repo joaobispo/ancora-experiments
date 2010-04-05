@@ -15,11 +15,10 @@
  *  under the License.
  */
 
-package org.ancora.Partitioners.SuperBlockLoop;
+package org.ancora.Partitioners.Shared;
 
-import java.util.ArrayList;
+import org.ancora.Partitioners.SuperBlockLoop.*;
 import java.util.BitSet;
-import java.util.List;
 import java.util.logging.Logger;
 import org.ancora.DmeFramework.DataHolders.InstructionBlock;
 import org.ancora.DmeFramework.Interfaces.Base.InstructionBlockListener;
