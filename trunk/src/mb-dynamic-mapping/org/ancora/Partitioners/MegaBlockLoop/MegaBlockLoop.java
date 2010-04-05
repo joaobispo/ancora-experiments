@@ -28,13 +28,13 @@ import org.ancora.Partitioners.SuperBlock.SuperBlockBuilder;
  *
  * @author Joao Bispo
  */
-public class SuperBlockLoop extends Partitioner implements InstructionBlockListener {
+public class MegaBlockLoop extends Partitioner implements InstructionBlockListener {
 
-   public SuperBlockLoop(int maxPatternSize) {
+   public MegaBlockLoop(int maxPatternSize) {
       // Create blocks
       basicBlockBuilder = new BasicBlock();
       superBlockBuilder = new SuperBlockBuilder();
-      superBlockLoopBuilder =  new SuperBlockLoopBuilder(maxPatternSize);
+      superBlockLoopBuilder =  new MegaBlockLoopBuilder(maxPatternSize);
 
       // Link blocks
       basicBlockBuilder.addListener(superBlockBuilder);
@@ -71,7 +71,7 @@ public class SuperBlockLoop extends Partitioner implements InstructionBlockListe
    @Override
    public void accept(InstructionBlock instructionBlock) {
       //System.out.println(instructionBlock);
-      // Send the SuperBlockLoop to the listeners
+      // Send the MegaBlockLoop to the listeners
       noticeListeners(instructionBlock);
    }
 
@@ -84,10 +84,10 @@ public class SuperBlockLoop extends Partitioner implements InstructionBlockListe
     */
     private BasicBlock basicBlockBuilder;
     private SuperBlockBuilder superBlockBuilder;
-    private SuperBlockLoopBuilder superBlockLoopBuilder;
+    private MegaBlockLoopBuilder superBlockLoopBuilder;
 
     private boolean flushed;
 
-   public static final String NAME = "SuperBlockLoop";
+   public static final String NAME = "MegaBlockLoop";
    public static final int DEFAULT_MAX_PATTERN_SIZE = 10;
 }

@@ -17,7 +17,7 @@
 
 package org.ancora.DMExplorer;
 
-import org.ancora.Partitioners.MegaBlockLoop.SuperBlockLoop;
+import org.ancora.Partitioners.MegaBlockLoop.MegaBlockLoop;
 
 /**
  *
@@ -27,5 +27,5 @@ public class Global {
 
    public static int peLineSize = 0;
    public static int feedDistance = 1;
-   public static int maxPatternSize = SuperBlockLoop.DEFAULT_MAX_PATTERN_SIZE;
+   public static int maxPatternSize = MegaBlockLoop.DEFAULT_MAX_PATTERN_SIZE;
 }

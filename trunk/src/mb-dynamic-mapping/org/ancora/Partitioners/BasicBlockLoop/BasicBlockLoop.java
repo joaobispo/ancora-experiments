@@ -116,7 +116,7 @@ public class BasicBlockLoop extends Partitioner implements InstructionBlockListe
     private InstructionBlock currentBasicBlock;
     private boolean flushed;
 
-   public static final String NAME = "BasicBlockIterations";
+   public static final String NAME = "BasicBlockLoop";
 
 
 

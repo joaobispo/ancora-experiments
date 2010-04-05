@@ -119,7 +119,7 @@ public class SuperBlockLoop extends Partitioner implements InstructionBlockListe
     private InstructionBlock currentSuperBlock;
     private boolean flushed;
 
-   public static final String NAME = "SuperBlockIterations";
+   public static final String NAME = "SuperBlockLoop";
 
 
 

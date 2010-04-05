@@ -25,7 +25,7 @@ import org.ancora.Partitioners.BasicBlock.BasicBlock;
 import org.ancora.Partitioners.BasicBlockLoop.BasicBlockLoop;
 import org.ancora.Partitioners.SuperBlock.SuperBlock;
 import org.ancora.Partitioners.SuperBlockLoop.SuperBlockLoop;
-import org.ancora.Partitioners.MegaBlockLoop.SuperBlockLoop;
+import org.ancora.Partitioners.MegaBlockLoop.MegaBlockLoop;
 
 /**
  * Name of the supported partitioners.
@@ -36,9 +36,9 @@ public enum PartitionerName {
    dummypartitioner,
    basicblock,
    superblock,
+   megablockloop,
    superblockloop,
-   superblockiterations,
-   basicblockiterations;
+   basicblockloop;
 
   public String getHelpMessage() {
       switch(this) {
@@ -51,15 +51,15 @@ public enum PartitionerName {
             return "Builds SuperBlocks, mappable on custom hardware. Inspects " +
                     "the content of the instruction to determine the limits of BasicBlocks," +
                     " which are used to build SuperBlocks.";
-         case superblockloop:
+         case megablockloop:
             return "Builds SuperBlockLoops, mappable on custom hardware. Inspects " +
                     "the content of the instruction to determine the limits of BasicBlocks " +
                     " and SuperBlocks, which are used to build SuperBlockLoops.";
-         case superblockiterations:
+         case superblockloop:
             return "Builds sequences of the same SuperBlock. Inspects " +
                     "the content of the instruction to determine the limits of BasicBlocks " +
                     " and SuperBlocks.";
-         case basicblockiterations:
+         case basicblockloop:
             return "Builds sequences of the same BasicBlock. Inspects " +
                     "the content of the instruction to determine the limits of BasicBlocks " +
                     " and SuperBlocks";
@@ -76,11 +76,11 @@ public enum PartitionerName {
             return BasicBlock.NAME;
          case superblock:
             return SuperBlock.NAME;
+         case megablockloop:
+            return MegaBlockLoop.NAME;
          case superblockloop:
             return SuperBlockLoop.NAME;
-         case superblockiterations:
-            return SuperBlockLoop.NAME;
-         case basicblockiterations:
+         case basicblockloop:
             return BasicBlockLoop.NAME;
          default:
             return "Name Not Defined";
@@ -95,11 +95,11 @@ public enum PartitionerName {
             return new BasicBlock();
          case superblock:
             return new SuperBlock();
+         case megablockloop:
+            return new MegaBlockLoop(Global.maxPatternSize);
          case superblockloop:
-            return new SuperBlockLoop(Global.maxPatternSize);
-         case superblockiterations:
             return new SuperBlockLoop();
-         case basicblockiterations:
+         case basicblockloop:
             return new BasicBlockLoop();
          default:
              Logger.getLogger(PartitionerName.class.getName()).
