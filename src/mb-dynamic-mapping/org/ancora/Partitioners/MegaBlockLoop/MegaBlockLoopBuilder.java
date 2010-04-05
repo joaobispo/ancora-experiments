@@ -33,10 +33,10 @@ import org.ancora.SharedLibrary.BitUtils;
  *
  * @author Joao Bispo
  */
-public class SuperBlockLoopBuilder extends InstructionBlockSource implements InstructionBlockListener {
+public class MegaBlockLoopBuilder extends InstructionBlockSource implements InstructionBlockListener {
 
 
-   public SuperBlockLoopBuilder(int maxPatternSize) {
+   public MegaBlockLoopBuilder(int maxPatternSize) {
       initCurrentLoop();
       initPatternLoop();
 
