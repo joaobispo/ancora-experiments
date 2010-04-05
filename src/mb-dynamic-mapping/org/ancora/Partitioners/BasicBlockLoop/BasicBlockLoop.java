@@ -15,9 +15,8 @@
  *  under the License.
  */
 
-package org.ancora.Partitioners.BasicBlockIterations;
+package org.ancora.Partitioners.BasicBlockLoop;
 
-import org.ancora.Partitioners.SuperBlockIterations.*;
 import org.ancora.DmeFramework.DataHolders.InstructionBlock;
 import org.ancora.DmeFramework.Interfaces.Base.InstructionBlockListener;
 import org.ancora.DmeFramework.Interfaces.Partitioner;
@@ -29,9 +28,9 @@ import org.ancora.Partitioners.SuperBlock.SuperBlockBuilder;
  *
  * @author Joao Bispo
  */
-public class BasicBlockIterations extends Partitioner implements InstructionBlockListener {
+public class BasicBlockLoop extends Partitioner implements InstructionBlockListener {
 
-   public BasicBlockIterations() {
+   public BasicBlockLoop() {
       // Create blocks
       basicBlockBuilder = new BasicBlock();
 
