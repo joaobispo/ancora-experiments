@@ -30,17 +30,16 @@ import org.ancora.Partitioners.SuperBlock.SuperBlockBuilder;
  */
 public class SuperBlockLoop extends Partitioner implements InstructionBlockListener {
 
-   public SuperBlockLoop(int maxPatternSize) {
+   public SuperBlockLoop() {
       // Create blocks
       basicBlockBuilder = new BasicBlock();
       superBlockBuilder = new SuperBlockBuilder();
-      superBlockLoopBuilder =  new SuperBlockLoopBuilder(maxPatternSize);
 
       // Link blocks
       basicBlockBuilder.addListener(superBlockBuilder);
-      superBlockBuilder.addListener(superBlockLoopBuilder);
-      superBlockLoopBuilder.addListener(this);
+      superBlockBuilder.addListener(this);
 
+      currentSuperBlock = null;
       flushed = false;
    }
 
@@ -53,9 +52,51 @@ public class SuperBlockLoop extends Partitioner implements InstructionBlockListe
 
    @Override
    public void accept(Instruction instruction) {
-      //System.out.println(instruction);
       // Give instruction to BasicBlock
       basicBlockBuilder.accept(instruction);
+   }
+
+      @Override
+   public void accept(InstructionBlock instructionBlock) {
+      if(currentSuperBlock == null) {
+         currentSuperBlock = instructionBlock;
+         return;
+      }
+      
+      if(currentSuperBlock.getHash() == instructionBlock.getHash()) {
+         int newIterations = currentSuperBlock.getIterations()+1;
+         currentSuperBlock.setIterations(newIterations);
+      } else {
+         // Send previous superblock, store current
+         sendCurrentSuperBlock();
+         currentSuperBlock = instructionBlock;
+      }
+      
+   }
+
+
+   private void sendCurrentSuperBlock() {
+      if(currentSuperBlock == null) {
+         return;
+      }
+
+      // Check if block is mappable in MB ou RPU
+      boolean mapToHardware = isRpuMappable(currentSuperBlock);
+      currentSuperBlock.setMapToHardware(mapToHardware);
+      noticeListeners(currentSuperBlock);
+   }
+
+
+   private boolean isRpuMappable(InstructionBlock currentSuperBlock) {
+      // All blocks mappable
+      //return true;
+      
+      if(currentSuperBlock.getIterations() > 1) {
+         return true;
+      } else {
+         return false;
+      }
+       
    }
 
    @Override
@@ -64,19 +105,9 @@ public class SuperBlockLoop extends Partitioner implements InstructionBlockListe
          flushed = true;
          basicBlockBuilder.flush();
       } else {
+         sendCurrentSuperBlock();
          flushListeners();
       }
-   }
-
-   @Override
-   public void accept(InstructionBlock instructionBlock) {
-      //System.out.println(instructionBlock);
-      // Send the SuperBlockLoop to the listeners
-      noticeListeners(instructionBlock);
-   }
-
-   public void setMaxPatternSize(int maxPatternSize) {
-      superBlockLoopBuilder.setMaxPatternSize(maxPatternSize);
    }
 
    /**
@@ -84,10 +115,13 @@ public class SuperBlockLoop extends Partitioner implements InstructionBlockListe
     */
     private BasicBlock basicBlockBuilder;
     private SuperBlockBuilder superBlockBuilder;
-    private SuperBlockLoopBuilder superBlockLoopBuilder;
 
+    private InstructionBlock currentSuperBlock;
     private boolean flushed;
 
-   public static final String NAME = "SuperBlockLoop";
-   public static final int DEFAULT_MAX_PATTERN_SIZE = 10;
+   public static final String NAME = "SuperBlockIterations";
+
+
+
+
 }

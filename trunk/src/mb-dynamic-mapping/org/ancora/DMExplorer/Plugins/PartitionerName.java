@@ -24,8 +24,8 @@ import org.ancora.DmeFramework.Interfaces.Partitioner;
 import org.ancora.Partitioners.BasicBlock.BasicBlock;
 import org.ancora.Partitioners.BasicBlockLoop.BasicBlockLoop;
 import org.ancora.Partitioners.SuperBlock.SuperBlock;
-import org.ancora.Partitioners.SuperBlockIterations.SuperBlockIterations;
 import org.ancora.Partitioners.SuperBlockLoop.SuperBlockLoop;
+import org.ancora.Partitioners.MegaBlockLoop.SuperBlockLoop;
 
 /**
  * Name of the supported partitioners.
@@ -79,7 +79,7 @@ public enum PartitionerName {
          case superblockloop:
             return SuperBlockLoop.NAME;
          case superblockiterations:
-            return SuperBlockIterations.NAME;
+            return SuperBlockLoop.NAME;
          case basicblockiterations:
             return BasicBlockLoop.NAME;
          default:
@@ -98,7 +98,7 @@ public enum PartitionerName {
          case superblockloop:
             return new SuperBlockLoop(Global.maxPatternSize);
          case superblockiterations:
-            return new SuperBlockIterations();
+            return new SuperBlockLoop();
          case basicblockiterations:
             return new BasicBlockLoop();
          default:

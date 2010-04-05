@@ -17,7 +17,7 @@
 
 package org.ancora.DMExplorer;
 
-import org.ancora.Partitioners.SuperBlockLoop.SuperBlockLoop;
+import org.ancora.Partitioners.MegaBlockLoop.SuperBlockLoop;
 
 /**
  *

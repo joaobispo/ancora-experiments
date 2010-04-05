@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Partitioners.SuperBlockLoop;
+package org.ancora.Partitioners.MegaBlockLoop;
 
 import org.ancora.Partitioners.Shared.PatternFinderInfo;
 import org.ancora.Partitioners.Shared.PatternFinder;
