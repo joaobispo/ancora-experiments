@@ -51,7 +51,10 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
           return;
        }
 
-      boolean rpuMappable = instructionBlock.mapToHardware();
+      // Map all blocks on the RPU
+       instructionBlock.setMapToHardware(true);
+       
+       boolean rpuMappable = instructionBlock.mapToHardware();
 
        // Check if the block is for the RPU or for the MicroBlaze processor
        if (rpuMappable) {
@@ -65,7 +68,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
       monitor.incrementTotalMicroBlazeInstructions(instructionBlock.getTotalInstructions());
 
       //showInstructionBlock(instructionBlock);
-      mbInstructionsCounter+=instructionBlock.getTotalInstructions();
+      //mbInstructionsCounter+=instructionBlock.getTotalInstructions();
    }
 
 
@@ -144,7 +147,7 @@ public class MicroBlazeRpuSystem implements InstructionBlockListener {
    //private Map<Integer,Integer> hashes;
    //private int counter;
    private HashCounter hashCounter;
-   private int mbInstructionsCounter;
+   //private int mbInstructionsCounter;
 
    private void showInstructionBlock(InstructionBlock block) {
       int index = hashCounter.convertHash(block.getHash());

@@ -19,10 +19,13 @@ package org.ancora.DMExplorer;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 import org.ancora.DMExplorer.DataHolders.Execution;
 import org.ancora.DMExplorer.Options.TraceProperties;
 import org.ancora.DMExplorer.Parsers.CommandLineParser;
 import org.ancora.DmeFramework.Statistics.IlpStats;
+import org.ancora.DmeFramework.Statistics.InstructionsPerIteration;
+import org.ancora.DmeFramework.Statistics.MemoryInstAndCommCounter;
 import org.ancora.DmeFramework.Statistics.MicroBlazeRpuDataProcess;
 import org.ancora.DmeFramework.System.MicroBlazeRpuMonitor;
 import org.ancora.DmeFramework.System.MicroBlazeRpuSystem;
@@ -57,13 +60,38 @@ public class Main {
          return;
       }
 
+      errorsHappened = false;
+
+      InstructionsPerIteration instPerIt = new InstructionsPerIteration();
+      MemoryInstAndCommCounter memAndCommCount = new MemoryInstAndCommCounter();
+
       for(Execution execution : executions) {
          System.out.println("Running Execution "+execution);
          // Link Partitioner and Mapper and run them
-         runMicroBlazeRpuSystem(execution);
+         MicroBlazeRpuMonitor monitor = runMicroBlazeRpuSystem(execution);
          // Print Empty Line
          System.out.println(" ");
+
+         String traceName = execution.getTrace().getName();
+         String partitionerName = execution.getPartitioner().getName();
+
+         instPerIt.addData(traceName, partitionerName, monitor);
+         memAndCommCount.addData(traceName, partitionerName, monitor);
       }
+
+      if(errorsHappened) {
+         Logger.getLogger(Main.class.getName()).
+                 warning("There were errors. Please, check the log.");
+      }
+
+      File memAndCommFile = new File("memAndComm.csv");
+      memAndCommCount.saveData(memAndCommFile);
+
+      //File instPerItFile = new File("inst-it-graph.csv");
+      //instPerIt.saveTraceCoverageData(instPerItFile);
+
+      //File avgIterationSize = new File("avg-it-size.csv");
+      //instPerIt.saveIterationSizeData(avgIterationSize);
 
       /*
 
@@ -78,7 +106,7 @@ public class Main {
        */
    }
 
-   private static void runMicroBlazeRpuSystem(Execution execution) {
+   private static MicroBlazeRpuMonitor runMicroBlazeRpuSystem(Execution execution) {
       // Setup Trace Reader
       TraceReader traceReader = TraceReader.createTraceReader(execution.getTrace());
 
@@ -105,23 +133,30 @@ public class Main {
       execution.getPartitioner().flush();
 
       // Output statistics
-      //
+      
 
+      // Mapper Statistics
       //MicroBlazeRpuDataProcess stats = new MicroBlazeRpuDataProcess(systemMonitor);
       //processData(stats);
-      File ilpStatsFile = new File("ilpStats.csv");
-      IlpStats.addData(ilpStatsFile, systemMonitor, execution);
+      
+      // Partition Statistics
+      //File ilpStatsFile = new File("ilpStats.csv");
+      //IlpStats.addData(ilpStatsFile, systemMonitor, execution);
 
+      // Do some checks
+      checkData(systemMonitor, execution);
+
+      return systemMonitor;
    }
 
 
    private static void processData(MicroBlazeRpuDataProcess stats) {
       //stats.showDiffMbCyclesSysHis();
-      stats.showSpeedup();
+      //stats.showSpeedup();
       //System.out.println(" ");
       stats.showIlp();
       //System.out.println(" ");
-      //stats.showMax();
+      stats.showMax();
    }
 
    /*
@@ -140,6 +175,23 @@ public class Main {
       return traceProps.getCpi();
    }
 
+   private static int getTraceTotalInstructions(File trace) {
+      TraceProperties traceProps = Utils.getTraceProperties(trace);
+      return traceProps.getInstructions();
+   }
+
+   private static void checkData(MicroBlazeRpuMonitor systemMonitor, Execution execution) {
+      // Check if Partitioned Instructions Add Up
+      int monitorInst = systemMonitor.getTotalMicroblazeInstructions();
+      int traceInst = getTraceTotalInstructions(execution.getTrace());
+      if(monitorInst != traceInst) {
+         Logger.getLogger(Main.class.getName()).
+                 warning("Total instructions does not add up: Trace("+traceInst+") " +
+                 "vs. Partitioner("+monitorInst+")");
+         errorsHappened = true;
+      }
+   }
 
 
+   private static boolean errorsHappened;
 }

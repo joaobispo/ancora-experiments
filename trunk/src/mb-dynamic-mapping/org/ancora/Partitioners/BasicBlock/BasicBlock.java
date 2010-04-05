@@ -92,9 +92,9 @@ public class BasicBlock extends Partitioner {
       iBlock.setHash(hash);
 
       // Send Instruction Block  to listeners
-      System.out.println("--BasicBlock Begin--");
-      System.out.println(iBlock);
-      System.out.println("--BasicBlock End--");
+      //System.out.println("--BasicBlock Begin--");
+      //System.out.println(iBlock);
+      //System.out.println("--BasicBlock End--");
       noticeListeners(iBlock);
       // Clean current instructions
       currentInstructions = new ArrayList<Instruction>();
