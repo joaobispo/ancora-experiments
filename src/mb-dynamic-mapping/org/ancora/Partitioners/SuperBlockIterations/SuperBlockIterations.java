@@ -88,11 +88,15 @@ public class SuperBlockIterations extends Partitioner implements InstructionBloc
 
 
    private boolean isRpuMappable(InstructionBlock currentSuperBlock) {
+      // All blocks mappable
+      //return true;
+      
       if(currentSuperBlock.getIterations() > 1) {
          return true;
       } else {
          return false;
       }
+       
    }
 
    @Override

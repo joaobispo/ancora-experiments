@@ -92,6 +92,9 @@ public class IlpStats {
       blockInstructionsAvg,
       blockInstructionsMin,
       blockInstructionsMax,
+      mappingInstructionsAvg,
+      mappingInstructionsMin,
+      mappingInstructionsMax,
       blockFrequencyAvg,
       blockFrequencyMin,
       blockFrequencyMax,
@@ -113,6 +116,12 @@ public class IlpStats {
                return String.valueOf(monitor.getBlockFrequencyMax());
             case blockFrequencyMin:
                return String.valueOf(monitor.getBlockFrequencyMin());
+            case mappingInstructionsAvg:
+               return String.valueOf(monitor.getMappingInstructionsAvg());
+            case mappingInstructionsMax:
+               return String.valueOf(monitor.getMappingInstructionsMax());
+            case mappingInstructionsMin:
+               return String.valueOf(monitor.getMappingInstructionsMin());
             case blockInstructionsAvg:
                return String.valueOf(monitor.getBlockInstructionsAvg());
             case blockInstructionsMax:

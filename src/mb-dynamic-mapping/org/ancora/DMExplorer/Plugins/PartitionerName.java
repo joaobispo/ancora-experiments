@@ -22,6 +22,7 @@ import org.ancora.DMExplorer.Global;
 import org.ancora.DMExplorer.Plugins.Dummies.DummyPartitioner;
 import org.ancora.DmeFramework.Interfaces.Partitioner;
 import org.ancora.Partitioners.BasicBlock.BasicBlock;
+import org.ancora.Partitioners.BasicBlockIterations.BasicBlockIterations;
 import org.ancora.Partitioners.SuperBlock.SuperBlock;
 import org.ancora.Partitioners.SuperBlockIterations.SuperBlockIterations;
 import org.ancora.Partitioners.SuperBlockLoop.SuperBlockLoop;
@@ -36,7 +37,8 @@ public enum PartitionerName {
    basicblock,
    superblock,
    superblockloop,
-   superblockiterations;
+   superblockiterations,
+   basicblockiterations;
 
   public String getHelpMessage() {
       switch(this) {
@@ -57,6 +59,10 @@ public enum PartitionerName {
             return "Builds sequences of the same SuperBlock. Inspects " +
                     "the content of the instruction to determine the limits of BasicBlocks " +
                     " and SuperBlocks.";
+         case basicblockiterations:
+            return "Builds sequences of the same BasicBlock. Inspects " +
+                    "the content of the instruction to determine the limits of BasicBlocks " +
+                    " and SuperBlocks";
          default:
             return "Message Not Defined";
       }
@@ -74,6 +80,8 @@ public enum PartitionerName {
             return SuperBlockLoop.NAME;
          case superblockiterations:
             return SuperBlockIterations.NAME;
+         case basicblockiterations:
+            return BasicBlockIterations.NAME;
          default:
             return "Name Not Defined";
       }
@@ -91,6 +99,8 @@ public enum PartitionerName {
             return new SuperBlockLoop(Global.maxPatternSize);
          case superblockiterations:
             return new SuperBlockIterations();
+         case basicblockiterations:
+            return new BasicBlockIterations();
          default:
              Logger.getLogger(PartitionerName.class.getName()).
                  info("Partitioner Constructor for '"+this.getName()+"' not defined.'");

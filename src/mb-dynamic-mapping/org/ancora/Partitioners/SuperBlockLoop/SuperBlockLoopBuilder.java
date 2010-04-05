@@ -234,10 +234,15 @@ public class SuperBlockLoopBuilder extends InstructionBlockSource implements Ins
          Instruction[] penalty = currentLoop.toArray(new Instruction[currentLoop.size()]);
          int loopHash = calcLoopHash(patternLoopHashes);
 
+         // All blocks mappable
+         //boolean mapToHardware = true;
+
+
          boolean mapToHardware = false;
          if(loopIterations > 1) {
             mapToHardware = true;
          }
+          
 
          // Build InstructionBlock
          InstructionBlock newBlock = new InstructionBlock(mapToHardware, blockInst, penalty, loopIterations);

@@ -19,6 +19,7 @@ package org.ancora.DmeFramework.Statistics;
 
 import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory;
 import org.ancora.DmeFramework.DataHolders.MicroBlazeRpuExecutionHistory.StepType;
+import org.ancora.DmeFramework.DataHolders.RpuExecution;
 import org.ancora.DmeFramework.System.MicroBlazeRpuMonitor;
 
 /**
@@ -103,11 +104,23 @@ public class MicroBlazeRpuDataProcess {
    }
 
    public void showMax() {
+      double maxIlp = 0;
+      for(RpuExecution exec : monitor.getRpuExecutions()) {
+         double cycles = (double)exec.getTotalCycles();
+         double newIlp = 0;
+         if(cycles != 0) {
+            newIlp = (double)exec.getTotalMappedOperations() / (double)exec.getTotalCycles();
+         }
+         maxIlp = Math.max(maxIlp, newIlp);
+      }
+
       System.out.println("Max Live-In:"+monitor.getMaxLiveIn());
       System.out.println("Max Live-Out:"+monitor.getMaxLiveOut());
-      System.out.println("Max ILP:"+monitor.getMaxIlp());
-      System.out.println("Max Cycles:"+monitor.getMaxCycles());
-      System.out.println("Total Operations:"+monitor.getTotalMappedOperations());
+      System.out.println("Max ILP:"+maxIlp);
+      //System.out.println("Max ILP:"+monitor.getMaxIlp());
+      //System.out.println("Max ILP:"+monitor.getMaxIlp());
+      //System.out.println("Max Cycles:"+monitor.getMaxCycles());
+      //System.out.println("Total Operations:"+monitor.getTotalMappedOperations());
    }
 
    /**
