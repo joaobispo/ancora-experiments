@@ -18,11 +18,13 @@
 package org.ancora.DynamicMapping.Tester;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import org.ancora.DynamicMapping.Tester.ProtoIr.Converter;
-import org.ancora.MicroBlaze.Instructions.Instruction;
-import org.ancora.MicroBlaze.Trace.TraceReader;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.Operation;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.Interface.InstructionBusReader;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.Interface.IrParser;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.Interface.RawInstruction;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.MicroBlazeToIrParser;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.MicroBlazeTraceReader;
 import org.ancora.SharedLibrary.LoggingUtils;
 
 
@@ -62,13 +64,19 @@ public class Main {
       // IMPORTANT: These instructions already have the delay slot instructions
       // moved before the jump, and the IMM instruction can be safely ignored,
       // the merged has already been done.
-      List<Instruction> instructions = getInstructions(file);
+      InstructionBusReader busReader = MicroBlazeTraceReader.createTraceReader(file);
+      List<RawInstruction> instructions = busReader.getAllInstructions();
 
-      Converter.convert(instructions);
+
+      IrParser parser = new MicroBlazeToIrParser();
+      Operation start = parser.parseToIr(instructions);
 
    }
 
-   private static List<Instruction> getInstructions(File file) {
+   /*
+   private static List<RawInstruction> getInstructions(File file) {
+
+
       List<Instruction> instructions = new ArrayList<Instruction>();
       TraceReader reader = TraceReader.createTraceReader(file);
 
@@ -80,5 +88,6 @@ public class Main {
 
       return instructions;
    }
+    */
 
 }

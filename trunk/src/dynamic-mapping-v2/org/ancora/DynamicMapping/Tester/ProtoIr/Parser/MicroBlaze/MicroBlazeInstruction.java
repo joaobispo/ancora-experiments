@@ -18,6 +18,7 @@
 package org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze;
 
 import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.Interface.RawInstruction;
+import org.ancora.SharedLibrary.BitUtils;
 
 /**
  *
@@ -38,6 +39,20 @@ public class MicroBlazeInstruction implements RawInstruction{
    public String getInstruction() {
       return instruction;
    }
+
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append(BitUtils.padHexString(Integer.toHexString(address), 8));
+      builder.append(" ");
+
+      builder.append(instruction);
+
+      return builder.toString();
+   }
+
+
 
    /**
     * INSTANCE VARIABLES
