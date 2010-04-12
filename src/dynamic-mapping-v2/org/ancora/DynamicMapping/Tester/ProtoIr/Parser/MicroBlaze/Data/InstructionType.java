@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze;
+package org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.Data;
 
 import java.util.logging.Logger;
 
@@ -160,9 +160,14 @@ public enum InstructionType {
       return this.name();
    }
 
+   /**
+    * @param instructionName
+    * @return the InstructionType with the same name as the given String, or
+    * null if could not find an object with the same name
+    */
    public static InstructionType getEnum(String instructionName) {
       try{
-         return valueOf(instructionName);
+         return valueOf(instructionName.toLowerCase());
       } catch(IllegalArgumentException ex) {
          Logger.getLogger(InstructionType.class.getName()).
                  warning("Instruction not yet present in the list: '"+instructionName+"'");

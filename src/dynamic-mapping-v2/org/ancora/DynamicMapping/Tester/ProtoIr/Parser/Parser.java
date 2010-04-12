@@ -19,9 +19,9 @@ package org.ancora.DynamicMapping.Tester.ProtoIr.Parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.ancora.DynamicMapping.Tester.ProtoIr.*;
 import java.util.EnumSet;
 import java.util.List;
+import org.ancora.DynamicMapping.Tester.ProtoIr.ConverterState;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.Operand;
 import org.ancora.MicroBlaze.Instructions.Instruction;
 import org.ancora.MicroBlaze.Instructions.InstructionName;
