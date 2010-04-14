@@ -18,10 +18,14 @@
 package org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze;
 
 import java.util.List;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.Operand;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.Operation;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.OperationType;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.Interface.IrParser;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.Interface.RawInstruction;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.Data.ArgumentsProperties;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.Data.ArgumentsProperties.ArgumentProperty;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.Data.InstructionType;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.MbParsing.ParserState;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.MbParsing.Utils;
 
@@ -32,7 +36,7 @@ import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.MicroBlaze.MbParsing.Util
 public class MicroBlazeToIrParser implements IrParser {
 
    public Operation parseToIr(List<RawInstruction> instructions) {
-      ParserState state = new ParserState();
+      ParserState state = new ParserState(NUM_REGISTERS);
 
       for(int i=0; i<instructions.size(); i++) {
          RawInstruction instruction = instructions.get(i);
@@ -44,7 +48,21 @@ public class MicroBlazeToIrParser implements IrParser {
 
    private void parseInstruction(RawInstruction instruction, ParserState state) {
       String sInst = instruction.getInstruction();
-      Utils.getRegisters(sInst);
+      String[] arguments = Utils.getRegisters(sInst);
+      InstructionType type = Utils.getType(sInst);
+
+      // Build Operation?
+      Operation operation = Utils.buildOperation(type, arguments, state);
+
+
+
+      // Extract operands from MicroBlaze arguments
+      //Operand[] operands = Utils.extractOperands(type, arguments, state);
+
    }
 
+   /**
+    * INSTANCE VARIABLES
+    */
+   private final int NUM_REGISTERS = 32;
 }

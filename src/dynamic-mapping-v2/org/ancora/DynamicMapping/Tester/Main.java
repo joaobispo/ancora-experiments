@@ -18,7 +18,11 @@
 package org.ancora.DynamicMapping.Tester;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.Dotty;
+import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.Operand;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.Operation;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.Interface.InstructionBusReader;
 import org.ancora.DynamicMapping.Tester.ProtoIr.Parser.Interface.IrParser;
@@ -55,8 +59,8 @@ public class Main {
    private static void executeMain() {
       // Files
       String filename;
-      filename = "adpcm-coder-O0-block1.txt";
-      //filename = "adpcm-coder-O0-block2.txt";
+      //filename = "adpcm-coder-O0-block1.txt";
+      filename = "adpcm-coder-O0-block2.txt";
 
       File file = new File(filename);
 
@@ -71,7 +75,23 @@ public class Main {
       IrParser parser = new MicroBlazeToIrParser();
       Operation start = parser.parseToIr(instructions);
 
+      //Dotty.printOperation(start);
+
+      String dotContents = Dotty.generateDot(start);
+      System.out.println(dotContents);
    }
+
+   /*
+   private static void printTree(Operation start) {
+      Set<Operand> operands = new HashSet<Operand>();
+      Set<Operation> operations = new HashSet<Operation>();
+
+      for(Operand op : start.getOutputs()) {
+
+      }
+
+   }
+    */
 
    /*
    private static List<RawInstruction> getInstructions(File file) {

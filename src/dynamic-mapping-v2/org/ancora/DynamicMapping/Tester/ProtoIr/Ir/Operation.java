@@ -26,9 +26,11 @@ import java.util.List;
  */
 public class Operation {
 
-   public Operation(OperationType type) {
+   public Operation(String type) {
+   //public Operation(OperationType type) {
       inputs = new ArrayList<Operand>();
       outputs = new ArrayList<Operand>();
+      parameters = new ArrayList<Operand>();
       this.type = type;
    }
 
@@ -40,6 +42,19 @@ public class Operation {
       return outputs;
    }
 
+   public List<Operand> getParameters() {
+      return parameters;
+   }
+
+   public String getType() {
+      return type;
+   }
+
+   @Override
+   public String toString() {
+      return type;
+   }
+
 
 
    /**
@@ -47,5 +62,7 @@ public class Operation {
     */
    private List<Operand> inputs;
    private List<Operand> outputs;
-   private OperationType type;
+   private List<Operand> parameters;
+   //private OperationType type;
+   private String type;
 }
