@@ -29,8 +29,8 @@ import org.ancora.DynamicMapping.Tester.ProtoIr.Ir.OperationType;
 public class ConverterState {
 
    public ConverterState() {
-      startOperation = new Operation(OperationType.Start);
-      endOperation = new Operation(OperationType.End);
+      //startOperation = new Operation(OperationType.Start);
+      //endOperation = new Operation(OperationType.End);
    }
 
 

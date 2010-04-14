@@ -26,10 +26,11 @@ import java.util.List;
  */
 public class Operand {
 
-   public Operand(OperandType type) {
+   public Operand(OperandType type, String value) {
       producer = null;
       consumers = new ArrayList<Operation>();
       this.type = type;
+      this.value = value;
    }
 
    public void setProducer(Operation producer) {
@@ -44,6 +45,42 @@ public class Operand {
       return consumers;
    }
 
+   public String getValue() {
+      return value;
+   }
+
+  
+   @Override
+   public String toString() {
+      return type+"."+value;
+   }
+
+   /*
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+
+      if(producer != null) {
+         builder.append(producer.getType());
+      } else {
+         builder.append("null");
+      }
+      builder.append(" -> (");
+      builder.append(toString());
+      builder.append(")");
+
+      for(Operation op : consumers) {
+         builder.append(",");
+         builder.append(op.getType());
+      }
+      builder.append("\n");
+
+
+      return builder.toString();
+   }
+    */
+
+
 
    /**
     * INSTANCE VARIABLES
@@ -51,4 +88,5 @@ public class Operand {
    private Operation producer;
    private List<Operation> consumers;
    private OperandType type;
+   private String value;
 }

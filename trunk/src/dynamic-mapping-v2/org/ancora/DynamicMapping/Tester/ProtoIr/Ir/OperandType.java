@@ -22,5 +22,6 @@ package org.ancora.DynamicMapping.Tester.ProtoIr.Ir;
  * @author Joao Bispo
  */
 public enum OperandType {
-
+   data,
+   literal;
 }
