@@ -87,8 +87,9 @@ public class Main {
       //File memAndCommFile = new File("memAndComm.csv");
       //memAndCommCount.saveData(memAndCommFile);
 
-      File instPerItFile = new File("inst-it-graph.csv");
-      instPerIt.saveTraceCoverageData(instPerItFile);
+      // FPL'10
+      //File instPerItFile = new File("inst-it-graph.csv");
+      //instPerIt.saveTraceCoverageData(instPerItFile);
 
       //File avgIterationSize = new File("avg-it-size.csv");
       //instPerIt.saveIterationSizeData(avgIterationSize);
@@ -136,8 +137,9 @@ public class Main {
       
 
       // Mapper Statistics
-      //MicroBlazeRpuDataProcess stats = new MicroBlazeRpuDataProcess(systemMonitor);
-      //processData(stats);
+      // FPL'10
+      MicroBlazeRpuDataProcess stats = new MicroBlazeRpuDataProcess(systemMonitor);
+      processData(stats);
       
       // Partition Statistics
       //File ilpStatsFile = new File("ilpStats.csv");
