@@ -185,6 +185,44 @@ public class Instruction {
    }
 
 
+   /**
+    * Sets the value of the Immediate.
+    * 
+    * @param value
+    */
+   public void setImmediate(int value) {
+      registers[Register.immediate.ordinal()] = value;
+   }
+
+   /**
+    * @return a String representation of the instruction
+    */
+   public String getInstruction() {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append(operation);
+
+      boolean firstValue = true;
+      for (Register register : Register.values()) {
+         Integer value = registers[register.ordinal()];
+         if (value != null) {
+            if(!firstValue) {
+               builder.append(",");
+            } else {
+               firstValue = false;
+            }
+            builder.append(" ");
+
+            if(register != Register.immediate) {
+               builder.append("r");
+            }
+
+            builder.append(value);
+         }
+      }
+
+      return builder.toString();
+   }
 
    @Override
    public String toString() {
@@ -192,9 +230,13 @@ public class Instruction {
 
       builder.append(BitUtils.padHexString(Integer.toHexString(address), 8));
       builder.append(" ");
-      builder.append(operation);
+
+      //builder.append(operation);
+      builder.append(getInstruction());
+
       //builder.append(" ");
 
+      /*
       for (Register register : Register.values()) {
          Integer value = registers[register.ordinal()];
          if (value != null) {
@@ -204,6 +246,32 @@ public class Instruction {
             builder.append(value);
          }
       }
+       */
+
+      // Like in the trace:
+      /*
+      boolean firstValue = true;
+      for (Register register : Register.values()) {
+         Integer value = registers[register.ordinal()];
+         if (value != null) {
+            if(!firstValue) {
+               builder.append(",");
+            } else {
+               firstValue = false;
+            }
+            builder.append(" ");
+            
+            if(register != Register.immediate) {
+               builder.append("r");
+            }
+
+            //builder.append(" ");
+            //builder.append(register.getRegName());
+            //builder.append("=");
+            builder.append(value);
+         }
+      }
+       */
 
       /*
       int counter = 0;
@@ -234,12 +302,19 @@ public class Instruction {
       return builder.toString();
    }
 
+   public Integer[] getRegisters() {
+      return registers;
+   }
+
 
 
    public enum Register {
-      writeRegister("WriteReg"),
-      readRegister1("ReadReg1"),
-      readRegister2("ReadReg2"),
+      //writeRegister("WriteReg"),
+      //readRegister1("ReadReg1"),
+      //readRegister2("ReadReg2"),
+      writeRegister("Reg"),
+      readRegister1("Reg"),
+      readRegister2("Reg"),
       immediate("Imm");
 
       private Register(String regName) {

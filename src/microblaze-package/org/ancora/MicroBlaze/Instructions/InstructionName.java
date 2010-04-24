@@ -18,7 +18,6 @@
 package org.ancora.MicroBlaze.Instructions;
 
 import java.util.logging.Logger;
-import javax.swing.plaf.metal.MetalBorders.Flush3DBorder;
 
 /**
  * Represents the valid operations in the MicroBlaze Architecture, according
